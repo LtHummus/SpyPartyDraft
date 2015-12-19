@@ -1,1 +1,1 @@
-web: gunicorn SpyPartyDraft:app --log-file -
+web: gunicorn --worker-class eventlet SpyPartyDraft:app --log-file -
