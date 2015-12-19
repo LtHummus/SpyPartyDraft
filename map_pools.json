@@ -1,0 +1,102 @@
+{
+  "scl_season_1":
+          [
+            {
+              "name": "Balcony 2/3",
+              "slug": "balcony23"
+            },
+            {
+              "name": "Balcony 3/5",
+              "slug": "balcony35"
+            },
+            {
+              "name": "New Art Ballroom 4/8",
+              "slug": "nab48"
+            },
+            {
+              "name": "New Art Ballroom 4/7",
+              "slug": "nab47"
+            },
+            {
+              "name": "Courtyard 4/6",
+              "slug": "cy146"
+            },
+            {
+              "name": "Courtyard 4/7",
+              "slug": "cy147"
+            },
+            {
+              "name": "Courtyard 2 4/6",
+              "slug": "cy246"
+            },
+            {
+              "name": "Courtyard 2 4/7",
+              "slug": "cy247"
+            },
+            {
+              "name": "Double Modern 3/5",
+              "slug": "2xm35"
+            },
+            {
+              "name": "Double Modern Known 2",
+              "slug": "2xmk2"
+            },
+            {
+              "name": "Gallery 4/7",
+              "slug": "gallery47"
+            },
+            {
+              "name": "Gallery 4/8",
+              "slug": "gallery48"
+            },
+            {
+              "name": "High-rise 3/5",
+              "slug": "highrise35"
+            },
+            {
+              "name": "High-rise 4/7",
+              "slug": "highrise47"
+            },
+            {
+              "name": "Modern 2/3",
+              "slug": "gallery23"
+            },
+            {
+              "name": "Modern 3/5",
+              "slug": "gallery35"
+            },
+            {
+              "name": "Panopticon 4/7",
+              "slug": "panop47"
+            },
+            {
+              "name": "Panopticon 4/8",
+              "slug": "panop48"
+            },
+            {
+              "name": "Pub 3/5",
+              "slug": "panop35"
+            },
+            {
+              "name": "Pub 4/7",
+              "slug": "panop47"
+            },
+            {
+              "name": "Crowded Pub 4/7",
+              "slug": "cpub47"
+            },
+            {
+              "name": "Crowded Pub 3/4",
+              "slug": "cpub34"
+            },
+            {
+              "name": "Veranda 5/7",
+              "slug": "veranda57"
+            },
+            {
+              "name": "Veranda 5/8",
+              "slug": "veranda58"
+            }
+
+          ]
+}
