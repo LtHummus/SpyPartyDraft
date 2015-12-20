@@ -35,10 +35,18 @@ class Draft:
         else:
             self.start_player = self.player_two
 
+    def _swap_player(self):
+        if self.current_player == self.player_one:
+            self.current_player = self.player_two
+        else:
+            self.current_player = self.player_one
+
     def mark_map(self, map):
         if self.state.startswith("BAN"):
             self.banned_maps.append(map)
         else:
             self.picked_maps.append(map)
+        self._swap_player()
+
 
 
