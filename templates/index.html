@@ -10,7 +10,7 @@
 
             // the socket.io documentation recommends sending an explicit package upon connection
             // this is specially important when using the global namespace
-            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            var socket = io.connect('https://' + document.domain + ':' + location.port + namespace);
 
             var handle_create_success = function(msg) {
                 console.log('got join success message');
