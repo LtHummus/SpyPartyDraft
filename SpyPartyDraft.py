@@ -34,15 +34,28 @@ elif async_mode == 'gevent':
     monkey.patch_all()
 
 import time
+import random
 from threading import Thread
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
+from room import Room
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
+
+ROOM_LENGTH = 5
+
+room_map = {}
+
+def generate_room_id():
+    return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
+
+def create_room(id):
+    room_map[id] = Room(id, broadcast_to_room)
 
 
 def background_thread():
@@ -58,11 +71,11 @@ def background_thread():
 
 @app.route('/')
 def index():
-    global thread
-    if thread is None:
-        thread = Thread(target=background_thread)
-        thread.daemon = True
-        thread.start()
+    #global thread
+    #if thread is None:
+    #    thread = Thread(target=background_thread)
+    #    thread.daemon = True
+    #    thread.start()
     return render_template('index.html')
 
 
@@ -79,6 +92,40 @@ def test_broadcast_message(message):
     emit('my response',
          {'data': message['data'], 'count': session['receive_count']},
          broadcast=True)
+
+
+@socketio.on('create', namespace='/test')
+def create(message):
+    print "got create message"
+    print "username: " + message['data']
+    username = message['data']
+    id = generate_room_id()
+    create_room(id)
+    room_map[id].player_list.append(username)
+    join_room(id)
+    emit('my response',
+         {
+             'type': 'create_success',
+             'room_id': id,
+             'count': session['receive_count']
+         })
+    broadcast_to_room(id, "{} has joined the room!".format(username))
+    broadcast_to_room(id, "{} are the players in the room.".format(room_map[id].player_list))
+
+def broadcast_to_room(room_id, msg):
+    emit('my response',
+         {'msg': msg,
+          'room': room_id,
+          'type': 'room_broadcast',
+          'count': session['receive_count']},
+         room=room_id)
+
+@socketio.on('join_draft', namespace='/test')
+def join_draft(message):
+    room = room_map[message['room_id']]
+    join_room(room.id)
+    room.player_list.append(message['username'])
+    broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
 
 
 @socketio.on('join', namespace='/test')
@@ -135,4 +182,4 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app)

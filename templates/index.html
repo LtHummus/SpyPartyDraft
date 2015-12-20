@@ -12,10 +12,29 @@
             // this is specially important when using the global namespace
             var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
+            var handle_create_success = function(msg) {
+                console.log('got join success message');
+                var room_id = msg['room_id'];
+                $('#create_button').attr('disabled', 'disabled');
+                $('#username').attr('disabled', 'disabled');
+                $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room to your oppnent.<br />');
+            };
+
+            var handle_room_broadcast = function(msg) {
+                console.log('handling room broadcast');
+                $('#room').append(msg['msg']);
+                $('#room').append('<br />');
+            };
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             socket.on('my response', function(msg) {
-                $('#log').append('<br>Received #' + msg.count + ': ' + msg.data);
+                console.log('Received #' + msg.count + ': " + msg.data');
+                if (msg['type'] === 'create_success') {
+                    handle_create_success(msg);
+                } else if (msg['type'] === 'room_broadcast') {
+                    handle_room_broadcast(msg);
+                }
+                $('#log').append('<br>Received #' + msg.count + ': ' + msg);
             });
 
             // event handler for new connections
@@ -23,34 +42,19 @@
                 socket.emit('my event', {data: 'I\'m connected!'});
             });
 
-            // handlers for the different forms in the page
-            // these send data to the server in a variety of ways
-            $('form#emit').submit(function(event) {
-                socket.emit('my event', {data: $('#emit_data').val()});
+            $('form#create').submit(function(event) {
+                console.log('ok');
+                socket.emit('create', {data: $('#username').val()});
                 return false;
             });
-            $('form#broadcast').submit(function(event) {
-                socket.emit('my broadcast event', {data: $('#broadcast_data').val()});
-                return false;
-            });
-            $('form#join').submit(function(event) {
-                socket.emit('join', {room: $('#join_room').val()});
-                return false;
-            });
-            $('form#leave').submit(function(event) {
-                socket.emit('leave', {room: $('#leave_room').val()});
-                return false;
-            });
-            $('form#send_room').submit(function(event) {
-                socket.emit('my room event', {room: $('#room_name').val(), data: $('#room_data').val()});
-                return false;
-            });
-            $('form#close').submit(function(event) {
-                socket.emit('close room', {room: $('#close_room').val()});
-                return false;
-            });
-            $('form#disconnect').submit(function(event) {
-                socket.emit('disconnect request');
+            $('form#join_draft').submit(function(event) {
+                console.log('attempting to join room');
+                socket.emit('join_draft', {username: $('#join_username').val(), room_id: $('#join_room_id').val()});
+//                socket.emit('join_draft',
+//                        {
+//                            username: $('#join_username'.val()),
+//                            room_id: $('#join_room_id'.val())
+//                        });
                 return false;
             });
         });
@@ -58,35 +62,21 @@
 </head>
 <body>
 <h1>Flask-SocketIO Test</h1>
-<h2>Send:</h2>
-<form id="emit" method="POST" action='#'>
-    <input type="text" name="emit_data" id="emit_data" placeholder="Message">
-    <input type="submit" value="Echo">
+<h2>Join:</h2>
+<form id="create" method="POST" action='#'>
+    <input type="text" name="username" id="username" placeholder="Username" />
+    <input type="submit" id="create_button" value="Create new Draft Room" />
+    <div id="create_error"></div>
 </form>
-<form id="broadcast" method="POST" action='#'>
-    <input type="text" name="broadcast_data" id="broadcast_data" placeholder="Message">
-    <input type="submit" value="Broadcast">
+<form id="join_draft" method="POST" action='#'>
+    <input type="text" name="username" id="join_username" placeholder="Username" />
+    <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
+    <input type="submit" id="join_button" value="Join a Room" />
+    <div id="join_error"></div>
 </form>
-<form id="join" method="POST" action='#'>
-    <input type="text" name="join_room" id="join_room" placeholder="Room Name">
-    <input type="submit" value="Join Room">
-</form>
-<form id="leave" method="POST" action='#'>
-    <input type="text" name="leave_room" id="leave_room" placeholder="Room Name">
-    <input type="submit" value="Leave Room">
-</form>
-<form id="send_room" method="POST" action='#'>
-    <input type="text" name="room_name" id="room_name" placeholder="Room Name">
-    <input type="text" name="room_data" id="room_data" placeholder="Message">
-    <input type="submit" value="Send to Room">
-</form>
-<form id="close" method="POST" action="#">
-    <input type="text" name="close_room" id="close_room" placeholder="Room Name">
-    <input type="submit" value="Close Room">
-</form>
-<form id="disconnect" method="POST" action="#">
-    <input type="submit" value="Disconnect">
-</form>
+
+<h2>Room Info:</h2>
+<div id="room">Not in a room</div>
 <h2>Receive:</h2>
 <div id="log"></div>
 </body>
