@@ -64,6 +64,13 @@
             };
 
             var handle_flip_winner = function(message) {
+                var first_option_el = $('#first_option');
+
+                if (username != msg['winner']) {
+                    first_option_el.html("You have lost the coin flip.  Waiting on opponent");
+                }
+
+                first_option_el.css("visibility", "visible");
 
             };
 
@@ -147,6 +154,7 @@
         </form>
     </div>
     <div id="first_option" style="visibility: hidden">
+        <h3>You've won the coin flip!</h3>
         <form id="first_option_form" method="POST" action="#">
             <input type="radio" name="choice" value="pickfirst" />Pick First< br/>
             <input type="radio" name="choice" value="picksecond" />Pick Second< br/>
