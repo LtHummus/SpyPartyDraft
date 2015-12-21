@@ -40,6 +40,7 @@ from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from room import Room
+from draft.map import Map
 
 
 app = Flask(__name__)
@@ -51,11 +52,26 @@ ROOM_LENGTH = 5
 
 room_map = {}
 
+map_pool = []
+
 def generate_room_id():
     return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
 
 def create_room(id):
-    room_map[id] = Room(id, broadcast_to_room)
+    room_map[id] = Room(id, broadcast_to_room, map_pool)
+
+
+def tell_clients_draft_has_started(room):
+    print 'dumping draft info'
+    emit('my response',
+         {
+             'type': 'draft_start',
+             'map_pool': room.serializable_map_pool(),
+             'player_one': room.draft.player_one,
+             'player_two': room.draft.player_two,
+             'state': room.draft.state,
+             'room_id': room.id
+         }, room=room.id)
 
 
 def background_thread():
@@ -125,7 +141,18 @@ def join_draft(message):
     room = room_map[message['room_id']]
     join_room(room.id)
     room.player_list.append(message['username'])
+    emit('my response',
+         {
+             'type': 'join_success',
+             'room_id': room.id,
+             'count': session['receive_count']
+         })
     broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
+    broadcast_to_room(room.id, "{} are the players in the room.".format(room.player_list))
+    if len(room.player_list) == 2:
+        room.start_draft()
+        print "back from draft started"
+        tell_clients_draft_has_started(room)
 
 
 @socketio.on('join', namespace='/test')
@@ -153,6 +180,11 @@ def close(message):
                          'count': session['receive_count']},
          room=message['room'])
     close_room(message['room'])
+
+@socketio.on('coin_flip', namespace='/test')
+def coin_flip(message):
+    print 'got coinflip {}'.format(message['choice'])
+    print message
 
 
 @socketio.on('my room event', namespace='/test')
@@ -182,4 +214,5 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
+    map_pool = Map.generate_map_pool('/Users/bschwartz/advent/SpyPartyDraft/map_pools.json', 'scl_season_1')
     socketio.run(app)

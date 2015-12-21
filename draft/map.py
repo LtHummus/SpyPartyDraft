@@ -9,6 +9,12 @@ class Map:
     def __repr__(self):
         return self.name
 
+    def as_map(self):
+        return {
+            'name': self.name,
+            'slug': self.slug
+        }
+
     @staticmethod
     def generate_map_pool(file_name, tourney):
         with open(file_name) as f:
@@ -16,8 +22,7 @@ class Map:
             tourney_json = data[tourney]
             return [Map(x['name'], x['slug']) for x in tourney_json]
 
-
 if __name__ == '__main__':
-    data = Map.generate_map_pool('map_pools.json', 'scl_season_1')
+    data = Map.generate_map_pool('/Users/bschwartz/advent/SpyPartyDraft/map_pools.json', 'scl_season_1')
     print data
 

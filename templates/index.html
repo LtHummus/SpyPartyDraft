@@ -1,7 +1,13 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Flask-SocketIO Test</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SpyParty Tournament Drafting</title>
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+
     <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
@@ -10,7 +16,10 @@
 
             // the socket.io documentation recommends sending an explicit package upon connection
             // this is specially important when using the global namespace
-            var socket = io.connect('https://' + document.domain + ':' + location.port + namespace);
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+            var username = "";
+            var draft_id = "";
 
             var handle_create_success = function(msg) {
                 console.log('got join success message');
@@ -20,11 +29,38 @@
                 $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room to your oppnent.<br />');
             };
 
+            var handle_join_success = function(msg) {
+                console.log('joined room');
+                var room_id = msg['room_id'];
+                $('#room').html('You are in room <b>' + room_id + '</b>');
+            };
+
             var handle_room_broadcast = function(msg) {
                 console.log('handling room broadcast');
                 $('#room').append(msg['msg']);
                 $('#room').append('<br />');
             };
+
+            var handle_draft_start = function(msg) {
+                console.log('handling draft start');
+
+                draft_id = msg['room_id'];
+
+                if (username === msg['player_one']) {
+                    $("#coin_flip").html("Waiting for coin flip...");
+                }
+
+                $("#coin_flip").css("visibility", "visible");
+
+
+                $('#map_pool').append($('<h3>Map Pool</h3>'));
+                _.each(msg['map_pool'], function(value, key, list) {
+                    console.log(value['name'] + " -> " + value['slug']);
+                    var mapElement = $('<div>' + value['name'] + '<br /></div>');
+                    $('#map_pool').append(mapElement);
+                });
+            };
+
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             socket.on('my response', function(msg) {
@@ -33,8 +69,12 @@
                     handle_create_success(msg);
                 } else if (msg['type'] === 'room_broadcast') {
                     handle_room_broadcast(msg);
+                } else if (msg['type'] === 'join_success') {
+                    handle_join_success(msg);
+                } else if (msg['type'] === 'draft_start') {
+                    handle_draft_start(msg);
                 }
-                $('#log').append('<br>Received #' + msg.count + ': ' + msg);
+                $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
             });
 
             // event handler for new connections
@@ -44,24 +84,26 @@
 
             $('form#create').submit(function(event) {
                 console.log('ok');
-                socket.emit('create', {data: $('#username').val()});
+                username = $('#username').val();
+                socket.emit('create', {data: username});
                 return false;
             });
             $('form#join_draft').submit(function(event) {
                 console.log('attempting to join room');
-                socket.emit('join_draft', {username: $('#join_username').val(), room_id: $('#join_room_id').val()});
-//                socket.emit('join_draft',
-//                        {
-//                            username: $('#join_username'.val()),
-//                            room_id: $('#join_room_id'.val())
-//                        });
+                username = $('#join_username').val();
+                socket.emit('join_draft', {username: username, room_id: $('#join_room_id').val()});
                 return false;
+            });
+            $('form#flip').submit(function(event) {
+                console.log('flipping coin...');
+                var f = $('input:radio[name=ht]').filter(":checked").val();
+                socket.emit('coin_flip', {username: username, room_id: room_id, choice: f});
             });
         });
     </script>
 </head>
 <body>
-<h1>Flask-SocketIO Test</h1>
+<h1>SpyParty Draft Tool</h1>
 <h2>Join:</h2>
 <form id="create" method="POST" action='#'>
     <input type="text" name="username" id="username" placeholder="Username" />
@@ -77,7 +119,27 @@
 
 <h2>Room Info:</h2>
 <div id="room">Not in a room</div>
+<div id="drafting">
+    <div id="coin_flip" style="visibility: hidden">
+        <form id="flip" method="POST" action="#">
+            <input type="radio" name="ht" value="heads" />Heads <br />
+            <input type="radio" name="ht" value="tails" />Tails <br />
+            <input type="submit" name="flip_button" value="Flip" />
+        </form>
+    </div>
+    <h2>Drafting</h2>
+    <div id="draft_state"></div>
+    <div id="map_pool">
+
+    </div>
+    <div id="buttons">
+
+    </div>
+</div>
 <h2>Receive:</h2>
 <div id="log"></div>
+
+<script src="static/js/bootstrap.min.js"></script>
+<script src="static/js/underscore.js"></script>
 </body>
 </html>
