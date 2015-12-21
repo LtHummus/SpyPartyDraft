@@ -74,10 +74,36 @@
 
             };
 
+            var handle_select_spy_order = function(message) {
+                var el = $('#second_option_spy_order');
+
+                if (username == message['username']) {
+                    $('#pick_spy_message').html("<h3>" + message['msg'] + "</h3>");
+                } else {
+                    el.html("Waiting on opponent to pick spy order...");
+                }
+
+                el.css('visibility', 'visible');
+            };
+
+            var handle_select_pick_order = function(message) {
+                var el = $('#second_option_pick_order');
+
+                if (username == message['username']) {
+                    $('#pick_order_message').html("<h3>" + message['msg'] + "</h3>");
+                } else {
+                    el.html("Waiting on opponent to pick spy order...");
+                }
+
+                el.css('visibility', 'visible');
+            };
+
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             socket.on('my response', function(msg) {
                 console.log('Received #' + msg.count + ': " + msg.data');
+                $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
+
                 if (msg['type'] === 'create_success') {
                     handle_create_success(msg);
                 } else if (msg['type'] === 'room_broadcast') {
@@ -88,8 +114,11 @@
                     handle_draft_start(msg);
                 } else if (msg['type'] === 'flip_winner') {
                     handle_flip_winner(msg);
+                } else if (msg['type'] === 'select_spy_order') {
+                    handle_select_spy_order(msg);
+                } else if (msg['type'] === 'select_pick_order') {
+                    handle_select_pick_order(msg);
                 }
-                $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
             });
 
             // event handler for new connections
@@ -172,6 +201,22 @@
             <input type="radio" name="choice" value="spysecond" />Spy Second<br />
             <input type="radio" name="choice" value="defer" />Defer Option to Other Player<br />
             <input type="submit" name="first_option_form" value="This is my choice" /><br />
+        </form>
+    </div>
+    <div id="second_option_pick_order" style="visibility: hidden">
+        <div id="pick_order_message"></div>
+        <form id="second_option_pick_form" method="POST" action="#">
+            <input type="radio" name="choice" value="pickfirst" />Pick First<br />
+            <input type="radio" name="choice" value="picksecond" />Pick Second<br />
+            <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+        </form>
+    </div>
+    <div id="second_option_spy_order" style="visibility: hidden">
+        <div id="spy_order_message"></div>
+        <form id="second_option_spy_form" method="POST" action="#">
+            <input type="radio" name="choice" value="pickfirst" />Spy First<br />
+            <input type="radio" name="choice" value="picksecond" />Spy Second<br />
+            <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
         </form>
     </div>
     <h2>Drafting</h2>
