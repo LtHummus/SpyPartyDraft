@@ -66,7 +66,7 @@
             var handle_flip_winner = function(message) {
                 var first_option_el = $('#first_option');
 
-                if (username != msg['winner']) {
+                if (username != message['winner']) {
                     first_option_el.html("You have lost the coin flip.  Waiting on opponent");
                 }
 
@@ -123,7 +123,17 @@
             });
 
             $('form#first_option_form').submit(function(event) {
+                console.log('putting choice up');
+                var choice = $('input:radio[name=choice]').filter(":checked").val();
+                var data = {
+                    username: username,
+                    room_id: draft_id,
+                    choice: choice
+                };
+                socket.emit('first_option_form', data);
+                $('#first_option').css('visibility', 'hidden');
 
+                return false;
             });
         });
     </script>
@@ -156,12 +166,12 @@
     <div id="first_option" style="visibility: hidden">
         <h3>You've won the coin flip!</h3>
         <form id="first_option_form" method="POST" action="#">
-            <input type="radio" name="choice" value="pickfirst" />Pick First< br/>
-            <input type="radio" name="choice" value="picksecond" />Pick Second< br/>
-            <input type="radio" name="choice" value="spyfirst" />Spy First< br/>
-            <input type="radio" name="choice" value="spysecond" />Spy Second< br/>
-            <input type="radio" name="choice" value="defer" />Defer Option to Other Player< br/>
-            <input type="submit" name="first_option_form" value="This is my choice" />
+            <input type="radio" name="choice" value="pickfirst" />Pick First<br />
+            <input type="radio" name="choice" value="picksecond" />Pick Second<br />
+            <input type="radio" name="choice" value="spyfirst" />Spy First<br />
+            <input type="radio" name="choice" value="spysecond" />Spy Second<br />
+            <input type="radio" name="choice" value="defer" />Defer Option to Other Player<br />
+            <input type="submit" name="first_option_form" value="This is my choice" /><br />
         </form>
     </div>
     <h2>Drafting</h2>

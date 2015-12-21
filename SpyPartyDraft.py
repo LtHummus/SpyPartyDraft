@@ -194,19 +194,50 @@ def coin_flip(message):
     else:
         winner = room.draft.player_one
 
-    emit('my responise', {
+    emit('my response', {
         'type': 'flip_winner',
         'message': '{} has won the coin toss'.format(winner),
         'winner': winner
-    })
+    }, room=room.id)
 
 
-@socketio.on('my room event', namespace='/test')
-def send_room_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': message['data'], 'count': session['receive_count']},
-         room=message['room'])
+def ask_spy_order(room, msg):
+    username = room.draft.coin_flip_loser()
+    data = {
+        'username': username,
+        'message': msg,
+        'type': 'select_spy_order'
+    }
+    emit('my response', data, room=room.id)
+
+
+def ask_pick_order(room, msg):
+    username = room.draft.coin_flip_loser()
+    data = {
+        'username': username,
+        'message': msg,
+        'type': 'select_pick_order'
+    }
+    emit('my response', data, room=room.id)
+
+
+@socketio.on('first_option_form', namespace='/test')
+def first_option_form(message):
+    choice = message['choice']
+    room = room_map[message['room_id']]
+    print "got choice {}".format(choice)
+    if choice == "pickfirst":
+        room.draft.start_player = room.draft.coin_flip_winner
+        ask_spy_order(room, "You opponent has opted to pick first")
+    elif choice == "picksecond":
+        room.draft.start_player = room.draft.coin_flip_loser()
+        ask_spy_order(room, "Your opponent has opted to pick second")
+    elif choice == "spyfirst":
+        room.draft.first_spy = room.draft.coin_flip_winner
+        ask_pick_order(room, "Your opponent has opted to spy first")
+    elif choice == "spysecond":
+        room.draft.first_spy = room.draft.coin_flip_loser()
+        ask_pick_order(room, "Your opponent has opted to spy second")
 
 
 @socketio.on('disconnect request', namespace='/test')

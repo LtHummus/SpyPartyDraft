@@ -24,10 +24,16 @@ class Draft:
         self.state = STATE_NOT_STARTED
         self.start_player = None
         self.coin_flip_winner = None
+        self.first_spy = None
 
     def flip_coin(self, winner):
         self.coin_flip_winner = winner
         self.state = STATE_COIN_FLIPPED
+
+    def coin_flip_loser(self):
+        if self.coin_flip_winner == self.player_one:
+            return self.player_two
+        return self.player_one
 
     def set_start_player(self, player_no):
         if player_no == 1:
