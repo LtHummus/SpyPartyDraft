@@ -25,8 +25,8 @@ class Draft:
         self.start_player = None
         self.coin_flip_winner = None
 
-    def flip_coin(self):
-        self.coin_flip_winner = random.choice([self.player_one, self.player_two])
+    def flip_coin(self, winner):
+        self.coin_flip_winner = winner
         self.state = STATE_COIN_FLIPPED
 
     def set_start_player(self, player_no):

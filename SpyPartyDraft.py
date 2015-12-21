@@ -181,10 +181,24 @@ def close(message):
          room=message['room'])
     close_room(message['room'])
 
+
 @socketio.on('coin_flip', namespace='/test')
 def coin_flip(message):
     print 'got coinflip {}'.format(message['choice'])
     print message
+    room = room_map[message['room_id']]
+    user_flip = message['choice']
+    our_flip = random.choice(['heads', 'tails'])
+    if user_flip == our_flip:
+        winner = room.draft.player_two
+    else:
+        winner = room.draft.player_one
+
+    emit('my responise', {
+        'type': 'flip_winner',
+        'message': '{} has won the coin toss'.format(winner),
+        'winner': winner
+    })
 
 
 @socketio.on('my room event', namespace='/test')

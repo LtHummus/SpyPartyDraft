@@ -55,7 +55,7 @@
 
                 $('#map_pool').append($('<h3>Map Pool</h3>'));
                 _.each(msg['map_pool'], function(value, key, list) {
-                    console.log(value['name'] + " -> " + value['slug']);
+                    //console.log(value['name'] + " -> " + value['slug']);
                     var mapElement = $('<div>' + value['name'] + '<br /></div>');
                     $('#map_pool').append(mapElement);
                 });
@@ -94,10 +94,17 @@
                 socket.emit('join_draft', {username: username, room_id: $('#join_room_id').val()});
                 return false;
             });
-            $('form#flip').submit(function(event) {
+            $('form#flip_form').submit(function(event) {
                 console.log('flipping coin...');
                 var f = $('input:radio[name=ht]').filter(":checked").val();
-                socket.emit('coin_flip', {username: username, room_id: room_id, choice: f});
+                var flip_data =
+                    {username: username,
+                    room_id: draft_id,
+                    choice: f};
+                console.log(flip_data);
+                socket.emit('coin_flip', flip_data);
+                event.preventDefault();
+                return false;
             });
         });
     </script>
@@ -121,7 +128,7 @@
 <div id="room">Not in a room</div>
 <div id="drafting">
     <div id="coin_flip" style="visibility: hidden">
-        <form id="flip" method="POST" action="#">
+        <form id="flip_form" method="POST" action="#">
             <input type="radio" name="ht" value="heads" />Heads <br />
             <input type="radio" name="ht" value="tails" />Tails <br />
             <input type="submit" name="flip_button" value="Flip" />
