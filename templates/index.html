@@ -98,6 +98,22 @@
                 el.css('visibility', 'visible');
             };
 
+            var redraw_picks_bans = function(message) {
+                $('#draft_bans').html('');
+
+                _.each(message['banned_maps'], function(value, key, list) {
+                    var el = $('<li>' + value['picker'] + ' has banned ' + value['map'] + '</li>');
+                    $('#draft_bans').append(el);
+                });
+
+                $('#draft_picks').html('');
+
+                _.each(message['picked_maps'], function(value, key, list) {
+                    var el = $('<li>' + value['picker'] + ' has picked ' + value['map'] + '</li>');
+                    $('#draft_picks').append(el);
+                });
+            };
+
             var handle_draft_info = function(message) {
                 //hide stuff we don't care about any more
                 $('#create_form_wrapper').css('visibility', 'hidden');
@@ -112,19 +128,7 @@
                 $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
-                $('#draft_bans').html('');
-
-                _.each(message['banned_maps'], function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has banned ' + value['map'] + '</li>');
-                    $('#draft_bans').append(el);
-                });
-
-                $('#draft_picks').html('');
-
-                _.each(message['picked_maps'], function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has picked ' + value['map'] + '</li>');
-                    $('#draft_picks').append(el);
-                });
+                redraw_picks_bans(message);
 
                 var userMessage;
 
@@ -152,6 +156,7 @@
             };
 
             var handle_draft_over = function(message) {
+                redraw_picks_bans(message);
                 $('#draft_form').css('visibility', 'hidden');
                 socket.emit('disconnect_request', {room_id: draft_id});
             };

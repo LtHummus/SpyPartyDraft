@@ -112,7 +112,7 @@ class Draft:
         for x in self.picked_maps:
             list.append({
                 'picker': curr,
-                'map': x.slug
+                'map': x.name
             })
             if curr == self.player_one:
                 curr = self.player_two
