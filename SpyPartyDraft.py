@@ -128,6 +128,7 @@ def create(message):
     broadcast_to_room(id, "{} has joined the room!".format(username))
     broadcast_to_room(id, "{} are the players in the room.".format(room_map[id].player_list))
 
+
 def broadcast_to_room(room_id, msg):
     emit('my response',
          {'msg': msg,
@@ -244,10 +245,6 @@ def dump_draft(room):
 
     emit('my response', data, room=room.id)
 
-def start_draft(room):
-    data = {
-
-    }
 
 @socketio.on('second_option_pick', namespace='/test')
 def second_option_pick(message):
@@ -258,7 +255,7 @@ def second_option_pick(message):
         room.draft.start_player = room.draft.coin_flip_loser()
     else:
         room.draft.start_player = room.draft.coin_flip_winner
-        room.draft.start_draft()
+    room.draft.start_draft()
     dump_draft(room)
 
 
