@@ -139,9 +139,18 @@ def broadcast_to_room(room_id, msg):
           'count': session['receive_count']},
          room=room_id)
 
+
 @socketio.on('join_draft', namespace='/test')
 def join_draft(message):
-    room = room_map[message['room_id']]
+    room_to_join = message['room_id']
+    if room_to_join not in room_map:
+        emit('my response',
+             {
+                 'type': 'join_error',
+                 'message': 'Room {} does not exist'.format(room_to_join)
+             })
+        return
+    room = room_map[room_to_join]
     room.touch()
     join_room(room.id)
     room.player_list.append(message['username'])
