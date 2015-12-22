@@ -240,7 +240,7 @@ def dump_draft(room):
 
     if room.draft.draft_complete():
         # overwrite type with complete
-        type = 'draft_over'
+        data['type'] = 'draft_over'
 
     emit('my response', data, room=room.id)
 
