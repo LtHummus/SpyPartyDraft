@@ -76,22 +76,24 @@ def tell_clients_draft_has_started(room):
 
 def background_thread():
     """Example of how to send server generated events to clients."""
-    count = 0
+    print 'cleanup thread started'
     while True:
-        time.sleep(10)
-        count += 1
-        socketio.emit('my response',
-                      {'data': 'Server generated event', 'count': count},
-                      namespace='/test')
+        time.sleep(300)
+        cleanable = [k for k, v in room_map.iteritems() if room_map[k].should_be_cleaned()]
+        for x in cleanable:
+            del room_map[x]
+            print "cleaned room {}".format(x)
+            # we probably want to close the room here...?
+        print "should really clean things up here"
 
 
 @app.route('/')
 def index():
-    #global thread
-    #if thread is None:
-    #    thread = Thread(target=background_thread)
-    #    thread.daemon = True
-    #    thread.start()
+    global thread
+    if thread is None:
+        thread = Thread(target=background_thread)
+        thread.daemon = True
+        thread.start()
     return render_template('index.html')
 
 
@@ -140,6 +142,7 @@ def broadcast_to_room(room_id, msg):
 @socketio.on('join_draft', namespace='/test')
 def join_draft(message):
     room = room_map[message['room_id']]
+    room.touch()
     join_room(room.id)
     room.player_list.append(message['username'])
     emit('my response',
@@ -188,6 +191,7 @@ def coin_flip(message):
     print 'got coinflip {}'.format(message['choice'])
     print message
     room = room_map[message['room_id']]
+    room.touch()
     user_flip = message['choice']
     our_flip = random.choice(['heads', 'tails'])
     if user_flip == our_flip:
@@ -243,6 +247,7 @@ def dump_draft(room):
         # overwrite type with complete
         data['type'] = 'draft_over'
 
+    room.touch()
     emit('my response', data, room=room.id)
 
 
@@ -274,6 +279,7 @@ def second_option_spy(message):
 def first_option_form(message):
     choice = message['choice']
     room = room_map[message['room_id']]
+    room.touch()
     print "got choice {}".format(choice)
     if choice == "pickfirst":
         room.draft.start_player = room.draft.coin_flip_winner
@@ -293,6 +299,7 @@ def first_option_form(message):
 def disconnect_request(message):
     print 'disconnecting'
     disconnect()
+
 
 @socketio.on('draft_map', namespace='/test')
 def draft_map(message):

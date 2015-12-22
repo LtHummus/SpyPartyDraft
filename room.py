@@ -37,3 +37,17 @@ class Room:
 
     def touch(self):
         self.last_touched = datetime.datetime.now()
+
+    def secs_since_last_touch(self):
+        delta = datetime.datetime.now() - self.last_touched
+        return delta.seconds
+
+    def should_be_cleaned(self):
+        if self.secs_since_last_touch() > (15 * 60):
+            return True
+
+        if self.draft is None:
+            return False
+
+        return self.draft.draft_complete()
+
