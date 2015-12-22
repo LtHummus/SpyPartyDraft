@@ -220,6 +220,51 @@ def ask_pick_order(room, msg):
     }
     emit('my response', data, room=room.id)
 
+def dump_draft(room):
+    data = {
+        'room_id': room.id,
+        'banned_maps': room.draft.banned_maps,
+        'picked_maps': room.draft.picked_maps,
+        'player_one': room.draft.player_one,
+        'player_two': room.draft.player_two,
+        'map_pool': room.serializable_map_pool(),
+        'current_player': room.draft.current_player,
+        'start_player': room.draft.start_player,
+        'coin_flip_winner': room.draft.coin_flip_winner,
+        'coin_flip_loser': room.draft.coin_flip_loser(),
+        'first_spy': room.draft.first_spy,
+        'state': room.draft.state,
+        'type': 'draft_info'
+    }
+
+    emit('my response', data, room=room.id)
+
+def start_draft(room):
+    data = {
+
+    }
+
+@socketio.on('second_option_pick', namespace='/test')
+def second_option_pick(message):
+    # choice was made by the coin-flip-loser
+    room = room_map[message['room_id']]
+    choice = message['choice']
+    if choice == 'pickfirst':
+        room.draft.start_player = room.draft.coin_flip_loser()
+    else:
+        room.draft.start_player = room.draft.coin_flip_winner
+    dump_draft(room)
+
+
+@socketio.on('second_option_spy', namespace='/test')
+def second_option_spy(message):
+    room = room_map[message['room_id']]
+    choice = message['choice']
+    if choice == 'spyfirst':
+        room.draft.first_spy = room.draft.coin_flip_loser()
+    else:
+        room.draft.first_spy = room.draft.coin_flip_winner
+    dump_draft(room)
 
 @socketio.on('first_option_form', namespace='/test')
 def first_option_form(message):
