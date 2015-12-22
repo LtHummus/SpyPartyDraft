@@ -194,6 +194,8 @@ def coin_flip(message):
     else:
         winner = room.draft.player_one
 
+    room.draft.coin_flip_winner = winner
+
     emit('my response', {
         'type': 'flip_winner',
         'message': '{} has won the coin toss'.format(winner),
@@ -202,9 +204,8 @@ def coin_flip(message):
 
 
 def ask_spy_order(room, msg):
-    username = room.draft.coin_flip_loser()
     data = {
-        'username': username,
+        'username': room.draft.coin_flip_loser(),
         'message': msg,
         'type': 'select_spy_order'
     }
@@ -212,9 +213,8 @@ def ask_spy_order(room, msg):
 
 
 def ask_pick_order(room, msg):
-    username = room.draft.coin_flip_loser()
     data = {
-        'username': username,
+        'username': room.draft.coin_flip_loser(),
         'message': msg,
         'type': 'select_pick_order'
     }
