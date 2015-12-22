@@ -234,7 +234,8 @@ def dump_draft(room):
         'coin_flip_loser': room.draft.coin_flip_loser(),
         'first_spy': room.draft.first_spy,
         'state': room.draft.state,
-        'type': 'draft_info'
+        'type': 'draft_info',
+        'user_readable_state': room.draft.user_readable_state()
     }
 
     emit('my response', data, room=room.id)
@@ -253,6 +254,7 @@ def second_option_pick(message):
         room.draft.start_player = room.draft.coin_flip_loser()
     else:
         room.draft.start_player = room.draft.coin_flip_winner
+        room.draft.start_draft()
     dump_draft(room)
 
 
@@ -264,6 +266,7 @@ def second_option_spy(message):
         room.draft.first_spy = room.draft.coin_flip_loser()
     else:
         room.draft.first_spy = room.draft.coin_flip_winner
+    room.draft.start_draft()
     dump_draft(room)
 
 @socketio.on('first_option_form', namespace='/test')

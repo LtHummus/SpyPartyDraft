@@ -9,7 +9,19 @@ STATE_BAN_FOUR = "BAN_FOUR"
 STATE_PICK_ONE = "PICK_ONE"
 STATE_PICK_TWO = "PICK_TWO"
 STATE_PICK_THREE = "PICK_THREE"
+STATE_PICK_FOUR = "PICK_FOUR"
 STATE_DRAFT_COMPLETE = "COMPLETE"
+
+USER_READABLE_STATE_MAP = {
+    STATE_BAN_ONE: "First Ban",
+    STATE_BAN_TWO: "Second Ban",
+    STATE_BAN_THREE: "Third Ban",
+    STATE_BAN_FOUR: "Fourth Ban",
+    STATE_PICK_ONE: "First Pick",
+    STATE_PICK_TWO: "Second Pick",
+    STATE_PICK_THREE: "Third Pick",
+    STATE_PICK_FOUR: "Fourth Pick"
+}
 
 
 class Draft:
@@ -54,5 +66,37 @@ class Draft:
             self.picked_maps.append(map)
         self._swap_player()
 
+    def start_draft(self):
+        self.current_player = self.start_player
+        self.state = STATE_BAN_ONE
+
+    def user_readable_state(self):
+        return USER_READABLE_STATE_MAP[self.state]
+
+    def serializable_bans(self):
+        list = []
+        curr = self.start_player
+        for x in self.banned_maps:
+            list.append({
+                'picker': curr,
+                'map': x.slug
+            })
+            if curr == self.player_one:
+                curr = self.player_two
+            else:
+                curr = self.player_one
+
+    def serializibale_picks(self):
+        list = []
+        curr = self.start_player
+        for x in self.picked_maps:
+            list.append({
+                'picker': curr,
+                'map': x.slug
+            })
+            if curr == self.player_one:
+                curr = self.player_two
+            else:
+                curr = self.player_one
 
 

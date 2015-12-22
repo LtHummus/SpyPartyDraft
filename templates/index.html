@@ -112,7 +112,25 @@
                 $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
+
+                var userMessage;
+
+                if (message['current_player'] == username) {
+                    _.each(message['map_pool'], function (value, key, list) {
+                        //console.log(value['name'] + " -> " + value['slug']);
+                        var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" /> ' + value['name'] + '<br />');
+                        $('#draft_form_options').append(radioButton);
+                    });
+                    userMessage = "<h2>" + message['user_readable_state'] + "</h2>";
+                } else {
+                    userMessage = "<h2> Waiting for " + message['user_readable_state'] + "</h2>";
+                }
+
+                $('#draft_form_message').html(userMessage);
+
                 $('#draft_info').css('visibility', 'visible');
+
+
 
             };
 
@@ -214,6 +232,12 @@
 
                 return false;
             });
+
+            $('form#draft_form').submit(function(event) {
+                var choice = $('input:radio[name=map_choice]').filter(":checked").val();
+                console.log("got value " + choice);
+                return false;
+            });
         });
     </script>
 </head>
@@ -242,6 +266,11 @@
     <div id="draft_info_start_player"></div>
     <div id="draft_info_first_spy"></div>
     <div id="draft_info_state"></div>
+    <form id="draft_form" method="POST" action="#">
+        <div id="draft_form_message"></div>
+        <div id="draft_form_options"></div>
+        <input type="submit" value="Submit" />
+    </form>
 
 </div>
 
