@@ -103,13 +103,16 @@
                 $('#create_form_wrapper').css('visibility', 'hidden');
                 $('#join_form_wrapper').css('visibility', 'hidden');
                 $('#room_info').css('visibility', 'hidden');
+                $('#coin_flip').css('visibility', 'hidden');
+                $('#second_option_pick_order').css('visibility', 'hidden');
+                $('#second_option_spy_order').css('visibility', 'hidden');
 
                 $('#draft_info_current_player').html("Current player: " + message['current_player'] + "<br />");
                 $('#draft_info_start_player').html("Start player: " + message['start_player'] + "<br />");
                 $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
-                $('#draft_info').css('visibility', 'visibile');
+                $('#draft_info').css('visibility', 'visible');
 
             };
 
