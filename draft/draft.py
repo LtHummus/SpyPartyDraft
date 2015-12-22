@@ -13,6 +13,7 @@ STATE_PICK_FOUR = "PICK_FOUR"
 STATE_DRAFT_COMPLETE = "COMPLETE"
 
 USER_READABLE_STATE_MAP = {
+    STATE_NOT_STARTED: "Not started",
     STATE_BAN_ONE: "First Ban",
     STATE_BAN_TWO: "Second Ban",
     STATE_BAN_THREE: "Third Ban",
@@ -20,7 +21,19 @@ USER_READABLE_STATE_MAP = {
     STATE_PICK_ONE: "First Pick",
     STATE_PICK_TWO: "Second Pick",
     STATE_PICK_THREE: "Third Pick",
-    STATE_PICK_FOUR: "Fourth Pick"
+    STATE_PICK_FOUR: "Fourth Pick",
+    STATE_DRAFT_COMPLETE: "Draft complete"
+}
+
+NEXT_STATE = {
+    STATE_BAN_ONE: STATE_BAN_TWO,
+    STATE_BAN_TWO: STATE_BAN_THREE,
+    STATE_BAN_THREE: STATE_BAN_FOUR,
+    STATE_BAN_FOUR: STATE_PICK_ONE,
+    STATE_PICK_ONE: STATE_PICK_TWO,
+    STATE_PICK_TWO: STATE_PICK_THREE,
+    STATE_PICK_THREE: STATE_PICK_FOUR,
+    STATE_PICK_FOUR: STATE_DRAFT_COMPLETE
 }
 
 
@@ -59,11 +72,16 @@ class Draft:
         else:
             self.current_player = self.player_one
 
+    def _advance_state(self):
+        self.state = NEXT_STATE[self.state]
+
     def mark_map(self, map):
         if self.state.startswith("BAN"):
             self.banned_maps.append(map)
         else:
             self.picked_maps.append(map)
+        self.map_pool.remove(map)
+        self._advance_state()
         self._swap_player()
 
     def start_draft(self):
@@ -79,12 +97,14 @@ class Draft:
         for x in self.banned_maps:
             list.append({
                 'picker': curr,
-                'map': x.slug
+                'map': x.name
             })
             if curr == self.player_one:
                 curr = self.player_two
             else:
                 curr = self.player_one
+
+        return list
 
     def serializibale_picks(self):
         list = []
@@ -99,4 +119,8 @@ class Draft:
             else:
                 curr = self.player_one
 
+        return list
+
+    def draft_complete(self):
+        return self.state == STATE_DRAFT_COMPLETE
 

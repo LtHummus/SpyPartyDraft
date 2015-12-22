@@ -112,8 +112,23 @@
                 $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
+                $('#draft_bans').html('');
+
+                _.each(message['banned_maps'], function(value, key, list) {
+                    var el = $('<li>' + value['picker'] + ' has banned ' + value['map'] + '</li>');
+                    $('#draft_bans').append(el);
+                });
+
+                $('#draft_picks').html('');
+
+                _.each(message['picked_maps'], function(value, key, list) {
+                    var el = $('<li>' + value['picker'] + ' has picked ' + value['map'] + '</li>');
+                    $('#draft_picks').append(el);
+                });
 
                 var userMessage;
+
+                $('#draft_form_options').html('');
 
                 if (message['current_player'] == username) {
                     _.each(message['map_pool'], function (value, key, list) {
@@ -122,8 +137,10 @@
                         $('#draft_form_options').append(radioButton);
                     });
                     userMessage = "<h2>" + message['user_readable_state'] + "</h2>";
+                    $('#draft_form').css('visibility', 'visible');
                 } else {
                     userMessage = "<h2> Waiting for " + message['user_readable_state'] + "</h2>";
+                    $('#draft_form').css('visibility', 'hidden');
                 }
 
                 $('#draft_form_message').html(userMessage);
@@ -132,6 +149,11 @@
 
 
 
+            };
+
+            var handle_draft_over = function(message) {
+                $('#draft_form').css('visibility', 'hidden');
+                socket.emit('disconnect_request', {room_id: draft_id});
             };
 
             // event handler for server sent data
@@ -156,6 +178,8 @@
                     handle_select_pick_order(msg);
                 } else if (msg['type'] === 'draft_info') {
                     handle_draft_info(msg);
+                } else if (msg['type'] === 'draft_over') {
+                    handle_draft_over(msg);
                 }
             });
 
@@ -236,6 +260,13 @@
             $('form#draft_form').submit(function(event) {
                 var choice = $('input:radio[name=map_choice]').filter(":checked").val();
                 console.log("got value " + choice);
+
+                var data = {
+                    username: username,
+                    room_id: draft_id,
+                    choice: choice
+                };
+                socket.emit('draft_map', data);
                 return false;
             });
         });
@@ -266,7 +297,15 @@
     <div id="draft_info_start_player"></div>
     <div id="draft_info_first_spy"></div>
     <div id="draft_info_state"></div>
-    <form id="draft_form" method="POST" action="#">
+    <ul>
+        <h3>Bans</h3>
+        <div id="draft_bans"></div>
+    </ul>
+    <ul>
+        <h3>Picks</h3>
+        <div id="draft_picks"></div>
+    </ul>
+    <form id="draft_form" method="POST" action="#" style="visibility: hidden;">
         <div id="draft_form_message"></div>
         <div id="draft_form_options"></div>
         <input type="submit" value="Submit" />
@@ -307,8 +346,8 @@
         <div id="second_option_spy_order" style="visibility: hidden">
             <div id="spy_order_message"></div>
             <form id="second_option_spy_form" method="POST" action="#">
-                <input type="radio" name="spy_choice" value="pickfirst" />Spy First<br />
-                <input type="radio" name="spy_choice" value="picksecond" />Spy Second<br />
+                <input type="radio" name="spy_choice" value="spyfirst" />Spy First<br />
+                <input type="radio" name="spy_choice" value="spysecond" />Spy Second<br />
                 <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
             </form>
         </div>

@@ -223,8 +223,8 @@ def ask_pick_order(room, msg):
 def dump_draft(room):
     data = {
         'room_id': room.id,
-        'banned_maps': room.draft.banned_maps,
-        'picked_maps': room.draft.picked_maps,
+        'banned_maps': room.draft.serializable_bans(),
+        'picked_maps': room.draft.serializibale_picks(),
         'player_one': room.draft.player_one,
         'player_two': room.draft.player_two,
         'map_pool': room.serializable_map_pool(),
@@ -237,6 +237,10 @@ def dump_draft(room):
         'type': 'draft_info',
         'user_readable_state': room.draft.user_readable_state()
     }
+
+    if room.draft.draft_complete():
+        # overwrite type with complete
+        type = 'draft_over'
 
     emit('my response', data, room=room.id)
 
@@ -288,12 +292,18 @@ def first_option_form(message):
         ask_pick_order(room, "Your opponent has opted to spy second")
 
 
-@socketio.on('disconnect request', namespace='/test')
-def disconnect_request():
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': 'Disconnected!', 'count': session['receive_count']})
+@socketio.on('disconnect_request', namespace='/test')
+def disconnect_request(message):
+    print 'disconnecting'
     disconnect()
+
+@socketio.on('draft_map', namespace='/test')
+def draft_map(message):
+    room = room_map[message['room_id']]
+    map_obj = [x for x in room.draft.map_pool if x.slug == message['choice']]
+    print map_obj
+    room.draft.mark_map(map_obj[0])
+    dump_draft(room)
 
 
 @socketio.on('connect', namespace='/test')
