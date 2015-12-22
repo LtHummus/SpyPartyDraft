@@ -52,7 +52,7 @@ ROOM_LENGTH = 5
 
 room_map = {}
 
-map_pool = []
+map_pool = Map.generate_map_pool('map_pools.json', 'scl_season_1')
 
 def generate_room_id():
     return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
@@ -330,5 +330,4 @@ def test_disconnect():
 
 
 if __name__ == '__main__':
-    map_pool = Map.generate_map_pool('/Users/bschwartz/advent/SpyPartyDraft/map_pools.json', 'scl_season_1')
     socketio.run(app)
