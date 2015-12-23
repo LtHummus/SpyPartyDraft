@@ -108,7 +108,7 @@
 
                 $('#draft_picks').html('');
 
-                _.each(message['picked_maps'], function(value, key, list) {
+                message['picked_maps'].forEach(function(value, key, list) {
                     var el = $('<li>' + value['picker'] + ' has picked ' + value['map'] + '</li>');
                     $('#draft_picks').append(el);
                 });
@@ -135,7 +135,7 @@
                 $('#draft_form_options').html('');
 
                 if (message['current_player'] == username) {
-                    _.each(message['map_pool'], function (value, key, list) {
+                    message['map_pool'].forEach(function (value, key, list) {
                         //console.log(value['name'] + " -> " + value['slug']);
                         var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" /> ' + value['name'] + '<br />');
                         $('#draft_form_options').append(radioButton);
