@@ -55,9 +55,8 @@
 
                 coin_flip_el.css("visibility", "visible");
 
-
                 $('#map_pool').append($('<h3>Map Pool</h3>'));
-                _.each(msg['map_pool'], function(value, key, list) {
+                msg['map_pool'].forEach(function(value, key, list) {
                     //console.log(value['name'] + " -> " + value['slug']);
                     var mapElement = $('<div>' + value['name'] + '<br /></div>');
                     $('#map_pool').append(mapElement);
@@ -102,7 +101,7 @@
             var redraw_picks_bans = function(message) {
                 $('#draft_bans').html('');
 
-                _.each(message['banned_maps'], function(value, key, list) {
+                message['banned_maps'].forEach(function(value, key, list) {
                     var el = $('<li>' + value['picker'] + ' has banned ' + value['map'] + '</li>');
                     $('#draft_bans').append(el);
                 });
@@ -377,6 +376,5 @@
 <div id="log"></div>
 
 <script src="static/js/bootstrap.min.js"></script>
-<script src="static/js/underscore.js"></script>
 </body>
 </html>
