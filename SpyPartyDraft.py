@@ -125,10 +125,11 @@ def create(message):
              'room_id': id,
          })
     broadcast_to_room(id, "{} has joined the room!".format(username))
-    broadcast_to_room(id, "{} are the players in the room.".format(room_map[id].player_list))
+    broadcast_to_room(id, "Players currently in room: {}".format(' and '.join(room_map[id].player_list)))
 
 
 def broadcast_to_room(room_id, msg):
+    print 'broadcasting: ' + msg
     emit('room_broadcast',
          {'msg': msg,
           'room': room_id
@@ -154,7 +155,7 @@ def join_draft(message):
              'room_id': room.id
          })
     broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
-    broadcast_to_room(room.id, "{} are the players in the room.".format(room.player_list))
+    broadcast_to_room(room.id, "Players currently in room: {}".format(' and '.join(room.player_list)))
     if len(room.player_list) == 2:
         room.start_draft()
         print "back from draft started"
@@ -164,7 +165,6 @@ def join_draft(message):
 @socketio.on('join', namespace='/test')
 def join(message):
     join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
     emit('my response',
          {'data': 'In rooms: ' + ', '.join(rooms()),
           'count': session['receive_count']})
