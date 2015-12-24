@@ -155,7 +155,7 @@ def join_draft(message):
              'room_id': room.id
          })
     broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
-    broadcast_to_room(id, "Players currently in room: {}".format(' and '.join(room.player_list)))
+    broadcast_to_room(room.id, "Players currently in room: {}".format(' and '.join(room.player_list)))
     if len(room.player_list) == 2:
         room.start_draft()
         print "back from draft started"

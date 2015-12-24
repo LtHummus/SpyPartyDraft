@@ -19,7 +19,6 @@ class Room:
         self.touch()
         self.player_list.append(username)
         self.broadcast('{} has joined the room!'.format(username))
-        self.broadcast('Players in the room: '.format(' and '.join(self.player_list)))
 
     def broadcast(self, message):
         self.touch()
