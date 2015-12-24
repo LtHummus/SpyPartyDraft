@@ -28,7 +28,7 @@
                 $('#room_wrapper').css('display', 'none');
                 //$('#create_button').attr('disabled', 'disabled');
                 //$('#username').attr('disabled', 'disabled');
-                $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room to your opponent.<br />');
+                $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room code to your opponent.<br />');
             });
 
             socket.on('join_success', function(msg) {
@@ -41,6 +41,7 @@
             });
 
             socket.on('room_broadcast', function(msg) {
+                log_message(msg);
                 console.log('handling room broadcast');
                 var roomEl = $('#room');
                 roomEl.append(msg['msg']);
@@ -48,6 +49,8 @@
             });
 
             socket.on('draft_start', function(msg) {
+                log_message(msg);
+
                 console.log('handling draft start');
 
                 draft_id = msg['room_id'];
@@ -70,6 +73,7 @@
 
 
             socket.on('flip_winner', function(message) {
+                log_message(message);
 
                 if (username != message['winner']) {
                     $('#first_option_msg').html("You have lost the coin flip.  Waiting on opponent");
@@ -98,6 +102,8 @@
             });
 
             socket.on('select_spy_order', function(message) {
+                log_message(message);
+
                 var el = $('#second_option_spy_order');
 
                 if (username == message['username']) {
@@ -110,6 +116,8 @@
             });
 
             socket.on('select_pick_order', function(message) {
+                log_message(message);
+
                 var el = $('#second_option_pick_order');
 
                 if (username == message['username']) {
@@ -138,6 +146,8 @@
             };
 
             socket.on('draft_info', function(message) {
+                log_message(message);
+
                 //hide stuff we don't care about any more
                 $('#create_form_wrapper').css('display', 'none');
                 $('#join_form_wrapper').css('display', 'none');
@@ -177,12 +187,16 @@
             });
 
             socket.on('draft_over', function(message) {
+                log_message(message);
+
                 redraw_picks_bans(message);
                 $('#draft_form').css('display', 'none');
                 socket.emit('disconnect_request', {room_id: draft_id});
             });
 
             socket.on('join_error', function(message) {
+                log_message(msg);
+
                 $('#join_error').html(message['message']);
             });
 
@@ -194,6 +208,8 @@
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             socket.on('my response', function(msg) {
+                log_message(msg);
+
                 console.log('Received #' + msg.count + ': " + msg.data');
                 $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
 
