@@ -66,14 +66,32 @@
                 });
             });
 
+
             socket.on('flip_winner', function(message) {
-                var first_option_el = $('#first_option');
 
                 if (username != message['winner']) {
-                    first_option_el.html("You have lost the coin flip.  Waiting on opponent");
+                    $('#first_option_msg').html("You have lost the coin flip.  Waiting on opponent");
+                } else {
+                    $('#first_option').css("visibility", "visible");
                 }
 
-                first_option_el.css("visibility", "visible");
+            });
+
+
+            socket.on('winner_deferred', function(message) {
+                log_message(message);
+                var first_option_el = $('#first_option');
+
+                $('#first_option_msg').css('visibility', 'hidden');
+
+                if (username != message['picker']) {
+                    first_option_el.html("You have deferred your pick.  Waiting on opponent...");
+                } else {
+                    $('#first_option_header').html("Your opponent has deferred their pick.  Take your pick.");
+                    $('#first_defer_radio').remove();
+                }
+
+                first_option_el.css('visibility', 'visible');
 
             });
 
@@ -125,6 +143,7 @@
                 $('#coin_flip').css('visibility', 'hidden');
                 $('#second_option_pick_order').css('visibility', 'hidden');
                 $('#second_option_spy_order').css('visibility', 'hidden');
+                $('#first_option_msg').css('visibility', 'hidden');
 
                 $('#draft_info_current_player').html("Current player: " + message['current_player'] + "<br />");
                 $('#draft_info_start_player').html("Start player: " + message['start_player'] + "<br />");
@@ -153,9 +172,6 @@
                 $('#draft_form_message').html(userMessage);
 
                 $('#draft_info').css('visibility', 'visible');
-
-
-
             });
 
             socket.on('draft_over', function(message) {
@@ -323,14 +339,15 @@
                 <input type="submit" name="flip_button" value="Flip" />
             </form>
         </div>
+        <div id="first_option_msg"></div>
         <div id="first_option" style="visibility: hidden">
-            <h3>You've won the coin flip!</h3>
+            <h3 id="first_option_header">You've won the coin flip!</h3>
             <form id="first_option_form" method="POST" action="#">
                 <input type="radio" name="choice" value="pickfirst" />Pick First<br />
                 <input type="radio" name="choice" value="picksecond" />Pick Second<br />
                 <input type="radio" name="choice" value="spyfirst" />Spy First<br />
                 <input type="radio" name="choice" value="spysecond" />Spy Second<br />
-                <!--<input type="radio" name="choice" value="defer" />Defer Option to Other Player<br />-->
+                <div id="first_defer_radio"><input type="radio" name="choice" value="defer"/>Defer Option to Other Player</div><br />
                 <input type="submit" name="first_option_form" value="This is my choice" /><br />
             </form>
         </div>

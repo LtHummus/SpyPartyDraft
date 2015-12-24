@@ -293,6 +293,15 @@ def first_option_form(message):
     elif choice == "spysecond":
         room.draft.first_spy = room.draft.coin_flip_loser()
         ask_pick_order(room, "Your opponent has opted to spy second")
+    elif choice == "defer":
+        # we're going to pretend the other player won the flip, but
+        # don't let them defer
+        room.draft.coin_flip_winner = room.draft.coin_flip_loser()
+        emit('winner_deferred', {
+            'room_id': room.id,
+            'picker': room.draft.coin_flip_winner
+        }, room=room.id)
+
 
 
 @socketio.on('disconnect_request', namespace='/test')
