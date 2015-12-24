@@ -63,9 +63,8 @@ def create_room(id):
 
 def tell_clients_draft_has_started(room):
     print 'dumping draft info'
-    emit('my response',
+    emit('draft_start',
          {
-             'type': 'draft_start',
              'map_pool': room.serializable_map_pool(),
              'player_one': room.draft.player_one,
              'player_two': room.draft.player_two,
@@ -121,22 +120,19 @@ def create(message):
     create_room(id)
     room_map[id].player_list.append(username)
     join_room(id)
-    emit('my response',
+    emit('create_success',
          {
-             'type': 'create_success',
              'room_id': id,
-             'count': session['receive_count']
          })
     broadcast_to_room(id, "{} has joined the room!".format(username))
     broadcast_to_room(id, "{} are the players in the room.".format(room_map[id].player_list))
 
 
 def broadcast_to_room(room_id, msg):
-    emit('my response',
+    emit('room_broadcast',
          {'msg': msg,
-          'room': room_id,
-          'type': 'room_broadcast',
-          'count': session['receive_count']},
+          'room': room_id
+         },
          room=room_id)
 
 
@@ -144,9 +140,8 @@ def broadcast_to_room(room_id, msg):
 def join_draft(message):
     room_to_join = message['room_id']
     if room_to_join not in room_map:
-        emit('my response',
+        emit('join_error',
              {
-                 'type': 'join_error',
                  'message': 'Room {} does not exist'.format(room_to_join)
              })
         return
@@ -154,11 +149,9 @@ def join_draft(message):
     room.touch()
     join_room(room.id)
     room.player_list.append(message['username'])
-    emit('my response',
+    emit('join_success',
          {
-             'type': 'join_success',
-             'room_id': room.id,
-             'count': session['receive_count']
+             'room_id': room.id
          })
     broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
     broadcast_to_room(room.id, "{} are the players in the room.".format(room.player_list))
@@ -210,8 +203,7 @@ def coin_flip(message):
 
     room.draft.coin_flip_winner = winner
 
-    emit('my response', {
-        'type': 'flip_winner',
+    emit('flip_winner', {
         'message': '{} has won the coin toss'.format(winner),
         'winner': winner
     }, room=room.id)
@@ -220,19 +212,18 @@ def coin_flip(message):
 def ask_spy_order(room, msg):
     data = {
         'username': room.draft.coin_flip_loser(),
-        'message': msg,
-        'type': 'select_spy_order'
+        'message': msg
     }
-    emit('my response', data, room=room.id)
+    emit('select_spy_order', data, room=room.id)
 
 
 def ask_pick_order(room, msg):
     data = {
         'username': room.draft.coin_flip_loser(),
-        'message': msg,
-        'type': 'select_pick_order'
+        'message': msg
     }
-    emit('my response', data, room=room.id)
+    emit('select_pick_order', data, room=room.id)
+
 
 def dump_draft(room):
     data = {
@@ -248,16 +239,16 @@ def dump_draft(room):
         'coin_flip_loser': room.draft.coin_flip_loser(),
         'first_spy': room.draft.first_spy,
         'state': room.draft.state,
-        'type': 'draft_info',
         'user_readable_state': room.draft.user_readable_state()
     }
 
+    response_type = 'draft_info'
     if room.draft.draft_complete():
-        # overwrite type with complete
-        data['type'] = 'draft_over'
+        # set draft over if it's over
+        response_type = 'draft_over'
 
     room.touch()
-    emit('my response', data, room=room.id)
+    emit(response_type, data, room=room.id)
 
 
 @socketio.on('second_option_pick', namespace='/test')
