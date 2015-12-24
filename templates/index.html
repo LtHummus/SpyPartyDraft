@@ -159,7 +159,7 @@
                 if (message['current_player'] == username) {
                     message['map_pool'].forEach(function (value, key, list) {
                         //console.log(value['name'] + " -> " + value['slug']);
-                        var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" /> ' + value['name'] + '<br />');
+                        var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" id="map_choice_' + value['slug'] + '" /><label for="map_choice_' +  value['slug'] + '">' + value['name'] + '</label><br />');
                         $('#draft_form_options').append(radioButton);
                     });
                     userMessage = "<h2>" + message['user_readable_state'] + "</h2>";
@@ -288,98 +288,99 @@
     </script>
 </head>
 <body>
-<h1>SpyParty Draft Tool</h1>
-<h2>Join:</h2>
-<div id="create_form_wrapper">
-    <form id="create" method="POST" action='#'>
-        <input type="text" name="username" id="username" placeholder="Username" />
-        <input type="submit" id="create_button" value="Create new Draft Room" />
-        <div id="create_error"></div>
-    </form>
-</div>
-<div id="join_form_wrapper">
-    <form id="join_draft" method="POST" action='#'>
-        <input type="text" name="username" id="join_username" placeholder="Username" />
-        <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
-        <input type="submit" id="join_button" value="Join a Room" />
-        <div id="join_error"></div>
-    </form>
-</div>
+<div class="container">
+    <h1>SpyParty Draft Tool</h1>
+    <h2>Join:</h2>
+    <div id="create_form_wrapper">
+        <form id="create" method="POST" action='#'>
+            <input type="text" name="username" id="username" placeholder="Username" />
+            <input type="submit" id="create_button" value="Create new Draft Room" />
+            <div id="create_error"></div>
+        </form>
+    </div>
+    <div id="join_form_wrapper">
+        <form id="join_draft" method="POST" action='#'>
+            <input type="text" name="username" id="join_username" placeholder="Username" />
+            <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
+            <input type="submit" id="join_button" value="Join a Room" />
+            <div id="join_error"></div>
+        </form>
+    </div>
 
-<div id="draft_info" style="visibility: hidden">
-    <h1>Currently Drafting!</h1>
-    <div id="draft_info_current_player"></div>
-    <div id="draft_info_start_player"></div>
-    <div id="draft_info_first_spy"></div>
-    <div id="draft_info_state"></div>
-    <ul>
-        <h3>Bans</h3>
-        <div id="draft_bans"></div>
-    </ul>
-    <ul>
-        <h3>Picks</h3>
-        <div id="draft_picks"></div>
-    </ul>
-    <form id="draft_form" method="POST" action="#" style="visibility: hidden;">
-        <div id="draft_form_message"></div>
-        <div id="draft_form_options"></div>
-        <input type="submit" value="Submit" />
-    </form>
+    <div id="draft_info" style="visibility: hidden">
+        <h1>Currently Drafting!</h1>
+        <div id="draft_info_current_player"></div>
+        <div id="draft_info_start_player"></div>
+        <div id="draft_info_first_spy"></div>
+        <div id="draft_info_state"></div>
+        <ul>
+            <h3>Bans</h3>
+            <div id="draft_bans"></div>
+        </ul>
+        <ul>
+            <h3>Picks</h3>
+            <div id="draft_picks"></div>
+        </ul>
+        <form id="draft_form" method="POST" action="#" style="visibility: hidden;">
+            <div id="draft_form_message"></div>
+            <div id="draft_form_options"></div>
+            <input type="submit" value="Submit" />
+        </form>
 
-</div>
+    </div>
 
-<div id="room_info">
-    <h2>Room Info:</h2>
-    <div id="room">Not in a room</div>
-    <div id="drafting">
-        <div id="coin_flip" style="visibility: hidden">
-            <form id="flip_form" method="POST" action="#">
-                <input type="radio" name="ht" value="heads" />Heads <br />
-                <input type="radio" name="ht" value="tails" />Tails <br />
-                <input type="submit" name="flip_button" value="Flip" />
-            </form>
-        </div>
-        <div id="first_option_msg"></div>
-        <div id="first_option" style="visibility: hidden">
-            <h3 id="first_option_header">You've won the coin flip!</h3>
-            <form id="first_option_form" method="POST" action="#">
-                <input type="radio" name="choice" value="pickfirst" />Pick First<br />
-                <input type="radio" name="choice" value="picksecond" />Pick Second<br />
-                <input type="radio" name="choice" value="spyfirst" />Spy First<br />
-                <input type="radio" name="choice" value="spysecond" />Spy Second<br />
-                <div id="first_defer_radio"><input type="radio" name="choice" value="defer"/>Defer Option to Other Player</div><br />
-                <input type="submit" name="first_option_form" value="This is my choice" /><br />
-            </form>
-        </div>
-        <div id="second_option_pick_order" style="visibility: hidden">
-            <div id="pick_order_message"></div>
-            <form id="second_option_pick_form" method="POST" action="#">
-                <input type="radio" name="pick_choice" value="pickfirst" />Pick First<br />
-                <input type="radio" name="pick_choice" value="picksecond" />Pick Second<br />
-                <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
-            </form>
-        </div>
-        <div id="second_option_spy_order" style="visibility: hidden">
-            <div id="spy_order_message"></div>
-            <form id="second_option_spy_form" method="POST" action="#">
-                <input type="radio" name="spy_choice" value="spyfirst" />Spy First<br />
-                <input type="radio" name="spy_choice" value="spysecond" />Spy Second<br />
-                <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
-            </form>
-        </div>
-        <h2>Drafting</h2>
-        <div id="draft_state"></div>
-        <div id="map_pool">
+    <div id="room_info">
+        <h2>Room Info:</h2>
+        <div id="room">Not in a room</div>
+        <div id="drafting">
+            <div id="coin_flip" style="visibility: hidden">
+                <form id="flip_form" method="POST" action="#">
+                    <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
+                    <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br />
+                    <input type="submit" name="flip_button" value="Flip" />
+                </form>
+            </div>
+            <div id="first_option_msg"></div>
+            <div id="first_option" style="visibility: hidden">
+                <h3 id="first_option_header">You've won the coin flip!</h3>
+                    <form id="first_option_form" method="POST" action="#">
+                        <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick First</label><br />
+                        <input type="radio" name="choice" value="picksecond"id="first_picksecond"  /><label class="control-label" for="first_picksecond">Pick Second</label><br />
+                        <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Spy First</label><br />
+                        <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Spy Second</label><br />
+                        <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer Option to Other Player</label></div><br />
+                        <input type="submit" name="first_option_form" value="This is my choice" /><br />
+                    </form>
+            </div>
+            <div id="second_option_pick_order" style="visibility: hidden">
+                <div id="pick_order_message"></div>
+                <form id="second_option_pick_form" method="POST" action="#">
+                    <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick First</label><br />
+                    <input type="radio" name="pick_choice" value="picksecond" id="second_picksecond" /><label for="second_picksecond">Pick Second</label><br />
+                    <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+                </form>
+            </div>
+            <div id="second_option_spy_order" style="visibility: hidden">
+                <div id="spy_order_message"></div>
+                <form id="second_option_spy_form" method="POST" action="#">
+                    <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Spy First</label><br />
+                    <input type="radio" name="spy_choice" value="spysecond" id="second_spysecond" /><label for="second_spysecond">Spy Second</label><br />
+                    <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+                </form>
+            </div>
+            <h2>Drafting</h2>
+            <div id="draft_state"></div>
+            <div id="map_pool">
 
-        </div>
-        <div id="buttons">
+            </div>
+            <div id="buttons">
 
+            </div>
         </div>
     </div>
+    <h2>Receive:</h2>
+    <div id="log"></div>
 </div>
-<h2>Receive:</h2>
-<div id="log"></div>
-
 <script src="static/js/bootstrap.min.js"></script>
 </body>
 </html>
