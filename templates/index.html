@@ -56,7 +56,7 @@
                     coin_flip_el.html("Waiting for coin flip...");
                 }
 
-                coin_flip_el.css("visibility", "visible");
+                coin_flip_el.css("display", "inline");
 
                 $('#map_pool').append($('<h3>Map Pool</h3>'));
                 msg['map_pool'].forEach(function(value, key, list) {
@@ -72,7 +72,7 @@
                 if (username != message['winner']) {
                     $('#first_option_msg').html("You have lost the coin flip.  Waiting on opponent");
                 } else {
-                    $('#first_option').css("visibility", "visible");
+                    $('#first_option').css("display", "inline");
                 }
 
             });
@@ -82,7 +82,7 @@
                 log_message(message);
                 var first_option_el = $('#first_option');
 
-                $('#first_option_msg').css('visibility', 'hidden');
+                $('#first_option_msg').css('display', 'inline');
 
                 if (username != message['picker']) {
                     first_option_el.html("You have deferred your pick.  Waiting on opponent...");
@@ -91,7 +91,7 @@
                     $('#first_defer_radio').remove();
                 }
 
-                first_option_el.css('visibility', 'visible');
+                first_option_el.css('display', 'inline');
 
             });
 
@@ -104,7 +104,7 @@
                     el.html("Waiting on opponent to pick spy order...");
                 }
 
-                el.css('visibility', 'visible');
+                el.css('display', 'inline');
             });
 
             socket.on('select_pick_order', function(message) {
@@ -116,7 +116,7 @@
                     el.html("Waiting on opponent to pick spy order...");
                 }
 
-                el.css('visibility', 'visible');
+                el.css('display', 'inline');
             });
 
             var redraw_picks_bans = function(message) {
@@ -137,13 +137,13 @@
 
             socket.on('draft_info', function(message) {
                 //hide stuff we don't care about any more
-                $('#create_form_wrapper').css('visibility', 'hidden');
-                $('#join_form_wrapper').css('visibility', 'hidden');
-                $('#room_info').css('visibility', 'hidden');
-                $('#coin_flip').css('visibility', 'hidden');
-                $('#second_option_pick_order').css('visibility', 'hidden');
-                $('#second_option_spy_order').css('visibility', 'hidden');
-                $('#first_option_msg').css('visibility', 'hidden');
+                $('#create_form_wrapper').css('display', 'none');
+                $('#join_form_wrapper').css('display', 'none');
+                $('#room_info').css('display', 'none');
+                $('#coin_flip').css('display', 'none');
+                $('#second_option_pick_order').css('display', 'none');
+                $('#second_option_spy_order').css('display', 'none');
+                $('#first_option_msg').css('display', 'none');
 
                 $('#draft_info_current_player').html("Current player: " + message['current_player'] + "<br />");
                 $('#draft_info_start_player').html("Start player: " + message['start_player'] + "<br />");
@@ -163,20 +163,20 @@
                         $('#draft_form_options').append(radioButton);
                     });
                     userMessage = "<h2>" + message['user_readable_state'] + "</h2>";
-                    $('#draft_form').css('visibility', 'visible');
+                    $('#draft_form').css('display', 'none');
                 } else {
                     userMessage = "<h2> Waiting for " + message['user_readable_state'] + "</h2>";
-                    $('#draft_form').css('visibility', 'hidden');
+                    $('#draft_form').css('display', 'none');
                 }
 
                 $('#draft_form_message').html(userMessage);
 
-                $('#draft_info').css('visibility', 'visible');
+                $('#draft_info').css('display', 'inline');
             });
 
             socket.on('draft_over', function(message) {
                 redraw_picks_bans(message);
-                $('#draft_form').css('visibility', 'hidden');
+                $('#draft_form').css('display', 'none');
                 socket.emit('disconnect_request', {room_id: draft_id});
             });
 
@@ -223,7 +223,7 @@
                     room_id: draft_id,
                     choice: f};
                 console.log(flip_data);
-                $("#coin_flip").css("visibility", "hidden");
+                $("#coin_flip").css("display", "none");
                 socket.emit('coin_flip', flip_data);
                 return false;
             });
@@ -237,14 +237,14 @@
                     choice: choice
                 };
                 socket.emit('first_option_form', data);
-                $('#first_option').css('visibility', 'hidden');
+                $('#first_option').css('display', 'none');
 
                 return false;
             });
 
             $('form#second_option_pick_form').submit(function(event) {
                 var choice = $('input:radio[name=pick_choice]').filter(":checked").val();
-                $('#second_option_pick_order').css('visibility', 'hidden');
+                $('#second_option_pick_order').css('display', 'none');
 
                 var data = {
                     username: username,
@@ -259,7 +259,7 @@
 
             $('form#second_option_spy_form').submit(function(event) {
                 var choice = $('input:radio[name=spy_choice]').filter(":checked").val();
-                $('#second_option_spy_order').css('visibility', 'hidden');
+                $('#second_option_spy_order').css('display', 'none');
 
                 var data = {
                     username: username,
@@ -307,7 +307,7 @@
         </form>
     </div>
 
-    <div id="draft_info" style="visibility: hidden">
+    <div id="draft_info" style="display: none;">
         <h1>Currently Drafting!</h1>
         <div id="draft_info_current_player"></div>
         <div id="draft_info_start_player"></div>
@@ -321,7 +321,7 @@
             <h3>Picks</h3>
             <div id="draft_picks"></div>
         </ul>
-        <form id="draft_form" method="POST" action="#" style="visibility: hidden;">
+        <form id="draft_form" method="POST" action="#" style="display: none;">
             <div id="draft_form_message"></div>
             <div id="draft_form_options"></div>
             <input type="submit" value="Submit" />
@@ -333,7 +333,7 @@
         <h2>Room Info:</h2>
         <div id="room">Not in a room</div>
         <div id="drafting">
-            <div id="coin_flip" style="visibility: hidden">
+            <div id="coin_flip" style="display: none">
                 <form id="flip_form" method="POST" action="#">
                     <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
                     <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br />
@@ -341,7 +341,7 @@
                 </form>
             </div>
             <div id="first_option_msg"></div>
-            <div id="first_option" style="visibility: hidden">
+            <div id="first_option" style="display: none">
                 <h3 id="first_option_header">You've won the coin flip!</h3>
                     <form id="first_option_form" method="POST" action="#">
                         <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick First</label><br />
@@ -352,7 +352,7 @@
                         <input type="submit" name="first_option_form" value="This is my choice" /><br />
                     </form>
             </div>
-            <div id="second_option_pick_order" style="visibility: hidden">
+            <div id="second_option_pick_order" style="display: none">
                 <div id="pick_order_message"></div>
                 <form id="second_option_pick_form" method="POST" action="#">
                     <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick First</label><br />
@@ -360,7 +360,7 @@
                     <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
                 </form>
             </div>
-            <div id="second_option_spy_order" style="visibility: hidden">
+            <div id="second_option_spy_order" style="display: none">
                 <div id="spy_order_message"></div>
                 <form id="second_option_spy_form" method="POST" action="#">
                     <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Spy First</label><br />
@@ -378,8 +378,10 @@
             </div>
         </div>
     </div>
-    <h2>Receive:</h2>
-    <div id="log"></div>
+    <div id="debugging" style="display: none;">
+        <h2>Receive:</h2>
+        <div id="log"></div>
+    </div>
 </div>
 <script src="static/js/bootstrap.min.js"></script>
 </body>
