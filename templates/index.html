@@ -25,8 +25,9 @@
                 log_message(msg);
                 console.log('got join success message');
                 var room_id = msg['room_id'];
-                $('#create_button').attr('disabled', 'disabled');
-                $('#username').attr('disabled', 'disabled');
+                $('#room_wrapper').css('display', 'none');
+                //$('#create_button').attr('disabled', 'disabled');
+                //$('#username').attr('disabled', 'disabled');
                 $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room to your opponent.<br />');
             });
 
@@ -34,8 +35,9 @@
                 log_message(msg);
                 console.log('joined room');
                 var room_id = msg['room_id'];
+                $('#room_wrapper').css('display', 'none');
                 $('#join_error').html('');
-                $('#room').html('You are in room <b>' + room_id + '</b>');
+                $('#room').html('You are in room <b>' + room_id + '</b><br />');
             });
 
             socket.on('room_broadcast', function(msg) {
@@ -291,21 +293,23 @@
 <a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 <div class="container">
     <h1>SpyParty Draft Tool</h1>
-    <h2>Join:</h2>
-    <div id="create_form_wrapper">
-        <form id="create" method="POST" action='#'>
-            <input type="text" name="username" id="username" placeholder="Username" />
-            <input type="submit" id="create_button" value="Create new Draft Room" />
-            <div id="create_error"></div>
-        </form>
-    </div>
-    <div id="join_form_wrapper">
-        <form id="join_draft" method="POST" action='#'>
-            <input type="text" name="username" id="join_username" placeholder="Username" />
-            <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
-            <input type="submit" id="join_button" value="Join a Room" />
-            <div id="join_error"></div>
-        </form>
+    <div id="room_wrapper">
+        <h2>Join:</h2>
+        <div id="create_form_wrapper">
+            <form id="create" method="POST" action='#'>
+                <input type="text" name="username" id="username" placeholder="Username" />
+                <input type="submit" id="create_button" value="Create new Draft Room" />
+                <div id="create_error"></div>
+            </form>
+        </div>
+        <div id="join_form_wrapper">
+            <form id="join_draft" method="POST" action='#'>
+                <input type="text" name="username" id="join_username" placeholder="Username" />
+                <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
+                <input type="submit" id="join_button" value="Join a Room" />
+                <div id="join_error"></div>
+            </form>
+        </div>
     </div>
 
     <div id="draft_info" style="display: none;">
