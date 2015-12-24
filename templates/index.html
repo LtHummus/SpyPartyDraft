@@ -21,28 +21,31 @@
             var username = "";
             var draft_id = "";
 
-            var handle_create_success = function(msg) {
+            socket.on('create_success', function(msg) {
+                log_message(msg);
                 console.log('got join success message');
                 var room_id = msg['room_id'];
                 $('#create_button').attr('disabled', 'disabled');
                 $('#username').attr('disabled', 'disabled');
                 $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room to your oppnent.<br />');
-            };
+            });
 
-            var handle_join_success = function(msg) {
+            socket.on('join_success', function(msg) {
+                log_message(msg);
                 console.log('joined room');
                 var room_id = msg['room_id'];
                 $('#join_error').html('');
                 $('#room').html('You are in room <b>' + room_id + '</b>');
-            };
+            });
 
-            var handle_room_broadcast = function(msg) {
+            socket.on('room_broadcast', function(msg) {
                 console.log('handling room broadcast');
-                $('#room').append(msg['msg']);
-                $('#room').append('<br />');
-            };
+                var roomEl = $('#room');
+                roomEl.append(msg['msg']);
+                roomEl.append('<br />');
+            });
 
-            var handle_draft_start = function(msg) {
+            socket.on('draft_start', function(msg) {
                 console.log('handling draft start');
 
                 draft_id = msg['room_id'];
@@ -61,9 +64,9 @@
                     var mapElement = $('<div>' + value['name'] + '<br /></div>');
                     $('#map_pool').append(mapElement);
                 });
-            };
+            });
 
-            var handle_flip_winner = function(message) {
+            socket.on('flip_winner', function(message) {
                 var first_option_el = $('#first_option');
 
                 if (username != message['winner']) {
@@ -72,9 +75,9 @@
 
                 first_option_el.css("visibility", "visible");
 
-            };
+            });
 
-            var handle_select_spy_order = function(message) {
+            socket.on('select_spy_order', function(message) {
                 var el = $('#second_option_spy_order');
 
                 if (username == message['username']) {
@@ -84,9 +87,9 @@
                 }
 
                 el.css('visibility', 'visible');
-            };
+            });
 
-            var handle_select_pick_order = function(message) {
+            socket.on('select_pick_order', function(message) {
                 var el = $('#second_option_pick_order');
 
                 if (username == message['username']) {
@@ -96,7 +99,7 @@
                 }
 
                 el.css('visibility', 'visible');
-            };
+            });
 
             var redraw_picks_bans = function(message) {
                 $('#draft_bans').html('');
@@ -114,7 +117,7 @@
                 });
             };
 
-            var handle_draft_info = function(message) {
+            socket.on('draft_info', function(message) {
                 //hide stuff we don't care about any more
                 $('#create_form_wrapper').css('visibility', 'hidden');
                 $('#join_form_wrapper').css('visibility', 'hidden');
@@ -153,16 +156,21 @@
 
 
 
-            };
+            });
 
-            var handle_draft_over = function(message) {
+            socket.on('draft_over', function(message) {
                 redraw_picks_bans(message);
                 $('#draft_form').css('visibility', 'hidden');
                 socket.emit('disconnect_request', {room_id: draft_id});
-            };
+            });
 
-            var handle_join_error = function(message) {
+            socket.on('join_error', function(message) {
                 $('#join_error').html(message['message']);
+            });
+
+            var log_message = function(msg) {
+                $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
+                console.log('Received: ' + msg);
             };
 
             // event handler for server sent data
@@ -171,27 +179,7 @@
                 console.log('Received #' + msg.count + ': " + msg.data');
                 $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
 
-                if (msg['type'] === 'create_success') {
-                    handle_create_success(msg);
-                } else if (msg['type'] === 'room_broadcast') {
-                    handle_room_broadcast(msg);
-                } else if (msg['type'] === 'join_success') {
-                    handle_join_success(msg);
-                } else if (msg['type'] === 'draft_start') {
-                    handle_draft_start(msg);
-                } else if (msg['type'] === 'flip_winner') {
-                    handle_flip_winner(msg);
-                } else if (msg['type'] === 'select_spy_order') {
-                    handle_select_spy_order(msg);
-                } else if (msg['type'] === 'select_pick_order') {
-                    handle_select_pick_order(msg);
-                } else if (msg['type'] === 'draft_info') {
-                    handle_draft_info(msg);
-                } else if (msg['type'] === 'draft_over') {
-                    handle_draft_over(msg);
-                } else if (msg['type'] === 'join_error') {
-                    handle_join_error(msg);
-                }
+
             });
 
             // event handler for new connections
