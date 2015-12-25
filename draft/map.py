@@ -2,9 +2,10 @@ import json
 
 
 class Map:
-    def __init__(self, name, slug):
+    def __init__(self, name, slug, family):
         self.name = name
         self.slug = slug
+        self.family = family
 
     def __repr__(self):
         return self.name
@@ -12,7 +13,8 @@ class Map:
     def as_map(self):
         return {
             'name': self.name,
-            'slug': self.slug
+            'slug': self.slug,
+            'family': self.family
         }
 
     @staticmethod
@@ -20,9 +22,9 @@ class Map:
         with open(file_name) as f:
             data = json.load(f)
             tourney_json = data[tourney]
-            return [Map(x['name'], x['slug']) for x in tourney_json]
+            return [Map(x['name'], x['slug'], x['family']) for x in tourney_json]
 
 if __name__ == '__main__':
-    data = Map.generate_map_pool('/Users/bschwartz/advent/SpyPartyDraft/map_pools.json', 'scl_season_1')
+    data = Map.generate_map_pool('map_pools.json', 'scl_season_1')
     print data
 

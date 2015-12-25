@@ -3,99 +3,123 @@
           [
             {
               "name": "Balcony 2/3",
-              "slug": "balcony23"
+              "slug": "balcony23",
+              "family": "balcony"
             },
             {
               "name": "Balcony 3/5",
-              "slug": "balcony35"
+              "slug": "balcony35",
+              "family": "balcony"
             },
             {
               "name": "New Art Ballroom 4/8",
-              "slug": "nab48"
+              "slug": "nab48",
+              "family": "new art ballroom"
             },
             {
               "name": "New Art Ballroom 4/7",
-              "slug": "nab47"
+              "slug": "nab47",
+              "family": "new art ballroom"
             },
             {
               "name": "Courtyard 4/6",
-              "slug": "cy146"
+              "slug": "cy146",
+              "family": "courtyard"
             },
             {
               "name": "Courtyard 4/7",
-              "slug": "cy147"
+              "slug": "cy147",
+              "family": "courtyard"
             },
             {
               "name": "Courtyard 2 4/6",
-              "slug": "cy246"
+              "slug": "cy246",
+              "family": "courtyard2"
             },
             {
               "name": "Courtyard 2 4/7",
-              "slug": "cy247"
+              "slug": "cy247",
+              "family": "courtyard2"
             },
             {
               "name": "Double Modern 3/5",
-              "slug": "2xm35"
+              "slug": "2xm35",
+              "family": "double modern"
             },
             {
               "name": "Double Modern Known 2",
-              "slug": "2xmk2"
+              "slug": "2xmk2",
+              "family": "double modern"
             },
             {
               "name": "Gallery 4/7",
-              "slug": "gallery47"
+              "slug": "gallery47",
+              "family": "gallery"
             },
             {
               "name": "Gallery 4/8",
-              "slug": "gallery48"
+              "slug": "gallery48",
+              "family": "gallery"
             },
             {
               "name": "High-rise 3/5",
-              "slug": "highrise35"
+              "slug": "highrise35",
+              "family": "highrise"
             },
             {
               "name": "High-rise 4/7",
-              "slug": "highrise47"
+              "slug": "highrise47",
+              "family": "highrise"
             },
             {
               "name": "Modern 2/3",
-              "slug": "gallery23"
+              "slug": "modern23",
+              "family": "modern"
             },
             {
               "name": "Modern 3/5",
-              "slug": "gallery35"
+              "slug": "modern35",
+              "family": "modern"
             },
             {
               "name": "Panopticon 5/7",
-              "slug": "panop57"
+              "slug": "panop57",
+              "family": "panopticon"
             },
             {
               "name": "Panopticon 5/8",
-              "slug": "panop58"
+              "slug": "panop58",
+              "family": "panopticon"
             },
             {
               "name": "Pub 3/5",
-              "slug": "pub35"
+              "slug": "pub35",
+              "family": "pub"
             },
             {
               "name": "Pub 4/7",
-              "slug": "pub47"
+              "slug": "pub47",
+              "family": "pub"
             },
             {
               "name": "Crowded Pub 4/7",
-              "slug": "cpub47"
+              "slug": "cpub47",
+              "family": "cpub"
             },
             {
               "name": "Crowded Pub 3/4",
-              "slug": "cpub34"
+              "slug": "cpub34",
+              "family": "cpub"
             },
             {
               "name": "Veranda 5/7",
-              "slug": "veranda57"
+              "slug": "veranda57",
+              "family": "veranda"
             },
             {
               "name": "Veranda 5/8",
-              "slug": "veranda58"
+              "slug": "veranda58",
+              "family": "veranda"
             }
 
           ]

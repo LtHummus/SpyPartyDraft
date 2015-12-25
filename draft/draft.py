@@ -78,9 +78,11 @@ class Draft:
     def mark_map(self, map):
         if self.state.startswith("BAN"):
             self.banned_maps.append(map)
+            self.map_pool.remove(map)
         else:
             self.picked_maps.append(map)
-        self.map_pool.remove(map)
+            for x in [x for x in self.map_pool if x.family == map.family]:
+                self.map_pool.remove(x)
         self._advance_state()
         self._swap_player()
 
