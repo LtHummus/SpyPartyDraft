@@ -303,7 +303,6 @@ def first_option_form(message):
         }, room=room.id)
 
 
-
 @socketio.on('disconnect_request', namespace='/test')
 def disconnect_request(message):
     print 'disconnecting'
@@ -313,9 +312,11 @@ def disconnect_request(message):
 @socketio.on('draft_map', namespace='/test')
 def draft_map(message):
     room = room_map[message['room_id']]
-    map_obj = [x for x in room.draft.map_pool if x.slug == message['choice']]
-    print map_obj
-    room.draft.mark_map(map_obj[0])
+    chosen_map = None
+    if message['choice'] != 'nothing':
+        chosen_map = [x for x in room.draft.map_pool if x.slug == message['choice']][0]
+        print chosen_map
+    room.draft.mark_map(chosen_map)
     dump_draft(room)
 
 

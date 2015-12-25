@@ -1,4 +1,4 @@
-import random
+from map import Map
 
 STATE_NOT_STARTED = "NOT_STARTED"
 STATE_COIN_FLIPPED = "COIN_FLIPPED"
@@ -76,7 +76,9 @@ class Draft:
         self.state = NEXT_STATE[self.state]
 
     def mark_map(self, map):
-        if self.state.startswith("BAN"):
+        if map is None:
+            self.banned_maps.append(Map("Nothing", "", ""))
+        elif self.state.startswith("BAN"):
             self.banned_maps.append(map)
             self.map_pool.remove(map)
         else:
