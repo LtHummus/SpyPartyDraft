@@ -228,6 +228,9 @@
             $('form#create').submit(function(event) {
                 console.log('ok');
                 username = $('#username').val();
+                if (username == undefined || username === "") {
+                    return false;
+                }
                 socket.emit('create', {data: username});
                 return false;
             });
@@ -235,6 +238,9 @@
             $('form#join_draft').submit(function(event) {
                 console.log('attempting to join room');
                 username = $('#join_username').val();
+                if (username == undefined || username === "") {
+                    return false;
+                }
                 socket.emit('join_draft', {username: username, room_id: $('#join_room_id').val()});
                 return false;
             });
@@ -420,11 +426,36 @@
         <div id="log"></div>
     </div>
     <div id="infos">
+        <h2>Help</h2>
         <p>If you're having issues, try refreshing/restarting the draft.  I have a lot of things on the todo list but
             it's mostly functional for now.  You can also hit me up on Twitter
             <a href="https://twitter.com/LtHummus">@LtHummus</a> or fix it yourself on
             <a href="https://github.com/LtHummus/SpyPartyDraft">GitHub</a>.  You'll definitely need a modern browser
             to make this work (it has to support web sockets).</p>
+
+        <h2>What's New</h2>
+        <p>Version 0.0.3</p>
+        <ul>
+            <li>Fixed not removing map variations when a map was picked (i.e. can't pick Courtyard more than once</li>
+            <li>Fixed being able to submit a form with a choice not selected</li>
+            <li>Fixed being able to have an empty username</li>
+            <li>Added ability to refuse to ban a map (you're welcome, canadianbac0nz)</li>
+            <li>Added this news item :)</li>
+        </ul>
+        <p>Version 0.0.2b</p>
+        <ul>
+            <li>Fixed panop configuration (4/8 -> 5/8)</li>
+        </ul>
+        <p>Version 0.0.2</p>
+        <ul>
+            <li>Added some more text to home page.</li>
+            <li>Changed some wording around</li>
+        </ul>
+        <p>Version 0.0.1</p>
+        <ul>
+            <li>Initial release!</li>
+        </ul>
+
     </div>
 </div>
 <script src="static/js/bootstrap.min.js"></script>
