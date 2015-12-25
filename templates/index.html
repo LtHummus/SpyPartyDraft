@@ -238,6 +238,8 @@
             $('form#flip_form').submit(function(event) {
                 console.log('flipping coin...');
                 var f = $('input:radio[name=ht]').filter(":checked").val();
+                if (f == undefined)
+                    return false;
                 var flip_data =
                     {username: username,
                     room_id: draft_id,
@@ -251,6 +253,8 @@
             $('form#first_option_form').submit(function(event) {
                 console.log('putting choice up');
                 var choice = $('input:radio[name=choice]').filter(":checked").val();
+                if (choice == undefined)
+                        return false;
                 var data = {
                     username: username,
                     room_id: draft_id,
@@ -264,6 +268,8 @@
 
             $('form#second_option_pick_form').submit(function(event) {
                 var choice = $('input:radio[name=pick_choice]').filter(":checked").val();
+                if (choice == undefined)
+                    return false;
                 $('#second_option_pick_order').css('display', 'none');
 
                 var data = {
@@ -279,6 +285,8 @@
 
             $('form#second_option_spy_form').submit(function(event) {
                 var choice = $('input:radio[name=spy_choice]').filter(":checked").val();
+                if (choice == undefined)
+                    return false;
                 $('#second_option_spy_order').css('display', 'none');
 
                 var data = {
@@ -294,6 +302,8 @@
 
             $('form#draft_form').submit(function(event) {
                 var choice = $('input:radio[name=map_choice]').filter(":checked").val();
+                if (choice == undefined)
+                    return false;
                 console.log("got value " + choice);
 
                 var data = {
