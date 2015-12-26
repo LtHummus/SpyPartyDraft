@@ -51,6 +51,8 @@ thread = None
 ROOM_LENGTH = 5
 
 room_map = {}
+#
+# "sp12345" -> room()
 
 map_pool = Map.generate_map_pool('map_pools.json', 'scl_season_1')
 
@@ -226,29 +228,13 @@ def ask_pick_order(room, msg):
 
 
 def dump_draft(room):
-    data = {
-        'room_id': room.id,
-        'banned_maps': room.draft.serializable_bans(),
-        'picked_maps': room.draft.serializibale_picks(),
-        'player_one': room.draft.player_one,
-        'player_two': room.draft.player_two,
-        'map_pool': room.serializable_map_pool(),
-        'current_player': room.draft.current_player,
-        'start_player': room.draft.start_player,
-        'coin_flip_winner': room.draft.coin_flip_winner,
-        'coin_flip_loser': room.draft.coin_flip_loser(),
-        'first_spy': room.draft.first_spy,
-        'state': room.draft.state,
-        'user_readable_state': room.draft.user_readable_state()
-    }
-
     response_type = 'draft_info'
     if room.draft.draft_complete():
         # set draft over if it's over
         response_type = 'draft_over'
 
     room.touch()
-    emit(response_type, data, room=room.id)
+    emit(response_type, room.serialize(), room=room.id)
 
 
 @socketio.on('second_option_pick', namespace='/test')
@@ -332,7 +318,16 @@ def test_disconnect():
 
 @socketio.on('spectate_draft', namespace='/test')
 def spectate_draft(message):
-    print "Got spectate request for room {}".format(message['room_id'])
+    room_to_join = message['room_id']
+    if room_to_join not in room_map:
+        emit('spectate_error',
+             {
+                 'message': 'Room {} does not exist'.format(room_to_join)
+             })
+        return
+    room = room_map[room_to_join]
+    room.spectator_list.append(request.sid)
+    emit('spectate_join_success', )
 
 
 if __name__ == '__main__':

@@ -6,14 +6,20 @@ import datetime
 # TOOD: don't keep this hardcoded
 TOURNEY = "scl_season_1"
 
+
 class Room:
     def __init__(self, id, server, map_pool):
         self.id = id
         self.player_list = []
+        self.spectator_list = []
         self.draft = None
         self.server = server
         self.map_pool = copy.copy(map_pool)
         self.last_touched = datetime.datetime.now()
+        self.events = []
+
+    def post_event(self, event):
+        self.events.append(event)
 
     def add_user_to_room(self, username):
         self.touch()
@@ -27,7 +33,6 @@ class Room:
     def serializable_map_pool(self):
         self.touch()
         return [x.as_map() for x in self.map_pool]
-
 
     def start_draft(self):
         print "starting draft"
@@ -50,4 +55,21 @@ class Room:
             return False
 
         return self.draft.draft_complete()
+
+    def serialize(self):
+        return {
+            'room_id': self.id,
+            'banned_maps': self.draft.serializable_bans(),
+            'picked_maps': self.draft.serializibale_picks(),
+            'player_one': self.draft.player_one,
+            'player_two': self.draft.player_two,
+            'map_pool': self.serializable_map_pool(),
+            'current_player': self.draft.current_player,
+            'start_player': self.draft.start_player,
+            'coin_flip_winner': self.draft.coin_flip_winner,
+            'coin_flip_loser': self.draft.coin_flip_loser(),
+            'first_spy': self.draft.first_spy,
+            'state': self.draft.state,
+            'user_readable_state': self.draft.user_readable_state()
+        }
 
