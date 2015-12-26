@@ -324,6 +324,17 @@
                 socket.emit('draft_map', data);
                 return false;
             });
+
+            $('form#spectate_draft').submit(function(event) {
+                var room_id = $('#spectate_room_id').val();
+                if (room_id == undefined || room_id === "")
+                    return false;
+
+                socket.emit('spectate_draft', {
+                    room_id: room_id
+                });
+                return false;
+            });
         });
     </script>
 </head>
@@ -346,6 +357,13 @@
                 <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
                 <input type="submit" id="join_button" value="Join a Room" />
                 <div id="join_error"></div>
+            </form>
+        </div>
+        <div id="join_as_spectate_wrapper">
+            <form id="spectate_draft" method="POST" action="#">
+                <input type="text" name="room_id" id="spectate_room_id" placeholder="Room Code">
+                <input type="submit" id="spectate_button" value="Spectate a Draft" />
+                <div id="spectate_error"></div>
             </form>
         </div>
     </div>

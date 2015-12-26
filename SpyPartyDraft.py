@@ -330,5 +330,10 @@ def test_disconnect():
     print('Client disconnected', request.sid)
 
 
+@socketio.on('spectate_draft', namespace='/test')
+def spectate_draft(message):
+    print "Got spectate request for room {}".format(message['room_id'])
+
+
 if __name__ == '__main__':
     socketio.run(app)
