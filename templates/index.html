@@ -209,6 +209,26 @@
                 console.log('Received: ' + msg);
             };
 
+            socket.on('spectate_join_success', function(message) {
+                $('#room_wrapper').css('display', 'none');
+                $('#drafting').css('display', 'none');
+
+                $('#spectate_list_wrapper').css('display', 'inline');
+
+                $('#room').html("you've joined room " + message['room_id']);
+            });
+
+            socket.on('spectator_update', function(message) {
+                log_message(message);
+
+                var spectateListEl = $('#spectate_list');
+                spectateListEl.html('');
+
+                message['events'].forEach(function(item, key, list) {
+                   spectateListEl.append('<li>' + item + '</li>');
+                });
+            });
+
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             socket.on('my response', function(msg) {
@@ -324,13 +344,24 @@
                 socket.emit('draft_map', data);
                 return false;
             });
+
+            $('form#spectate_draft').submit(function(event) {
+                var room_id = $('#spectate_room_id').val();
+                if (room_id == undefined || room_id === "")
+                    return false;
+
+                socket.emit('spectate_draft', {
+                    room_id: room_id
+                });
+                return false;
+            });
         });
     </script>
 </head>
 <body>
 <a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 <div class="container">
-    <h1>SpyParty Draft Tool <small>BETA version 0.0.3</small></h1>
+    <h1>SpyParty Draft Tool <small>BETA version 0.0.4</small></h1>
     <div id="room_wrapper">
         <h2>Join:</h2>
         <div id="create_form_wrapper">
@@ -346,6 +377,13 @@
                 <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
                 <input type="submit" id="join_button" value="Join a Room" />
                 <div id="join_error"></div>
+            </form>
+        </div>
+        <div id="join_as_spectate_wrapper">
+            <form id="spectate_draft" method="POST" action="#">
+                <input type="text" name="room_id" id="spectate_room_id" placeholder="Room Code">
+                <input type="submit" id="spectate_button" value="Spectate a Draft" />
+                <div id="spectate_error"></div>
             </form>
         </div>
     </div>
@@ -375,6 +413,13 @@
     <div id="room_info">
         <h2>Room Info:</h2>
         <div id="room">Not in a room</div>
+        <div id="spectate_list_wrapper" style="display: none">
+            <ul>
+                <div id="spectate_list">
+
+                </div>
+            </ul>
+        </div>
         <div id="drafting">
             <div id="coin_flip" style="display: none">
                 <form id="flip_form" method="POST" action="#">
@@ -434,6 +479,10 @@
             to make this work (it has to support web sockets).</p>
 
         <h2>What's New</h2>
+        <p>Version 0.0.4</p>
+        <ul>
+            <li>Added draft spectation.  Once a room has been created, others can watch the draft take place in real time!</li>
+        </ul>
         <p>Version 0.0.3</p>
         <ul>
             <li>Fixed not removing map variations when a map was picked (i.e. can't pick Courtyard more than once)</li>
