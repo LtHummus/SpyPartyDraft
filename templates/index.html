@@ -209,6 +209,26 @@
                 console.log('Received: ' + msg);
             };
 
+            socket.on('spectate_join_success', function(message) {
+                $('#room_wrapper').css('display', 'none');
+                $('#drafting').css('display', 'none');
+
+                $('#spectate_list_wrapper').css('display', 'inline');
+
+                $('#room').html("you've joined room " + message['room_id']);
+            });
+
+            socket.on('spectator_update', function(message) {
+                log_message(message);
+
+                var spectateListEl = $('#spectate_list');
+                spectateListEl.html('');
+
+                message['events'].forEach(function(item, key, list) {
+                   spectateListEl.append('<li>' + item + '</li>');
+                });
+            });
+
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             socket.on('my response', function(msg) {
@@ -393,6 +413,13 @@
     <div id="room_info">
         <h2>Room Info:</h2>
         <div id="room">Not in a room</div>
+        <div id="spectate_list_wrapper" style="display: none">
+            <ul>
+                <div id="spectate_list">
+
+                </div>
+            </ul>
+        </div>
         <div id="drafting">
             <div id="coin_flip" style="display: none">
                 <form id="flip_form" method="POST" action="#">

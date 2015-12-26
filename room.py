@@ -8,7 +8,7 @@ TOURNEY = "scl_season_1"
 
 
 class Room:
-    def __init__(self, id, server, map_pool):
+    def __init__(self, id, server, map_pool, spectator_broadcast):
         self.id = id
         self.player_list = []
         self.spectator_list = []
@@ -17,9 +17,21 @@ class Room:
         self.map_pool = copy.copy(map_pool)
         self.last_touched = datetime.datetime.now()
         self.events = []
+        self.spectator_broadcast = spectator_broadcast
+
+    def get_spectator_data(self):
+        return {
+            'events': self.events,
+            'map_pool': self.serializable_map_pool(),
+            'room_id': self.id
+        }
 
     def post_event(self, event):
         self.events.append(event)
+        data_map = self.get_spectator_data()
+
+        for x in self.spectator_list:
+            self.spectator_broadcast(x, data_map)
 
     def add_user_to_room(self, username):
         self.touch()

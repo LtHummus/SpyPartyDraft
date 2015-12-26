@@ -56,11 +56,17 @@ room_map = {}
 
 map_pool = Map.generate_map_pool('map_pools.json', 'scl_season_1')
 
+
 def generate_room_id():
     return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
 
+
 def create_room(id):
-    room_map[id] = Room(id, broadcast_to_room, map_pool)
+    room_map[id] = Room(id, broadcast_to_room, map_pool, broadcast_to_spectator)
+
+
+def broadcast_to_spectator(spectator_id, data):
+    emit('spectator_update', data, room=spectator_id)
 
 
 def tell_clients_draft_has_started(room):
@@ -121,6 +127,7 @@ def create(message):
     id = generate_room_id()
     create_room(id)
     room_map[id].player_list.append(username)
+    room_map[id].post_event("{} has joined the room!".format(username))
     join_room(id)
     emit('create_success',
          {
@@ -152,6 +159,7 @@ def join_draft(message):
     room.touch()
     join_room(room.id)
     room.player_list.append(message['username'])
+    room.post_event("{} has joined the room!".format(message['username']))
     emit('join_success',
          {
              'room_id': room.id
@@ -203,6 +211,7 @@ def coin_flip(message):
     else:
         winner = room.draft.player_one
 
+    room.post_event("{} has won the coin flip".format(winner))
     room.draft.coin_flip_winner = winner
 
     emit('flip_winner', {
@@ -243,8 +252,10 @@ def second_option_pick(message):
     room = room_map[message['room_id']]
     choice = message['choice']
     if choice == 'pickfirst':
+        room.post_event("{} has opted to pick first".format(room.draft.coin_flip_loser()))
         room.draft.start_player = room.draft.coin_flip_loser()
     else:
+        room.post_event("{} has opted to pick second".format(room.draft.coin_flip_loser()))
         room.draft.start_player = room.draft.coin_flip_winner
     room.draft.start_draft()
     dump_draft(room)
@@ -255,11 +266,14 @@ def second_option_spy(message):
     room = room_map[message['room_id']]
     choice = message['choice']
     if choice == 'spyfirst':
+        room.post_event("{} has opted to spy first".format(room.draft.coin_flip_loser()))
         room.draft.first_spy = room.draft.coin_flip_loser()
     else:
+        room.post_event("{} has opted to spy second".format(room.draft.coin_flip_loser()))
         room.draft.first_spy = room.draft.coin_flip_winner
     room.draft.start_draft()
     dump_draft(room)
+
 
 @socketio.on('first_option_form', namespace='/test')
 def first_option_form(message):
@@ -269,19 +283,24 @@ def first_option_form(message):
     print "got choice {}".format(choice)
     if choice == "pickfirst":
         room.draft.start_player = room.draft.coin_flip_winner
+        room.post_event("{} has opted to pick first".format(room.draft.coin_flip_winner))
         ask_spy_order(room, "You opponent has opted to pick first")
     elif choice == "picksecond":
         room.draft.start_player = room.draft.coin_flip_loser()
+        room.post_event("{} has opted to pick second".format(room.draft.coin_flip_winner))
         ask_spy_order(room, "Your opponent has opted to pick second")
     elif choice == "spyfirst":
         room.draft.first_spy = room.draft.coin_flip_winner
+        room.post_event("{} has opted to spy first".format(room.draft.coin_flip_winner))
         ask_pick_order(room, "Your opponent has opted to spy first")
     elif choice == "spysecond":
         room.draft.first_spy = room.draft.coin_flip_loser()
+        room.post_event("{} has opted to spy second".format(room.draft.coin_flip_winner))
         ask_pick_order(room, "Your opponent has opted to spy second")
     elif choice == "defer":
         # we're going to pretend the other player won the flip, but
         # don't let them defer
+        room.post_event("{} has opted to defer".format(room.draft.coin_flip_winner))
         room.draft.coin_flip_winner = room.draft.coin_flip_loser()
         emit('winner_deferred', {
             'room_id': room.id,
@@ -299,9 +318,16 @@ def disconnect_request(message):
 def draft_map(message):
     room = room_map[message['room_id']]
     chosen_map = None
+    chosen_map_name = "nothing"
+
     if message['choice'] != 'nothing':
         chosen_map = [x for x in room.draft.map_pool if x.slug == message['choice']][0]
-        print chosen_map
+        chosen_map_name = chosen_map.name
+
+    if room.draft.state.startswith('BAN'):
+        room.post_event("{} has banned {}".format(room.draft.current_player, chosen_map_name))
+    else:
+        room.post_event("{} has picked {}".format(room.draft.current_player, chosen_map_name))
     room.draft.mark_map(chosen_map)
     dump_draft(room)
 
@@ -320,6 +346,7 @@ def test_disconnect():
 def spectate_draft(message):
     room_to_join = message['room_id']
     if room_to_join not in room_map:
+        print "'{}' doesn't exist as a room".format(room_to_join)
         emit('spectate_error',
              {
                  'message': 'Room {} does not exist'.format(room_to_join)
@@ -327,7 +354,11 @@ def spectate_draft(message):
         return
     room = room_map[room_to_join]
     room.spectator_list.append(request.sid)
-    emit('spectate_join_success', )
+    emit('spectate_join_success', {
+        'room_id': room_to_join,
+        'sid': request.sid
+    })
+    broadcast_to_spectator(request.sid, room.get_spectator_data())
 
 
 if __name__ == '__main__':
