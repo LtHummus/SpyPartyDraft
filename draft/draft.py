@@ -18,10 +18,10 @@ USER_READABLE_STATE_MAP = {
     STATE_BAN_TWO: "Second Ban",
     STATE_BAN_THREE: "Third Ban",
     STATE_BAN_FOUR: "Fourth Ban",
-    STATE_PICK_ONE: "First Pick",
-    STATE_PICK_TWO: "Second Pick",
-    STATE_PICK_THREE: "Third Pick",
-    STATE_PICK_FOUR: "Fourth Pick",
+    STATE_PICK_ONE: "First Selection",
+    STATE_PICK_TWO: "Second Selection",
+    STATE_PICK_THREE: "Third Selection",
+    STATE_PICK_FOUR: "Fourth Selection",
     STATE_DRAFT_COMPLETE: "Draft complete"
 }
 

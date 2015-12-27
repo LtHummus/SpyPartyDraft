@@ -140,7 +140,7 @@
                 $('#draft_picks').html('');
 
                 message['picked_maps'].forEach(function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has picked ' + value['map'] + '</li>');
+                    var el = $('<li>' + value['picker'] + ' has selected ' + value['map'] + '</li>');
                     $('#draft_picks').append(el);
                 });
             };
@@ -158,7 +158,7 @@
                 $('#first_option_msg').css('display', 'none');
 
                 $('#draft_info_current_player').html("Current player: " + message['current_player'] + "<br />");
-                $('#draft_info_start_player').html("First pick: " + message['start_player'] + "<br />");
+                $('#draft_info_start_player').html("First selection: " + message['start_player'] + "<br />");
                 $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
@@ -408,7 +408,7 @@
             <div id="draft_bans"></div>
         </ul>
         <ul>
-            <h3>Picks</h3>
+            <h3>Selections</h3>
             <div id="draft_picks"></div>
         </ul>
         <form id="draft_form" method="POST" action="#" style="display: none;">
