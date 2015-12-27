@@ -10,6 +10,12 @@ class Map:
     def __repr__(self):
         return self.name
 
+    def map_mode_name(self, is_pick):
+        if self.slug.endswith('k2'):
+            return self.name
+        parts = self.name.split(' ')
+        return parts[0] + (' PICK ' if is_pick else ' ANY ') + parts[1]
+
     def as_map(self):
         return {
             'name': self.name,
@@ -25,6 +31,7 @@ class Map:
             return [Map(x['name'], x['slug'], x['family']) for x in tourney_json]
 
 if __name__ == '__main__':
-    data = Map.generate_map_pool('map_pools.json', 'scl_season_1')
-    print data
+    m = Map("Balcony 2/3", "balcony23", "balcony")
+    print m.map_mode_name(False)
+    print m.map_mode_name(True)
 
