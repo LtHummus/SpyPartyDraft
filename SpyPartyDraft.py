@@ -328,7 +328,7 @@ def draft_map(message):
         room.post_event("{} has banned {}".format(room.draft.current_player, chosen_map_name))
     else:
         room.post_event("{} has picked {}".format(room.draft.current_player, chosen_map_name))
-    room.draft.mark_map(chosen_map)
+    room.draft.mark_map(chosen_map, message['is_pick'])
     dump_draft(room)
 
 
