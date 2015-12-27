@@ -342,7 +342,7 @@
                     return false;
                 console.log("got value " + choice);
 
-                var isPick = $('#pick_check').val() !== undefined;
+                var isPick = $('#pick_check').is(':checked')
 
                 var data = {
                     username: username,

@@ -82,7 +82,10 @@ class Draft:
             self.banned_maps.append(map.name)
             self.map_pool.remove(map)
         else:
-            self.picked_maps.append(map.name)
+            map_name = map.name
+            if not map.slug.endswith('k2'):
+                map_name += ' PICK' if is_pick else ' ANY'
+            self.picked_maps.append(map_name)
             for x in [x for x in self.map_pool if x.family == map.family]:
                 self.map_pool.remove(x)
         self._advance_state()
