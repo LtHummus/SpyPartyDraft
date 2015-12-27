@@ -13,7 +13,7 @@ class Map:
     def map_mode_name(self, is_pick):
         if self.slug.endswith('k2'):
             return self.name
-        parts = self.name.split(' ')
+        parts = self.name.rsplit(' ', 1)
         return parts[0] + (' PICK ' if is_pick else ' ANY ') + parts[1]
 
     def as_map(self):
