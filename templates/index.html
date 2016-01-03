@@ -14,6 +14,21 @@
         $(document).ready(function(){
             namespace = '/test'; // change to an empty string to use the global namespace
 
+            var entityMap = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': '&quot;',
+                "'": '&#39;',
+                "/": '&#x2F;'
+            };
+
+            function escapeHtml(string) {
+                return String(string).replace(/[&<>"'\/]/g, function (s) {
+                    return entityMap[s];
+                });
+            }
+
             // the socket.io documentation recommends sending an explicit package upon connection
             // this is specially important when using the global namespace
             var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
@@ -44,7 +59,7 @@
                 log_message(msg);
                 console.log('handling room broadcast');
                 var roomEl = $('#room');
-                roomEl.append(msg['msg']);
+                roomEl.append(escapeHtml(msg['msg']));
                 roomEl.append('<br />');
             });
 
@@ -135,14 +150,14 @@
                 $('#draft_bans').html('');
 
                 message['banned_maps'].forEach(function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has banned ' + value['map'] + '</li>');
+                    var el = $('<li>' + escapeHtml(value['picker']) + ' has banned ' + value['map'] + '</li>');
                     $('#draft_bans').append(el);
                 });
 
                 $('#draft_picks').html('');
 
                 message['picked_maps'].forEach(function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has selected ' + value['map'] + '</li>');
+                    var el = $('<li>' + escapeHtml(value['picker']) + ' has selected ' + value['map'] + '</li>');
                     $('#draft_picks').append(el);
                 });
             };
@@ -159,9 +174,9 @@
                 $('#second_option_spy_order').css('display', 'none');
                 $('#first_option_msg').css('display', 'none');
 
-                $('#draft_info_current_player').html("Current player: " + message['current_player'] + "<br />");
-                $('#draft_info_start_player').html("First selection: " + message['start_player'] + "<br />");
-                $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
+                $('#draft_info_current_player').html("Current player: " + escapeHtml(message['current_player']) + "<br />");
+                $('#draft_info_start_player').html("First selection: " + escapeHtml(message['start_player']) + "<br />");
+                $('#draft_info_first_spy').html("First spy: " + escapeHtml(message['first_spy']) + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
                 redraw_picks_bans(message);
@@ -240,8 +255,8 @@
 
             socket.on('chat_event', function(message) {
                 log_message(message);
-                var user = message['talker'];
-                var text = message['text'];
+                var user = escapeHtml(message['talker']);
+                var text = escapeHtml(message['text']);
                 var el = $('<b>' + user + '</b>: ' + text + ' </br>');
                 $('#chat_log').append(el);
             });
