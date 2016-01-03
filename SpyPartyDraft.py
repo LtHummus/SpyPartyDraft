@@ -362,6 +362,17 @@ def spectate_draft(message):
     })
     broadcast_to_spectator(request.sid, room.get_spectator_data())
 
+@socketio.on('chat_message', namespace='/test')
+def chat_message(message):
+    room = room_map[message['room_id']]
+    print 'got chat message ' + message['chat_text']
+    data = {
+        'room_id': room.id,
+        'talker': message['username'],
+        'text': message['chat_text']
+    }
+    emit('chat_event', data, room=room.id)
+
 
 if __name__ == '__main__':
     socketio.run(app)
