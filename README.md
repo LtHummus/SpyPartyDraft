@@ -11,9 +11,9 @@ You shouldn't have too much trouble running this locally if you'd like.  Clone t
 # TODO List
 
 1. A not-terrible UI
-2. Distinguish between "any" vs. "pick" for non-known maps
-3. Some display bugs
-4. Massive code cleanup
+2. Some display bugs
+3. Massive code cleanup
+4. Ability to rejoin draft in progress
 
 # Contact the author
 
