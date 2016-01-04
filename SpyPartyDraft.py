@@ -35,6 +35,8 @@ elif async_mode == 'gevent':
 
 import time
 import random
+import datetime
+import uuid
 from threading import Thread
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
@@ -42,11 +44,17 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, \
 from room import Room
 from draft.map import Map
 
+import boto3
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('spypartydraft_test')
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
+dynamo_db_table_name = "spypartydraft_test"
+
 
 ROOM_LENGTH = 5
 
@@ -235,12 +243,29 @@ def ask_pick_order(room, msg):
     }
     emit('select_pick_order', data, room=room.id)
 
+def persist_draft(room):
+    data = {
+        'picks': room.draft.picked_maps,
+        'bans': room.draft.banned_maps,
+        'player1': room.draft.player_one,
+        'player2': room.draft.player_two,
+        'time': int(time.mktime(datetime.datetime.now().timetuple())),
+        'first_pick': room.draft.start_player,
+        'first_spy': room.draft.first_spy,
+        'uuid': str(uuid.uuid4()),
+        'room_id': room.id
+    }
+
+    if table is not None:
+        table.put_item(Item=data)
+        print "persisted item for room: {}".format(room.id)
 
 def dump_draft(room):
     response_type = 'draft_info'
     if room.draft.draft_complete():
         # set draft over if it's over
         response_type = 'draft_over'
+        persist_draft(room)
 
     room.touch()
     emit(response_type, room.serialize(), room=room.id)
@@ -361,6 +386,17 @@ def spectate_draft(message):
         'sid': request.sid
     })
     broadcast_to_spectator(request.sid, room.get_spectator_data())
+
+@socketio.on('chat_message', namespace='/test')
+def chat_message(message):
+    room = room_map[message['room_id']]
+    print 'got chat message ' + message['chat_text']
+    data = {
+        'room_id': room.id,
+        'talker': message['username'],
+        'text': message['chat_text']
+    }
+    emit('chat_event', data, room=room.id)
 
 
 if __name__ == '__main__':

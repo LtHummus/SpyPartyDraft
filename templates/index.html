@@ -14,6 +14,21 @@
         $(document).ready(function(){
             namespace = '/test'; // change to an empty string to use the global namespace
 
+            var entityMap = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': '&quot;',
+                "'": '&#39;',
+                "/": '&#x2F;'
+            };
+
+            function escapeHtml(string) {
+                return String(string).replace(/[&<>"'\/]/g, function (s) {
+                    return entityMap[s];
+                });
+            }
+
             // the socket.io documentation recommends sending an explicit package upon connection
             // this is specially important when using the global namespace
             var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
@@ -44,7 +59,7 @@
                 log_message(msg);
                 console.log('handling room broadcast');
                 var roomEl = $('#room');
-                roomEl.append(msg['msg']);
+                roomEl.append(escapeHtml(msg['msg']));
                 roomEl.append('<br />');
             });
 
@@ -54,6 +69,8 @@
                 console.log('handling draft start');
 
                 draft_id = msg['room_id'];
+
+                $('#chat_wrapper').css('visibility', 'visible');
 
                 var coin_flip_el = $('#coin_flip');
 
@@ -133,14 +150,14 @@
                 $('#draft_bans').html('');
 
                 message['banned_maps'].forEach(function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has banned ' + value['map'] + '</li>');
+                    var el = $('<li>' + escapeHtml(value['picker']) + ' has banned ' + value['map'] + '</li>');
                     $('#draft_bans').append(el);
                 });
 
                 $('#draft_picks').html('');
 
                 message['picked_maps'].forEach(function(value, key, list) {
-                    var el = $('<li>' + value['picker'] + ' has selected ' + value['map'] + '</li>');
+                    var el = $('<li>' + escapeHtml(value['picker']) + ' has selected ' + value['map'] + '</li>');
                     $('#draft_picks').append(el);
                 });
             };
@@ -157,9 +174,9 @@
                 $('#second_option_spy_order').css('display', 'none');
                 $('#first_option_msg').css('display', 'none');
 
-                $('#draft_info_current_player').html("Current player: " + message['current_player'] + "<br />");
-                $('#draft_info_start_player').html("First selection: " + message['start_player'] + "<br />");
-                $('#draft_info_first_spy').html("First spy: " + message['first_spy'] + "<br />");
+                $('#draft_info_current_player').html("Current player: " + escapeHtml(message['current_player']) + "<br />");
+                $('#draft_info_start_player').html("First selection: " + escapeHtml(message['start_player']) + "<br />");
+                $('#draft_info_first_spy').html("First spy: " + escapeHtml(message['first_spy']) + "<br />");
                 $('#draft_info_state').html("DRAFT STATE: " + message['state'] + "<br />");
 
                 redraw_picks_bans(message);
@@ -201,6 +218,7 @@
 
                 redraw_picks_bans(message);
                 $('#draft_form').css('display', 'none');
+                $('#chat_form').css('display', 'none');
                 socket.emit('disconnect_request', {room_id: draft_id});
             });
 
@@ -233,6 +251,14 @@
                 message['events'].forEach(function(item, key, list) {
                    spectateListEl.append('<li>' + item + '</li>');
                 });
+            });
+
+            socket.on('chat_event', function(message) {
+                log_message(message);
+                var user = escapeHtml(message['talker']);
+                var text = escapeHtml(message['text']);
+                var el = $('<b>' + user + '</b>: ' + text + ' </br>');
+                $('#chat_log').append(el);
             });
 
             // event handler for server sent data
@@ -364,164 +390,199 @@
                 });
                 return false;
             });
+
+            $('form#chat_form_form').submit(function(event) {
+                var textEl = $('#chat_form_text');
+                var text = textEl.val();
+                if (text === "")
+                    return false; // don't send empty messages
+                var data = {
+                    username: username,
+                    room_id: draft_id,
+                    chat_text: text
+                };
+                console.log('chatting ');
+                console.log(data);
+                textEl.val("");
+                socket.emit('chat_message', data);
+                return false;
+            });
         });
     </script>
 </head>
 <body>
 <a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 <div class="container">
-    <h1>SpyParty Draft Tool <small>BETA version 0.0.5b</small></h1>
-    <div id="room_wrapper">
-        <h2>Join:</h2>
-        <div id="create_form_wrapper">
-            <form id="create" method="POST" action='#'>
-                <input type="text" name="username" id="username" placeholder="Username" />
-                <input type="submit" id="create_button" value="Create new Draft Room" />
-                <div id="create_error"></div>
-            </form>
+    <div class="col-md-8">
+        <h1>SpyParty Draft Tool <small>BETA version 0.0.6</small></h1>
+        <div id="room_wrapper">
+            <h2>Join:</h2>
+            <div id="create_form_wrapper">
+                <form id="create" method="POST" action='#'>
+                    <input type="text" name="username" id="username" placeholder="Username" />
+                    <input type="submit" id="create_button" value="Create new Draft Room" />
+                    <div id="create_error"></div>
+                </form>
+            </div>
+            <div id="join_form_wrapper">
+                <form id="join_draft" method="POST" action='#'>
+                    <input type="text" name="username" id="join_username" placeholder="Username" />
+                    <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
+                    <input type="submit" id="join_button" value="Join a Room" />
+                    <div id="join_error"></div>
+                </form>
+            </div>
+            <div id="join_as_spectate_wrapper">
+                <form id="spectate_draft" method="POST" action="#">
+                    <input type="text" name="room_id" id="spectate_room_id" placeholder="Room Code">
+                    <input type="submit" id="spectate_button" value="Spectate a Draft" />
+                    <div id="spectate_error"></div>
+                </form>
+            </div>
         </div>
-        <div id="join_form_wrapper">
-            <form id="join_draft" method="POST" action='#'>
-                <input type="text" name="username" id="join_username" placeholder="Username" />
-                <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" />
-                <input type="submit" id="join_button" value="Join a Room" />
-                <div id="join_error"></div>
-            </form>
-        </div>
-        <div id="join_as_spectate_wrapper">
-            <form id="spectate_draft" method="POST" action="#">
-                <input type="text" name="room_id" id="spectate_room_id" placeholder="Room Code">
-                <input type="submit" id="spectate_button" value="Spectate a Draft" />
-                <div id="spectate_error"></div>
-            </form>
-        </div>
-    </div>
 
-    <div id="draft_info" style="display: none;">
-        <h1>Currently Drafting!</h1>
-        <div id="draft_info_current_player"></div>
-        <div id="draft_info_start_player"></div>
-        <div id="draft_info_first_spy"></div>
-        <div id="draft_info_state"></div>
-        <ul>
-            <h3>Bans</h3>
-            <div id="draft_bans"></div>
-        </ul>
-        <ul>
-            <h3>Selections</h3>
-            <div id="draft_picks"></div>
-        </ul>
-        <form id="draft_form" method="POST" action="#" style="display: none;">
-            <div id="draft_form_message"></div>
-            <div id="draft_form_options"></div>
-            <input type="submit" value="Submit" />
-        </form>
-
-    </div>
-
-    <div id="room_info">
-        <h2>Room Info:</h2>
-        <div id="room">Not in a room</div>
-        <div id="spectate_list_wrapper" style="display: none">
+        <div id="draft_info" style="display: none;">
+            <h1>Currently Drafting!</h1>
+            <div id="draft_info_current_player"></div>
+            <div id="draft_info_start_player"></div>
+            <div id="draft_info_first_spy"></div>
+            <div id="draft_info_state"></div>
             <ul>
-                <div id="spectate_list">
+                <h3>Bans</h3>
+                <div id="draft_bans"></div>
+            </ul>
+            <ul>
+                <h3>Selections</h3>
+                <div id="draft_picks"></div>
+            </ul>
+            <form id="draft_form" method="POST" action="#" style="display: none;">
+                <div id="draft_form_message"></div>
+                <div id="draft_form_options"></div>
+                <input type="submit" value="Submit" />
+            </form>
+
+        </div>
+
+        <div id="room_info">
+            <h2>Room Info:</h2>
+            <div id="room">Not in a room</div>
+            <div id="spectate_list_wrapper" style="display: none">
+                <ul>
+                    <div id="spectate_list">
+
+                    </div>
+                </ul>
+            </div>
+            <div id="drafting">
+                <div id="coin_flip" style="display: none">
+                    <form id="flip_form" method="POST" action="#">
+                        <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
+                        <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br />
+                        <input type="submit" name="flip_button" value="Flip" />
+                    </form>
+                </div>
+                <div id="first_option_msg"></div>
+                <div id="first_option" style="display: none">
+                    <h3 id="first_option_header">You've won the coin flip!</h3>
+                        <form id="first_option_form" method="POST" action="#">
+                            <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick First</label><br />
+                            <input type="radio" name="choice" value="picksecond"id="first_picksecond"  /><label class="control-label" for="first_picksecond">Pick Second</label><br />
+                            <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Spy First</label><br />
+                            <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Spy Second</label><br />
+                            <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer Option to Other Player</label></div><br />
+                            <input type="submit" name="first_option_form" value="This is my choice" /><br />
+                        </form>
+                </div>
+                <div id="second_option_pick_order" style="display: none">
+                    <div id="pick_order_message"></div>
+                    <form id="second_option_pick_form" method="POST" action="#">
+                        <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick First</label><br />
+                        <input type="radio" name="pick_choice" value="picksecond" id="second_picksecond" /><label for="second_picksecond">Pick Second</label><br />
+                        <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+                    </form>
+                </div>
+                <div id="second_option_spy_order" style="display: none">
+                    <div id="spy_order_message"></div>
+                    <form id="second_option_spy_form" method="POST" action="#">
+                        <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Spy First</label><br />
+                        <input type="radio" name="spy_choice" value="spysecond" id="second_spysecond" /><label for="second_spysecond">Spy Second</label><br />
+                        <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+                    </form>
+                </div>
+                <h2>Drafting</h2>
+                <div id="draft_state"></div>
+                <div id="map_pool">
 
                 </div>
+                <div id="buttons">
+
+                </div>
+            </div>
+        </div>
+        <div id="debugging" style="display: none;">
+            <h2>Receive:</h2>
+            <div id="log"></div>
+        </div>
+        <div id="infos">
+            <h2>Help</h2>
+            <p>If you're having issues, try refreshing/restarting the draft.  I have a lot of things on the todo list but
+                it's mostly functional for now.  You can also hit me up on Twitter
+                <a href="https://twitter.com/LtHummus">@LtHummus</a> or fix it yourself on
+                <a href="https://github.com/LtHummus/SpyPartyDraft">GitHub</a>.  You'll definitely need a modern browser
+                to make this work (it has to support web sockets).</p>
+
+            <h2>What's New</h2>
+            <p>Version 0.0.6</p>
+            <ul>
+                <li>Added ability to chat with opponent (spectators can not see chat)</li>
+                <li>Prevented HTML/JS injection attacks</li>
+                <li>Now the draft tool saves drafts to a database so we can do some ~data analysis~ after the tournament</li>
             </ul>
-        </div>
-        <div id="drafting">
-            <div id="coin_flip" style="display: none">
-                <form id="flip_form" method="POST" action="#">
-                    <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
-                    <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br />
-                    <input type="submit" name="flip_button" value="Flip" />
-                </form>
-            </div>
-            <div id="first_option_msg"></div>
-            <div id="first_option" style="display: none">
-                <h3 id="first_option_header">You've won the coin flip!</h3>
-                    <form id="first_option_form" method="POST" action="#">
-                        <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick First</label><br />
-                        <input type="radio" name="choice" value="picksecond"id="first_picksecond"  /><label class="control-label" for="first_picksecond">Pick Second</label><br />
-                        <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Spy First</label><br />
-                        <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Spy Second</label><br />
-                        <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer Option to Other Player</label></div><br />
-                        <input type="submit" name="first_option_form" value="This is my choice" /><br />
-                    </form>
-            </div>
-            <div id="second_option_pick_order" style="display: none">
-                <div id="pick_order_message"></div>
-                <form id="second_option_pick_form" method="POST" action="#">
-                    <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick First</label><br />
-                    <input type="radio" name="pick_choice" value="picksecond" id="second_picksecond" /><label for="second_picksecond">Pick Second</label><br />
-                    <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
-                </form>
-            </div>
-            <div id="second_option_spy_order" style="display: none">
-                <div id="spy_order_message"></div>
-                <form id="second_option_spy_form" method="POST" action="#">
-                    <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Spy First</label><br />
-                    <input type="radio" name="spy_choice" value="spysecond" id="second_spysecond" /><label for="second_spysecond">Spy Second</label><br />
-                    <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
-                </form>
-            </div>
-            <h2>Drafting</h2>
-            <div id="draft_state"></div>
-            <div id="map_pool">
+            <p>Version 0.0.5b</p>
+            <ul>
+                <li>Fixed bug with PICK and ANY with Crowded Pub and New Art Ballroom</li>
+            </ul>
+            <p>Version 0.0.5</p>
+            <ul>
+                <li>Added ability to distinguish PICK and ANY for maps.</li>
+            </ul>
+            <p>Version 0.0.4</p>
+            <ul>
+                <li>Added draft spectation.  Once a room has been created, others can watch the draft take place in real time!</li>
+            </ul>
+            <p>Version 0.0.3</p>
+            <ul>
+                <li>Fixed not removing map variations when a map was picked (i.e. can't pick Courtyard more than once)</li>
+                <li>Fixed being able to submit a form with a choice not selected</li>
+                <li>Fixed being able to have an empty username</li>
+                <li>Added ability to refuse to ban a map (you're welcome, canadianbac0nz)</li>
+                <li>Added this news item :)</li>
+            </ul>
+            <p>Version 0.0.2b</p>
+            <ul>
+                <li>Fixed panop configuration (4/8 -> 5/8)</li>
+            </ul>
+            <p>Version 0.0.2</p>
+            <ul>
+                <li>Added some more text to home page.</li>
+                <li>Changed some wording around</li>
+            </ul>
+            <p>Version 0.0.1</p>
+            <ul>
+                <li>Initial release!</li>
+            </ul>
 
-            </div>
-            <div id="buttons">
-
-            </div>
         </div>
     </div>
-    <div id="debugging" style="display: none;">
-        <h2>Receive:</h2>
-        <div id="log"></div>
-    </div>
-    <div id="infos">
-        <h2>Help</h2>
-        <p>If you're having issues, try refreshing/restarting the draft.  I have a lot of things on the todo list but
-            it's mostly functional for now.  You can also hit me up on Twitter
-            <a href="https://twitter.com/LtHummus">@LtHummus</a> or fix it yourself on
-            <a href="https://github.com/LtHummus/SpyPartyDraft">GitHub</a>.  You'll definitely need a modern browser
-            to make this work (it has to support web sockets).</p>
-
-        <h2>What's New</h2>
-        <p>Version 0.0.5b</p>
-        <ul>
-            <li>Fixed bug with PICK and ANY with Crowded Pub and New Art Ballroom</li>
-        </ul>
-        <p>Version 0.0.5</p>
-        <ul>
-            <li>Added ability to distinguish PICK and ANY for maps.</li>
-        </ul>
-        <p>Version 0.0.4</p>
-        <ul>
-            <li>Added draft spectation.  Once a room has been created, others can watch the draft take place in real time!</li>
-        </ul>
-        <p>Version 0.0.3</p>
-        <ul>
-            <li>Fixed not removing map variations when a map was picked (i.e. can't pick Courtyard more than once)</li>
-            <li>Fixed being able to submit a form with a choice not selected</li>
-            <li>Fixed being able to have an empty username</li>
-            <li>Added ability to refuse to ban a map (you're welcome, canadianbac0nz)</li>
-            <li>Added this news item :)</li>
-        </ul>
-        <p>Version 0.0.2b</p>
-        <ul>
-            <li>Fixed panop configuration (4/8 -> 5/8)</li>
-        </ul>
-        <p>Version 0.0.2</p>
-        <ul>
-            <li>Added some more text to home page.</li>
-            <li>Changed some wording around</li>
-        </ul>
-        <p>Version 0.0.1</p>
-        <ul>
-            <li>Initial release!</li>
-        </ul>
-
+    <div class="col-md-4" id="chat_wrapper" style="visibility: hidden">
+        <h2>Chat</h2>
+        <div id="chat_log"></div>
+        <div id="chat_form">
+            <form action="#" method="POST" id="chat_form_form">
+                <input type="text" placeholder="chat here" id="chat_form_text" autocomplete="off" />
+                <input type="submit" value="Talk talk talk" />
+            </form>
+        </div>
     </div>
 </div>
 <script src="static/js/bootstrap.min.js"></script>
