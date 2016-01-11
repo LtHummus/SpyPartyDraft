@@ -235,6 +235,7 @@
                 redraw_picks_bans(message);
                 $('#draft_form').css('display', 'none');
                 $('#chat_form').css('display', 'none');
+		$('#draft_info_status').text('Drafting over !');
                 socket.emit('disconnect_request', {room_id: draft_id});
             });
 
@@ -459,7 +460,7 @@
         </div>
 
         <div id="draft_info" style="display: none;">
-            <h1>Currently Drafting!</h1>
+            <h1 id="draft_info_status">Currently Drafting!</h1>
             <div id="draft_info_draft_type"></div>
             <div id="draft_info_current_player"></div>
             <div id="draft_info_start_player"></div>
