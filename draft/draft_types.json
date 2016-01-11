@@ -1,0 +1,25 @@
+{
+  "draft_types":
+          [
+            {
+              "id": "REGULAR",
+              "name": "Regular Season Match",
+              "nr_bans": 2,
+              "nr_picks": 2
+            },
+            {
+              "id": "DIVISION_CHAMP",
+              "name": "Division Championship and Hazard Match",
+              "nr_bans": 3,
+              "nr_picks": 6
+            },
+            {
+              "id": "LEAGUE_CHAMP",
+              "name": "League Championship Match",
+              "nr_bans": 3,
+              "nr_picks": 8
+            }
+          ],
+  "default_draft" : "REGULAR"
+
+}

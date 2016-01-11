@@ -33,8 +33,23 @@
             // this is specially important when using the global namespace
             var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
+	    socket.emit('get_draft_types');
+
             var username = "";
             var draft_id = "";
+
+            socket.on('draft_types_update', function(msg) {
+                log_message(msg);
+		$('#draft_types').find('option').remove();
+		msg.forEach(function(value, key, list) {
+		        var optionElement = $('<option value="'+value['id']+'">' + value['name'] + '</option>');
+		        if(value['selected'])
+			{
+	 			optionElement.attr('selected','selected');
+			}
+		        $('#draft_type').append(optionElement);
+                });
+            });
 
             socket.on('create_success', function(msg) {
                 log_message(msg);
@@ -43,7 +58,7 @@
                 $('#room_wrapper').css('display', 'none');
                 //$('#create_button').attr('disabled', 'disabled');
                 //$('#username').attr('disabled', 'disabled');
-                $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room code to your opponent.<br />');
+                $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room code to your opponent.<br />The draft type is: ' + msg['draft_type']+'.<br />');
             });
 
             socket.on('join_success', function(msg) {
@@ -52,7 +67,7 @@
                 var room_id = msg['room_id'];
                 $('#room_wrapper').css('display', 'none');
                 $('#join_error').html('');
-                $('#room').html('You are in room <b>' + room_id + '</b><br />');
+                $('#room').html('You are in room <b>' + room_id + '</b><br />The draft type is: ' + msg['draft_type']+'.<br />');
             });
 
             socket.on('room_broadcast', function(msg) {
@@ -174,6 +189,7 @@
                 $('#second_option_spy_order').css('display', 'none');
                 $('#first_option_msg').css('display', 'none');
 
+		$('#draft_info_draft_type').html("Draft type: " + escapeHtml(message['draft_type']) + "<br />");
                 $('#draft_info_current_player').html("Current player: " + escapeHtml(message['current_player']) + "<br />");
                 $('#draft_info_start_player').html("First selection: " + escapeHtml(message['start_player']) + "<br />");
                 $('#draft_info_first_spy').html("First spy: " + escapeHtml(message['first_spy']) + "<br />");
@@ -283,7 +299,7 @@
                 if (username == undefined || username === "") {
                     return false;
                 }
-                socket.emit('create', {data: username});
+                socket.emit('create', {data: username,draft_type_id: $('#draft_type').val()});
                 return false;
             });
 
@@ -420,6 +436,7 @@
             <div id="create_form_wrapper">
                 <form id="create" method="POST" action='#'>
                     <input type="text" name="username" id="username" placeholder="Username" />
+                    <select name="draft_type" id="draft_type" />
                     <input type="submit" id="create_button" value="Create new Draft Room" />
                     <div id="create_error"></div>
                 </form>
@@ -443,6 +460,7 @@
 
         <div id="draft_info" style="display: none;">
             <h1>Currently Drafting!</h1>
+            <div id="draft_info_draft_type"></div>
             <div id="draft_info_current_player"></div>
             <div id="draft_info_start_player"></div>
             <div id="draft_info_first_spy"></div>

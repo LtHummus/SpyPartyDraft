@@ -42,6 +42,7 @@ from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from room import Room
+from draft.draft_type import Draft_type
 from draft.map import Map
 
 import boto3
@@ -59,18 +60,19 @@ dynamo_db_table_name = "spypartydraft_test"
 ROOM_LENGTH = 5
 
 room_map = {}
+draft_types = Draft_type.get_draft_type('draft/draft_types.json')
+
 #
 # "sp12345" -> room()
 
 map_pool = Map.generate_map_pool('map_pools.json', 'scl_season_1')
 
-
 def generate_room_id():
     return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
 
 
-def create_room(id):
-    room_map[id] = Room(id, broadcast_to_room, map_pool, broadcast_to_spectator)
+def create_room(id,draft_type_id):
+    room_map[id] = Room(id, broadcast_to_room, map_pool, broadcast_to_spectator, draft_types[draft_type_id])
 
 
 def broadcast_to_spectator(spectator_id, data):
@@ -133,13 +135,14 @@ def create(message):
     print "username: " + message['data']
     username = message['data']
     id = generate_room_id()
-    create_room(id)
+    create_room(id,message['draft_type_id'])
     room_map[id].player_list.append(username)
     room_map[id].post_event("{} has joined the room!".format(username))
     join_room(id)
     emit('create_success',
          {
              'room_id': id,
+             'draft_type' : room_map[id].draft_type.name
          })
     broadcast_to_room(id, "{} has joined the room!".format(username))
     broadcast_to_room(id, "Players currently in room: {}".format(' and '.join(room_map[id].player_list)))
@@ -170,7 +173,8 @@ def join_draft(message):
     room.post_event("{} has joined the room!".format(message['username']))
     emit('join_success',
          {
-             'room_id': room.id
+             'room_id': room.id,
+             'draft_type' : room.draft_type.name
          })
     broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
     broadcast_to_room(room.id, "Players currently in room: {}".format(' and '.join(room.player_list)))
@@ -227,6 +231,13 @@ def coin_flip(message):
         'winner': winner
     }, room=room.id)
 
+@socketio.on('get_draft_types', namespace='/test')
+def get_draft_types():
+    dts = []
+    for dt_id, dt in draft_types.items():
+       dts.append({'id': dt_id,'name': dt.name,'selected': dt.is_default_draft})
+
+    emit('draft_types_update',dts)
 
 def ask_spy_order(room, msg):
     data = {
@@ -256,9 +267,9 @@ def persist_draft(room):
         'room_id': room.id
     }
 
-    if table is not None:
-        table.put_item(Item=data)
-        print "persisted item for room: {}".format(room.id)
+    #if table is not None:
+    #    table.put_item(Item=data)
+    #    print "persisted item for room: {}".format(room.id)
 
 def dump_draft(room):
     response_type = 'draft_info'
