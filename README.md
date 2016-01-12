@@ -24,5 +24,6 @@ Best way to get a hold of me is on Twitter [@LtHummus](https://twitter.com/LtHum
 * [aforgottentune](https://twitter.com/aforgottentune) -- For help with testing and fixing my typos
 * [checker](https://twitter.com/checker) -- For making the awesome game SpyParty
 * [KrazyCaley](https://twitter.com/krazycaley) -- For creating the SpyParty Competitive League
+* sgnurf -- For the contribution to support multiple draft types
 * Everyone in the SpyParty community -- For being awesome (and the Canada of online communities)
 * Paradise Village in Nuevo Vallarta, Nayarit, Mexico -- Because why waste a good vacation without doing some coding?
