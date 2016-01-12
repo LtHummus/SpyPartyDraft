@@ -1,5 +1,6 @@
 from draft.draft import Draft
 from draft.map import Map
+from draft.draft_type import Draft_type
 import copy
 import datetime
 
@@ -8,7 +9,7 @@ TOURNEY = "scl_season_1"
 
 
 class Room:
-    def __init__(self, id, server, map_pool, spectator_broadcast):
+    def __init__(self, id, server, map_pool, spectator_broadcast, draft_type):
         self.id = id
         self.player_list = []
         self.spectator_list = []
@@ -18,6 +19,7 @@ class Room:
         self.last_touched = datetime.datetime.now()
         self.events = []
         self.spectator_broadcast = spectator_broadcast
+        self.draft_type = draft_type
 
     def get_spectator_data(self):
         return {
@@ -49,7 +51,7 @@ class Room:
     def start_draft(self):
         print "starting draft"
         print self.map_pool
-        self.draft = Draft(self.id, self.player_list[0], self.player_list[1], self.map_pool)
+        self.draft = Draft(self.id, self.player_list[0], self.player_list[1], self.map_pool, self.draft_type)
         self.touch()
 
     def touch(self):
@@ -82,6 +84,7 @@ class Room:
             'coin_flip_loser': self.draft.coin_flip_loser(),
             'first_spy': self.draft.first_spy,
             'state': self.draft.state,
-            'user_readable_state': self.draft.user_readable_state()
+            'user_readable_state': self.draft.user_readable_state(),
+            'draft_type' : self.draft_type.name
         }
 
