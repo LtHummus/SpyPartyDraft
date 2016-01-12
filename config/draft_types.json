@@ -12,14 +12,14 @@
               "id": "DIVISION_CHAMP",
               "name": "Division Championship and Hazard Match",
               "nr_bans": 3,
-              "nr_picks": 6,
+              "nr_picks": 3,
               "map_pool": "scl_season_1"
             },
             {
               "id": "LEAGUE_CHAMP",
               "name": "League Championship Match",
               "nr_bans": 3,
-              "nr_picks": 8,
+              "nr_picks": 4,
               "map_pool": "scl_season_1"
             }
           ],

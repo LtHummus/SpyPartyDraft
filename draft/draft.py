@@ -53,9 +53,15 @@ class Draft:
         else:
             self.current_player = self.player_one
 
+    def _banning_complete(self):
+        return len(self.banned_maps) < self.draft_type.nr_bans * 2
+
+    def _picking_complete(self):
+        return len(self.picked_maps) < self.draft_type.nr_picks * 2
+
     def _advance_state(self):
-        if (not(self.state == STATE_BANNING and len(self.banned_maps) < self.draft_type.nr_bans * 2
-                or self.state == STATE_PICKING and len(self.picked_maps	) < self.draft_type.nr_picks * 2)): 
+        if not(self.state == STATE_BANNING and self._banning_complete()
+                or self.state == STATE_PICKING and self._picking_complete()):
             self.state = NEXT_STATE[self.state]
 
     def mark_map(self, map, is_pick):
