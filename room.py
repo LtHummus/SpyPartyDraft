@@ -9,17 +9,17 @@ TOURNEY = "scl_season_1"
 
 
 class Room:
-    def __init__(self, id, server, map_pool, spectator_broadcast, draft_type):
+    def __init__(self, id, server, spectator_broadcast, draft_type):
         self.id = id
         self.player_list = []
         self.spectator_list = []
         self.draft = None
         self.server = server
-        self.map_pool = copy.copy(map_pool)
         self.last_touched = datetime.datetime.now()
         self.events = []
         self.spectator_broadcast = spectator_broadcast
         self.draft_type = draft_type
+        self.map_pool = copy.copy(draft_type.map_pool)
 
     def get_spectator_data(self):
         return {
@@ -74,7 +74,7 @@ class Room:
         return {
             'room_id': self.id,
             'banned_maps': self.draft.serializable_bans(),
-            'picked_maps': self.draft.serializibale_picks(),
+            'picked_maps': self.draft.serializable_picks(),
             'player_one': self.draft.player_one,
             'player_two': self.draft.player_two,
             'map_pool': self.serializable_map_pool(),

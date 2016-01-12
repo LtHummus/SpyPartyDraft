@@ -1,44 +1,17 @@
-from map import Map
-from draft_type import Draft_type
-
 STATE_NOT_STARTED = "NOT_STARTED"
 STATE_COIN_FLIPPED = "COIN_FLIPPED"
-#STATE_BAN_ONE = "BAN_ONE"
-#STATE_BAN_TWO = "BAN_TWO"
-#STATE_BAN_THREE = "BAN_THREE"
-#STATE_BAN_FOUR = "BAN_FOUR"
-#STATE_PICK_ONE = "PICK_ONE"
-#STATE_PICK_TWO = "PICK_TWO"
-#STATE_PICK_THREE = "PICK_THREE"
-#STATE_PICK_FOUR = "PICK_FOUR"
 STATE_DRAFT_COMPLETE = "COMPLETE"
 STATE_BANNING = "BANNING"
 STATE_PICKING = "PICKING"
 
 USER_READABLE_STATE_MAP = {
     STATE_NOT_STARTED: "Not started",
-    #STATE_BAN_ONE: "First Ban",
-    #STATE_BAN_TWO: "Second Ban",
-    #STATE_BAN_THREE: "Third Ban",
-    #STATE_BAN_FOUR: "Fourth Ban",
-    #STATE_PICK_ONE: "First Selection",
-    #STATE_PICK_TWO: "Second Selection",
-    #STATE_PICK_THREE: "Third Selection",
-    #STATE_PICK_FOUR: "Fourth Selection",
     STATE_BANNING: "{} Ban",
     STATE_PICKING: "{} Pick",
     STATE_DRAFT_COMPLETE: "Draft complete"
 }
 
 NEXT_STATE = {
-    #STATE_BAN_ONE: STATE_BAN_TWO,
-    #STATE_BAN_TWO: STATE_BAN_THREE,
-    #STATE_BAN_THREE: STATE_BAN_FOUR,
-    #STATE_BAN_FOUR: STATE_PICK_ONE,
-    #STATE_PICK_ONE: STATE_PICK_TWO,
-    #STATE_PICK_TWO: STATE_PICK_THREE,
-    #STATE_PICK_THREE: STATE_PICK_FOUR,
-    #STATE_PICK_FOUR: STATE_DRAFT_COMPLETE
     STATE_BANNING: STATE_PICKING,
     STATE_PICKING: STATE_DRAFT_COMPLETE
 }
@@ -101,7 +74,6 @@ class Draft:
 
     def start_draft(self):
         self.current_player = self.start_player
-        #self.state = STATE_BAN_ONE
         self.state = STATE_BANNING
 
     def user_readable_state(self):
@@ -112,12 +84,11 @@ class Draft:
         else:
             return USER_READABLE_STATE_MAP[self.state]
 
-
     def serializable_bans(self):
-        list = []
+        bans = []
         curr = self.start_player
         for x in self.banned_maps:
-            list.append({
+            bans.append({
                 'picker': curr,
                 'map': x
             })
@@ -126,13 +97,13 @@ class Draft:
             else:
                 curr = self.player_one
 
-        return list
+        return bans
 
-    def serializibale_picks(self):
-        list = []
+    def serializable_picks(self):
+        picks = []
         curr = self.start_player
         for x in self.picked_maps:
-            list.append({
+            picks.append({
                 'picker': curr,
                 'map': x
             })
@@ -141,10 +112,10 @@ class Draft:
             else:
                 curr = self.player_one
 
-        return list
+        return picks
 
     def draft_complete(self):
         return self.state == STATE_DRAFT_COMPLETE
 
-    ordinal = lambda self,n: "%d%s" % (n,"tsnrhtdd"[(n/10%10!=1)*(n%10<4)*n%10::4])
+    ordinal = lambda self, n: "%d%s" % (n, "tsnrhtdd"[(n / 10 % 10 != 1)*(n % 10 < 4)*n % 10 :: 4])
 

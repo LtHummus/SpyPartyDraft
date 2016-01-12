@@ -43,12 +43,12 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from room import Room
 from draft.draft_type import Draft_type
-from draft.map import Map
 
 import boto3
 
-dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('spypartydraft_test')
+#dynamodb = boto3.resource('dynamodb')
+#table = dynamodb.Table('spypartydraft_test')
+table = None
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -60,19 +60,15 @@ dynamo_db_table_name = "spypartydraft_test"
 ROOM_LENGTH = 5
 
 room_map = {}
-draft_types = Draft_type.get_draft_type('draft/draft_types.json')
+draft_types = Draft_type.get_draft_type('config/draft_types.json')
 
-#
-# "sp12345" -> room()
-
-map_pool = Map.generate_map_pool('map_pools.json', 'scl_season_1')
 
 def generate_room_id():
     return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
 
 
-def create_room(id,draft_type_id):
-    room_map[id] = Room(id, broadcast_to_room, map_pool, broadcast_to_spectator, draft_types[draft_type_id])
+def create_room(id, draft_type_id):
+    room_map[id] = Room(id, broadcast_to_room, broadcast_to_spectator, draft_types[draft_type_id])
 
 
 def broadcast_to_spectator(spectator_id, data):
@@ -92,7 +88,6 @@ def tell_clients_draft_has_started(room):
 
 
 def background_thread():
-    """Example of how to send server generated events to clients."""
     print 'cleanup thread started'
     while True:
         time.sleep(300)
@@ -167,6 +162,13 @@ def join_draft(message):
              })
         return
     room = room_map[room_to_join]
+    if len(room.player_list) >= 2:
+        emit('join_error',
+             {
+                 'message': 'Room {} already has two players in it'.format(room.id)
+             })
+        return
+
     room.touch()
     join_room(room.id)
     room.player_list.append(message['username'])
@@ -174,7 +176,7 @@ def join_draft(message):
     emit('join_success',
          {
              'room_id': room.id,
-             'draft_type' : room.draft_type.name
+             'draft_type': room.draft_type.name
          })
     broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
     broadcast_to_room(room.id, "Players currently in room: {}".format(' and '.join(room.player_list)))
@@ -231,13 +233,15 @@ def coin_flip(message):
         'winner': winner
     }, room=room.id)
 
+
 @socketio.on('get_draft_types', namespace='/test')
 def get_draft_types():
     dts = []
     for dt_id, dt in draft_types.items():
-       dts.append({'id': dt_id,'name': dt.name,'selected': dt.is_default_draft})
+        dts.append({'id': dt_id,'name': dt.name,'selected': dt.is_default_draft})
 
-    emit('draft_types_update',dts)
+    emit('draft_types_update', dts)
+
 
 def ask_spy_order(room, msg):
     data = {
@@ -254,6 +258,7 @@ def ask_pick_order(room, msg):
     }
     emit('select_pick_order', data, room=room.id)
 
+
 def persist_draft(room):
     data = {
         'picks': room.draft.picked_maps,
@@ -267,9 +272,10 @@ def persist_draft(room):
         'room_id': room.id
     }
 
-    #if table is not None:
-    #    table.put_item(Item=data)
-    #    print "persisted item for room: {}".format(room.id)
+    if table is not None:
+        table.put_item(Item=data)
+        print "persisted item for room: {}".format(room.id)
+
 
 def dump_draft(room):
     response_type = 'draft_info'
