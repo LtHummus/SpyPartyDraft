@@ -4,11 +4,11 @@
 
 @font-face {
     font-family: 'agencyfb';
-    src: url('/fonts/agencyfb-regular-webfont.eot');
-    src: url('/fonts/agencyfb-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/agencyfb-regular-webfont.woff') format('woff'),
-         url('/fonts/agencyfb-regular-webfont.ttf') format('truetype'),
-         url('/fonts/agencyfb-regular-webfont.svg#agencyfbregular') format('svg');
+    src: url('/static/fonts/agencyfb-regular-webfont.eot');
+    src: url('/static/fonts/agencyfb-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/agencyfb-regular-webfont.woff') format('woff'),
+         url('/static/fonts/agencyfb-regular-webfont.ttf') format('truetype'),
+         url('/static/fonts/agencyfb-regular-webfont.svg#agencyfbregular') format('svg');
     font-weight: normal;
     font-style: normal;
 
@@ -16,11 +16,11 @@
 
 @font-face {
     font-family: 'agencybold';
-    src: url('/fonts/agencyfb-bold-webfont.eot');
-    src: url('/fonts/agencyfb-bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('/fonts/agencyfb-bold-webfont.woff') format('woff'),
-         url('/fonts/agencyfb-bold-webfont.ttf') format('truetype'),
-         url('/fonts/agencyfb-bold-webfont.svg#agencyfbbold') format('svg');
+    src: url('/static/fonts/agencyfb-bold-webfont.eot');
+    src: url('/static/fonts/agencyfb-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/agencyfb-bold-webfont.woff') format('woff'),
+         url('/static/fonts/agencyfb-bold-webfont.ttf') format('truetype'),
+         url('/static/fonts/agencyfb-bold-webfont.svg#agencyfbbold') format('svg');
     font-weight: normal;
     font-style: normal;
 
@@ -143,7 +143,7 @@ input[type="submit"], .button, .button:visited {
   border: 0;
   background-color: #A8DFF4;
   color: #4e6e92;
-  font-size: 14px;
+  font-size: 18px;
   height: 50px;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
