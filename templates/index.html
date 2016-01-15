@@ -437,12 +437,12 @@
 <a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 <div class="container">
     <div class="col-md-8">
-        <h1>SpyParty Draft Tool <small>BETA version 0.0.7</small></h1>
+        <h1>SpyParty Draft Tool <small>BETA version 0.0.8b</small></h1>
         <div id="room_wrapper">
             <div id="create_form_wrapper">
                 <h3>Create a new Draft Room</h3>
                 <form id="create" method="POST" action='#' class="form-inline">
-                    <input type="text" name="username" id="username" placeholder="Username" class="form-control"/>
+                    <input type="text" name="username" maxlength="32" id="username" placeholder="Username" class="form-control"/>
                     <select name="draft_type" id="draft_type" class="form-control" />
                     <input type="submit" id="create_button" value="Create new Draft Room" class="btn btn-primary" />
                     <div id="create_error"></div>
@@ -451,7 +451,7 @@
             <div id="join_form_wrapper">
                 <h3>Join a Draft Room</h3>
                 <form id="join_draft" method="POST" action='#' class="form-inline">
-                    <input type="text" name="username" id="join_username" placeholder="Username" class="form-control"/>
+                    <input type="text" name="username" id="join_username" maxlength="32" placeholder="Username" class="form-control"/>
                     <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" class="form-control"/>
                     <input type="submit" id="join_button" value="Join a Room" class="btn btn-primary" />
                     <div id="join_error" style="color:red; font-weight: bold"></div>
@@ -460,7 +460,7 @@
             <div id="join_as_spectate_wrapper">
                 <h3>Spectate a Draft</h3>
                 <form id="spectate_draft" method="POST" action="#" class="form-inline">
-                    <input type="text" name="room_id" id="spectate_room_id" placeholder="Room Code" class="form-control">
+                    <input type="text" name="room_id" maxlength="32" id="spectate_room_id" placeholder="Room Code" class="form-control">
                     <input type="submit" id="spectate_button" value="Spectate a Draft" class="btn btn-primary" />
                     <div id="spectate_error"></div>
                 </form>
@@ -559,6 +559,11 @@
                 to make this work (it has to support web sockets).</p>
 
             <h2>What's New</h2>
+            <p>Version 0.0.8b</p>
+            <ul>
+                <li>Limited usernames to 32 chars</li>
+                <li>Limited chat messages to 128 chars</li>
+            </ul>
             <p>Version 0.0.8</p>
             <ul>
                 <li>Added some style (thanks WarningTrack!)</li>
@@ -619,7 +624,7 @@
         <div id="chat_log"></div>
         <div id="chat_form">
             <form action="#" method="POST" id="chat_form_form">
-                <input type="text" placeholder="chat here" id="chat_form_text" autocomplete="off" />
+                <input type="text" placeholder="chat here" id="chat_form_text" maxlength="128" autocomplete="off" />
                 <input type="submit" value="Talk talk talk" />
             </form>
         </div>

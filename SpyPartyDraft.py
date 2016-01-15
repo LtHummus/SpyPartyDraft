@@ -128,7 +128,7 @@ def test_broadcast_message(message):
 def create(message):
     print "got create message"
     print "username: " + message['data']
-    username = message['data']
+    username = message['data'][:32]
     id = generate_room_id()
     create_room(id,message['draft_type_id'])
     room_map[id].player_list.append(username)
@@ -171,14 +171,15 @@ def join_draft(message):
 
     room.touch()
     join_room(room.id)
-    room.player_list.append(message['username'])
-    room.post_event("{} has joined the room!".format(message['username']))
+    username = message['username'][:32]
+    room.player_list.append(username)
+    room.post_event("{} has joined the room!".format(username))
     emit('join_success',
          {
              'room_id': room.id,
              'draft_type': room.draft_type.name
          })
-    broadcast_to_room(room.id, "{} has joined the room!".format(message['username']))
+    broadcast_to_room(room.id, "{} has joined the room!".format(username))
     broadcast_to_room(room.id, "Players currently in room: {}".format(' and '.join(room.player_list)))
     if len(room.player_list) == 2:
         room.start_draft()
@@ -404,14 +405,16 @@ def spectate_draft(message):
     })
     broadcast_to_spectator(request.sid, room.get_spectator_data())
 
+
 @socketio.on('chat_message', namespace='/test')
 def chat_message(message):
     room = room_map[message['room_id']]
-    print 'got chat message ' + message['chat_text']
+    text = message['chat_text'][:128]
+    print 'got chat message ' + text
     data = {
         'room_id': room.id,
         'talker': message['username'],
-        'text': message['chat_text']
+        'text': text
     }
     emit('chat_event', data, room=room.id)
 
