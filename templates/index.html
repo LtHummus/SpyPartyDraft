@@ -161,7 +161,7 @@
                 if (username == message['username']) {
                     $('#pick_order_message').html("<h3>" + message['message'] + "</h3>");
                 } else {
-                    el.html("Waiting on opponent to pick spy order...");
+                    el.html("Waiting on opponent to pick selection order...");
                 }
 
                 el.css('display', 'inline');
@@ -559,6 +559,12 @@
                 to make this work (it has to support web sockets).</p>
 
             <h2>What's New</h2>
+            <p>Version 0.0.8</p>
+            <ul>
+                <li>Added some style (thanks WarningTrack!)</li>
+                <li>Switched to pull bootstrap from a CDN</li>
+                <li>Fixed phrasing for when you select spy order instead of pick order</li>
+            </ul>
             <p>Version 0.0.7</p>
             <ul>
                 <li>Added draft mode for Hazard/Championship Matches (thanks sgnurf)</li>
