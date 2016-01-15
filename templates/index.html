@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SpyParty Tournament Drafting</title>
 
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href="static/css/style.css" rel="stylesheet">
 
     <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
@@ -160,7 +161,7 @@
                 if (username == message['username']) {
                     $('#pick_order_message').html("<h3>" + message['message'] + "</h3>");
                 } else {
-                    el.html("Waiting on opponent to pick spy order...");
+                    el.html("Waiting on opponent to pick selection order...");
                 }
 
                 el.css('display', 'inline');
@@ -558,6 +559,12 @@
                 to make this work (it has to support web sockets).</p>
 
             <h2>What's New</h2>
+            <p>Version 0.0.8</p>
+            <ul>
+                <li>Added some style (thanks WarningTrack!)</li>
+                <li>Switched to pull bootstrap from a CDN</li>
+                <li>Fixed phrasing for when you select spy order instead of pick order</li>
+            </ul>
             <p>Version 0.0.7</p>
             <ul>
                 <li>Added draft mode for Hazard/Championship Matches (thanks sgnurf)</li>
@@ -618,6 +625,6 @@
         </div>
     </div>
 </div>
-<script src="static/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 </body>
 </html>
