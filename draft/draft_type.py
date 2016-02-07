@@ -18,7 +18,7 @@ class Draft_type:
             data = json.load(f)
             for dt in data["draft_types"]:
                 draft_types[dt['id']] = Draft_type(dt['name'], dt['nr_bans'], dt['nr_picks'], dt['map_pool'])
-                draft_types[data["default_draft"]].is_default_draft = 1
+            draft_types[data["default_draft"]].is_default_draft = 1
         return draft_types
 
 
