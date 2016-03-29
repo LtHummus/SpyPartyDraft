@@ -367,13 +367,13 @@ def draft_map(message):
         chosen_map = [x for x in room.draft.map_pool if x.slug == message['choice']][0]
         chosen_map_name = chosen_map.name
         if room.draft.state.startswith('PICK') and not chosen_map.slug.endswith('k2'):
-            chosen_map_name = chosen_map.map_mode_name(message['is_pick'])
+            chosen_map_name = chosen_map.map_mode_name()
 
-    if room.draft.state.startswith('BAN'):
+    if room.draft.state.endswith('BANNING'):
         room.post_event("{} has banned {}".format(room.draft.current_player, chosen_map_name))
     else:
         room.post_event("{} has picked {}".format(room.draft.current_player, chosen_map_name))
-    room.draft.mark_map(chosen_map, message['is_pick'])
+    room.draft.mark_map(chosen_map)
     dump_draft(room)
 
 

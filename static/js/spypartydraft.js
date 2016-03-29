@@ -194,11 +194,6 @@ $(document).ready(function(){
         $('#draft_form_options').html('');
 
         if (message['current_player'] == username) {
-            if (message['state'].startsWith('PICK')) {
-                var pickBox = $('<input type="checkbox" name="pick_check" id="pick_check" /><label for="pick_check">Pick instead of Any</label><br />')
-                $('#draft_form_options').append(pickBox);
-            }
-
             message['map_pool'].forEach(function (value, key, list) {
                 //console.log(value['name'] + " -> " + value['slug']);
                 var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" id="map_choice_' + value['slug'] + '" /><label for="map_choice_' +  value['slug'] + '">' + value['name'] + '</label><br />');
@@ -377,13 +372,12 @@ $(document).ready(function(){
             return false;
         console.log("got value " + choice);
 
-        var isPick = $('#pick_check').is(':checked')
+        //var isPick = $('#pick_check').is(':checked')
 
         var data = {
             username: username,
             room_id: draft_id,
-            choice: choice,
-            is_pick: isPick
+            choice: choice
         };
         socket.emit('draft_map', data);
         return false;

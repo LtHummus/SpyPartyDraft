@@ -6,23 +6,26 @@
               "name": "Regular Season Match",
               "nr_bans": 2,
               "nr_picks": 2,
-              "map_pool": "scl_season_1"
+              "map_pool": "scl_season_2",
+              "multi_phase": false
             },
             {
               "id": "DIVISION_CHAMP",
               "name": "Division Championship and Hazard Match",
               "nr_bans": 3,
               "nr_picks": 3,
-              "map_pool": "scl_season_1"
+              "map_pool": "scl_season_2",
+              "multi_phase": true
             },
             {
               "id": "LEAGUE_CHAMP",
               "name": "League Championship Match",
               "nr_bans": 3,
               "nr_picks": 4,
-              "map_pool": "scl_season_1"
+              "map_pool": "scl_season_2",
+              "multi_phase": true
             }
           ],
-  "default_draft" : "DIVISION_CHAMP"
+  "default_draft" : "REGULAR"
 
 }

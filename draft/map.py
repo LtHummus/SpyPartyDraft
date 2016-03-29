@@ -10,11 +10,8 @@ class Map:
     def __repr__(self):
         return self.name
 
-    def map_mode_name(self, is_pick):
-        if self.slug.endswith('k2'):
-            return self.name
-        parts = self.name.rsplit(' ', 1)
-        return parts[0] + (' PICK ' if is_pick else ' ANY ') + parts[1]
+    def map_mode_name(self):
+        return self.name
 
     def as_map(self):
         return {
@@ -30,8 +27,4 @@ class Map:
             tourney_json = data[tourney]
             return [Map(x['name'], x['slug'], x['family']) for x in tourney_json]
 
-if __name__ == '__main__':
-    m = Map("Balcony 2/3", "balcony23", "balcony")
-    print m.map_mode_name(False)
-    print m.map_mode_name(True)
 
