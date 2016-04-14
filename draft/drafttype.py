@@ -22,6 +22,3 @@ class DraftType:
                                                   dt['multi_phase'])
             draft_types[data["default_draft"]].is_default_draft = 1
         return draft_types
-
-
-

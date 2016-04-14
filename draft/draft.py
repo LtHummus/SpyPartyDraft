@@ -83,8 +83,8 @@ class Draft:
             self.state = MULTI_PHASE_NEXT_STATE[self.state]
 
     def _advance_state(self):
-        if not(self.state == STATE_BANNING and self._banning_complete()
-                or self.state == STATE_PICKING and self._picking_complete()):
+        if not (self.state == STATE_BANNING and self._banning_complete() or
+                            self.state == STATE_PICKING and self._picking_complete()):
             self.state = NEXT_STATE[self.state]
 
     def mark_map(self, map_):
@@ -115,9 +115,9 @@ class Draft:
 
     def user_readable_state(self):
         if self.state.endswith("BANNING"):
-            return USER_READABLE_STATE_MAP[self.state].format(self.ordinal((len(self.banned_maps)+1)))
+            return USER_READABLE_STATE_MAP[self.state].format(self.ordinal((len(self.banned_maps) + 1)))
         elif self.state.endswith("PICKING"):
-            return USER_READABLE_STATE_MAP[self.state].format(self.ordinal((len(self.picked_maps)+1)))
+            return USER_READABLE_STATE_MAP[self.state].format(self.ordinal((len(self.picked_maps) + 1)))
         else:
             return USER_READABLE_STATE_MAP[self.state]
 
@@ -154,4 +154,6 @@ class Draft:
     def draft_complete(self):
         return self.state == STATE_DRAFT_COMPLETE
 
-    ordinal = lambda self, n: "%d%s" % (n, "tsnrhtdd"[(n / 10 % 10 != 1) * (n % 10 < 4) * n % 10:: 4])
+    @staticmethod
+    def ordinal(n):
+        return "%d%s" % (n, "tsnrhtdd"[(n / 10 % 10 != 1) * (n % 10 < 4) * n % 10:: 4])

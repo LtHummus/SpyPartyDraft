@@ -1,4 +1,17 @@
-#!/usr/bin/env python
+import datetime
+import random
+import time
+import uuid
+from threading import Thread
+
+from flask import Flask, render_template, session, request
+from flask_socketio import SocketIO, emit, join_room, leave_room, \
+    close_room, rooms, disconnect
+
+from draft.drafttype import DraftType
+from room import Room
+
+# !/usr/bin/env python
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -10,7 +23,7 @@ if async_mode is None:
         import eventlet
 
         async_mode = 'eventlet'
-    except ImportError:
+    except ImportError(eventlet):
         pass
 
     if async_mode is None:
@@ -18,7 +31,7 @@ if async_mode is None:
             from gevent import monkey
 
             async_mode = 'gevent'
-        except ImportError:
+        except ImportError(monkey):
             pass
 
     if async_mode is None:
@@ -37,19 +50,6 @@ elif async_mode == 'gevent':
 
     monkey.patch_all()
 
-import datetime
-import random
-import time
-import uuid
-from threading import Thread
-
-from flask import Flask, render_template, session, request
-from flask_socketio import SocketIO, emit, join_room, leave_room, \
-    close_room, rooms, disconnect
-
-from draft.drafttype import DraftType
-from room import Room
-
 # dynamodb = boto3.resource('dynamodb')
 # table = dynamodb.Table('spypartydraft_test')
 table = None
@@ -67,7 +67,7 @@ draft_types = DraftType.get_draft_type('config/draft_types.json')
 
 
 def generate_room_id():
-    return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
+    return 'sp' + ''.join(random.choice('0123456789abcdef') for _ in range(ROOM_LENGTH))
 
 
 def create_room(id_, draft_type_id):
