@@ -23,7 +23,7 @@
                 <h3>Create a new Draft Room</h3>
                 <form id="create" method="POST" action='#' class="form-inline">
                     <input type="text" name="username" maxlength="32" id="username" placeholder="Username" class="form-control"/>
-                    <select name="draft_type" id="draft_type" class="form-control" />
+                    <select name="draft_type" id="draft_type" class="form-control"></select>
                     <input type="submit" id="create_button" value="Create new Draft Room" class="btn btn-primary" />
                     <div id="create_error"></div>
                 </form>
@@ -93,7 +93,8 @@
                     <h3 id="first_option_header">You've won the coin flip!</h3>
                         <form id="first_option_form" method="POST" action="#">
                             <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick First</label><br />
-                            <input type="radio" name="choice" value="picksecond"id="first_picksecond"  /><label class="control-label" for="first_picksecond">Pick Second</label><br />
+                            <input type="radio" name="choice" value="picksecond" id="first_picksecond"/><label
+                                class="control-label" for="first_picksecond">Pick Second</label><br/>
                             <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Spy First</label><br />
                             <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Spy Second</label><br />
                             <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer Option to Other Player</label></div><br />

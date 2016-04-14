@@ -87,18 +87,18 @@ class Draft:
                 or self.state == STATE_PICKING and self._picking_complete()):
             self.state = NEXT_STATE[self.state]
 
-    def mark_map(self, map):
-        if map is None:
+    def mark_map(self, map_):
+        if map_ is None:
             self.banned_maps.append("Nothing")
         elif self.state.endswith("BANNING"):
-            self.banned_maps.append(map.name)
-            self.map_pool.remove(map)
+            self.banned_maps.append(map_.name)
+            self.map_pool.remove(map_)
         else:
-            map_name = map.map_mode_name()
+            map_name = map_.map_mode_name()
             if self.draft_type.multi_phase and len(self.picked_maps) < 2:
                 map_name = "*DOUBLED* " + map_name
             self.picked_maps.append(map_name)
-            for x in [x for x in self.map_pool if x.family == map.family]:
+            for x in [x for x in self.map_pool if x.family == map_.family]:
                 self.map_pool.remove(x)
         if self.draft_type.multi_phase:
             self._multi_phase_advance_state()
@@ -154,5 +154,4 @@ class Draft:
     def draft_complete(self):
         return self.state == STATE_DRAFT_COMPLETE
 
-    ordinal = lambda self, n: "%d%s" % (n, "tsnrhtdd"[(n / 10 % 10 != 1)*(n % 10 < 4)*n % 10 :: 4])
-
+    ordinal = lambda self, n: "%d%s" % (n, "tsnrhtdd"[(n / 10 % 10 != 1) * (n % 10 < 4) * n % 10:: 4])

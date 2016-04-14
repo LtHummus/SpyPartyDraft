@@ -4,8 +4,8 @@ KEY_LENGTH = 16
 
 
 class Player:
-    def __init__(self, id, name):
-        self.id = id
+    def __init__(self, id_, name):
+        self.id = id_
         self.name = name
         self.key = ''.join(random.choice('0123456789abcdef') for i in range(KEY_LENGTH))
 
