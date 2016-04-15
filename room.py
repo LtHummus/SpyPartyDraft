@@ -1,16 +1,15 @@
-from draft.draft import Draft
-from draft.map import Map
-from draft.draft_type import Draft_type
 import copy
 import datetime
 
-# TOOD: don't keep this hardcoded
+from draft.draft import Draft
+
+# TODO: don't keep this hardcoded
 TOURNEY = "scl_season_1"
 
 
 class Room:
-    def __init__(self, id, server, spectator_broadcast, draft_type):
-        self.id = id
+    def __init__(self, id_, server, spectator_broadcast, draft_type):
+        self.id = id_
         self.player_list = []
         self.spectator_list = []
         self.draft = None
@@ -85,6 +84,5 @@ class Room:
             'first_spy': self.draft.first_spy,
             'state': self.draft.state,
             'user_readable_state': self.draft.user_readable_state(),
-            'draft_type' : self.draft_type.name
+            'draft_type': self.draft_type.name
         }
-

@@ -1,4 +1,17 @@
-#!/usr/bin/env python
+import datetime
+import random
+import time
+import uuid
+from threading import Thread
+
+from flask import Flask, render_template, session, request
+from flask_socketio import SocketIO, emit, join_room, leave_room, \
+    close_room, rooms, disconnect
+
+from draft.drafttype import DraftType
+from room import Room
+
+# !/usr/bin/env python
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -8,15 +21,17 @@ async_mode = None
 if async_mode is None:
     try:
         import eventlet
+
         async_mode = 'eventlet'
-    except ImportError:
+    except ImportError(eventlet):
         pass
 
     if async_mode is None:
         try:
             from gevent import monkey
+
             async_mode = 'gevent'
-        except ImportError:
+        except ImportError(monkey):
             pass
 
     if async_mode is None:
@@ -28,26 +43,15 @@ if async_mode is None:
 # thread
 if async_mode == 'eventlet':
     import eventlet
+
     eventlet.monkey_patch()
 elif async_mode == 'gevent':
     from gevent import monkey
+
     monkey.patch_all()
 
-import time
-import random
-import datetime
-import uuid
-from threading import Thread
-from flask import Flask, render_template, session, request
-from flask_socketio import SocketIO, emit, join_room, leave_room, \
-    close_room, rooms, disconnect
-from room import Room
-from draft.draft_type import Draft_type
-
-import boto3
-
-#dynamodb = boto3.resource('dynamodb')
-#table = dynamodb.Table('spypartydraft_test')
+# dynamodb = boto3.resource('dynamodb')
+# table = dynamodb.Table('spypartydraft_test')
 table = None
 
 app = Flask(__name__)
@@ -56,19 +60,18 @@ socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 dynamo_db_table_name = "spypartydraft_test"
 
-
 ROOM_LENGTH = 5
 
 room_map = {}
-draft_types = Draft_type.get_draft_type('config/draft_types.json')
+draft_types = DraftType.get_draft_type('config/draft_types.json')
 
 
 def generate_room_id():
-    return 'sp' + ''.join(random.choice('0123456789abcdef') for i in range(ROOM_LENGTH))
+    return 'sp' + ''.join(random.choice('0123456789abcdef') for _ in range(ROOM_LENGTH))
 
 
-def create_room(id, draft_type_id):
-    room_map[id] = Room(id, broadcast_to_room, broadcast_to_spectator, draft_types[draft_type_id])
+def create_room(id_, draft_type_id):
+    room_map[id_] = Room(id_, broadcast_to_room, broadcast_to_spectator, draft_types[draft_type_id])
 
 
 def broadcast_to_spectator(spectator_id, data):
@@ -129,18 +132,18 @@ def create(message):
     print "got create message"
     print "username: " + message['data']
     username = message['data'][:32]
-    id = generate_room_id()
-    create_room(id,message['draft_type_id'])
-    room_map[id].player_list.append(username)
-    room_map[id].post_event("{} has joined the room!".format(username))
-    join_room(id)
+    id_ = generate_room_id()
+    create_room(id_, message['draft_type_id'])
+    room_map[id_].player_list.append(username)
+    room_map[id_].post_event("{} has joined the room!".format(username))
+    join_room(id_)
     emit('create_success',
          {
-             'room_id': id,
-             'draft_type' : room_map[id].draft_type.name
+             'room_id': id_,
+             'draft_type': room_map[id_].draft_type.name
          })
-    broadcast_to_room(id, "{} has joined the room!".format(username))
-    broadcast_to_room(id, "Players currently in room: {}".format(' and '.join(room_map[id].player_list)))
+    broadcast_to_room(id_, "{} has joined the room!".format(username))
+    broadcast_to_room(id_, "Players currently in room: {}".format(' and '.join(room_map[id_].player_list)))
 
 
 def broadcast_to_room(room_id, msg):
@@ -148,7 +151,7 @@ def broadcast_to_room(room_id, msg):
     emit('room_broadcast',
          {'msg': msg,
           'room': room_id
-         },
+          },
          room=room_id)
 
 
@@ -239,7 +242,7 @@ def coin_flip(message):
 def get_draft_types():
     dts = []
     for dt_id, dt in draft_types.items():
-        dts.append({'id': dt_id,'name': dt.name,'selected': dt.is_default_draft})
+        dts.append({'id': dt_id, 'name': dt.name, 'selected': dt.is_default_draft})
 
     emit('draft_types_update', dts)
 
@@ -352,7 +355,7 @@ def first_option_form(message):
 
 
 @socketio.on('disconnect_request', namespace='/test')
-def disconnect_request(message):
+def disconnect_request():
     print 'disconnecting'
     disconnect()
 

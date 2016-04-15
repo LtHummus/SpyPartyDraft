@@ -1,3 +1,4 @@
+gevent
 boto3==1.2.3
 botocore==1.3.15
 docutils==0.12

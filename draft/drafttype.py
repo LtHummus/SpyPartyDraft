@@ -3,7 +3,7 @@ import json
 from map import Map
 
 
-class Draft_type:
+class DraftType:
     def __init__(self, name, nr_bans, nr_picks, map_pool_key, multi_phase):
         self.name = name
         self.nr_bans = nr_bans
@@ -18,9 +18,7 @@ class Draft_type:
         with open(file_name) as f:
             data = json.load(f)
             for dt in data["draft_types"]:
-                draft_types[dt['id']] = Draft_type(dt['name'], dt['nr_bans'], dt['nr_picks'], dt['map_pool'], dt['multi_phase'])
+                draft_types[dt['id']] = DraftType(dt['name'], dt['nr_bans'], dt['nr_picks'], dt['map_pool'],
+                                                  dt['multi_phase'])
             draft_types[data["default_draft"]].is_default_draft = 1
         return draft_types
-
-
-
