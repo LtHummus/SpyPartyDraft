@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
     namespace = '/test'; // change to an empty string to use the global namespace
 
     var entityMap = {
@@ -25,44 +25,43 @@ $(document).ready(function(){
     var username = "";
     var draft_id = "";
 
-    socket.on('draft_types_update', function(msg) {
+    socket.on('draft_types_update', function (msg) {
         log_message(msg);
         $('#draft_types').find('option').remove();
-        msg.forEach(function(value, key, list) {
-            var optionElement = $('<option value="'+value['id']+'">' + value['name'] + '</option>');
-            if(value['selected'])
-            {
-                optionElement.attr('selected','selected');
+        msg.forEach(function (value, key, list) {
+            var optionElement = $('<option value="' + value['id'] + '">' + value['name'] + '</option>');
+            if (value['selected']) {
+                optionElement.attr('selected', 'selected');
             }
             $('#draft_type').append(optionElement);
         });
     });
 
-    socket.on('create_success', function(msg) {
+    socket.on('create_success', function (msg) {
         log_message(msg);
         console.log('got join success message');
         var room_id = msg['room_id'];
         $('#room_wrapper').css('display', 'none');
         //$('#create_button').attr('disabled', 'disabled');
         //$('#username').attr('disabled', 'disabled');
-        $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room code to your opponent.<br />The draft type is: ' + msg['draft_type']+'.<br />');
+        $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room code to your opponent.<br />The draft type is: ' + msg['draft_type'] + '.<br />');
     });
 
-    socket.on('join_success', function(msg) {
+    socket.on('join_success', function (msg) {
         log_message(msg);
         console.log('joined room');
         var room_id = msg['room_id'];
         $('#room_wrapper').css('display', 'none');
         $('#join_error').html('');
-        $('#room').html('You are in room <b>' + room_id + '</b><br />The draft type is: ' + msg['draft_type']+'.<br />');
+        $('#room').html('You are in room <b>' + room_id + '</b><br />The draft type is: ' + msg['draft_type'] + '.<br />');
     });
 
-    socket.on('join_error', function(msg) {
+    socket.on('join_error', function (msg) {
         log_message(msg);
         $('#join_error').html(escapeHtml(msg['message']));
     });
 
-    socket.on('room_broadcast', function(msg) {
+    socket.on('room_broadcast', function (msg) {
         log_message(msg);
         console.log('handling room broadcast');
         var roomEl = $('#room');
@@ -70,7 +69,7 @@ $(document).ready(function(){
         roomEl.append('<br />');
     });
 
-    socket.on('draft_start', function(msg) {
+    socket.on('draft_start', function (msg) {
         log_message(msg);
 
         console.log('handling draft start');
@@ -88,7 +87,7 @@ $(document).ready(function(){
         coin_flip_el.css("display", "inline");
 
         $('#map_pool').append($('<h3>Map Pool</h3>'));
-        msg['map_pool'].forEach(function(value, key, list) {
+        msg['map_pool'].forEach(function (value, key, list) {
             //console.log(value['name'] + " -> " + value['slug']);
             var mapElement = $('<div>' + value['name'] + '<br /></div>');
             $('#map_pool').append(mapElement);
@@ -96,7 +95,7 @@ $(document).ready(function(){
     });
 
 
-    socket.on('flip_winner', function(message) {
+    socket.on('flip_winner', function (message) {
         log_message(message);
 
         if (username != message['winner']) {
@@ -108,7 +107,7 @@ $(document).ready(function(){
     });
 
 
-    socket.on('winner_deferred', function(message) {
+    socket.on('winner_deferred', function (message) {
         log_message(message);
         var first_option_el = $('#first_option');
 
@@ -125,7 +124,7 @@ $(document).ready(function(){
 
     });
 
-    socket.on('select_spy_order', function(message) {
+    socket.on('select_spy_order', function (message) {
         log_message(message);
 
         var el = $('#second_option_spy_order');
@@ -139,7 +138,7 @@ $(document).ready(function(){
         el.css('display', 'inline');
     });
 
-    socket.on('select_pick_order', function(message) {
+    socket.on('select_pick_order', function (message) {
         log_message(message);
 
         var el = $('#second_option_pick_order');
@@ -153,23 +152,23 @@ $(document).ready(function(){
         el.css('display', 'inline');
     });
 
-    var redraw_picks_bans = function(message) {
+    var redraw_picks_bans = function (message) {
         $('#draft_bans').html('');
 
-        message['banned_maps'].forEach(function(value, key, list) {
+        message['banned_maps'].forEach(function (value, key, list) {
             var el = $('<li>' + escapeHtml(value['picker']) + ' has banned ' + value['map'] + '</li>');
             $('#draft_bans').append(el);
         });
 
         $('#draft_picks').html('');
 
-        message['picked_maps'].forEach(function(value, key, list) {
+        message['picked_maps'].forEach(function (value, key, list) {
             var el = $('<li>' + escapeHtml(value['picker']) + ' has selected ' + value['map'] + '</li>');
             $('#draft_picks').append(el);
         });
     };
 
-    socket.on('draft_info', function(message) {
+    socket.on('draft_info', function (message) {
         log_message(message);
 
         //hide stuff we don't care about any more
@@ -196,7 +195,7 @@ $(document).ready(function(){
         if (message['current_player'] == username) {
             message['map_pool'].forEach(function (value, key, list) {
                 //console.log(value['name'] + " -> " + value['slug']);
-                var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" id="map_choice_' + value['slug'] + '" /><label for="map_choice_' +  value['slug'] + '">' + value['name'] + '</label><br />');
+                var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" id="map_choice_' + value['slug'] + '" /><label for="map_choice_' + value['slug'] + '">' + value['name'] + '</label><br />');
                 $('#draft_form_options').append(radioButton);
             });
 
@@ -216,7 +215,7 @@ $(document).ready(function(){
         $('#draft_info').css('display', 'inline');
     });
 
-    socket.on('draft_over', function(message) {
+    socket.on('draft_over', function (message) {
         log_message(message);
 
         redraw_picks_bans(message);
@@ -226,18 +225,18 @@ $(document).ready(function(){
         socket.emit('disconnect_request', {room_id: draft_id});
     });
 
-    socket.on('join_error', function(message) {
+    socket.on('join_error', function (message) {
         log_message(msg);
 
         $('#join_error').html(message['message']);
     });
 
-    var log_message = function(msg) {
+    var log_message = function (msg) {
         $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
         console.log('Received: ' + msg);
     };
 
-    socket.on('spectate_join_success', function(message) {
+    socket.on('spectate_join_success', function (message) {
         $('#room_wrapper').css('display', 'none');
         $('#drafting').css('display', 'none');
 
@@ -246,18 +245,18 @@ $(document).ready(function(){
         $('#room').html("you've joined room " + message['room_id']);
     });
 
-    socket.on('spectator_update', function(message) {
+    socket.on('spectator_update', function (message) {
         log_message(message);
 
         var spectateListEl = $('#spectate_list');
         spectateListEl.html('');
 
-        message['events'].forEach(function(item, key, list) {
+        message['events'].forEach(function (item, key, list) {
             spectateListEl.append('<li>' + item + '</li>');
         });
     });
 
-    socket.on('chat_event', function(message) {
+    socket.on('chat_event', function (message) {
         log_message(message);
         var user = escapeHtml(message['talker']);
         var text = escapeHtml(message['text']);
@@ -267,7 +266,7 @@ $(document).ready(function(){
 
     // event handler for server sent data
     // the data is displayed in the "Received" section of the page
-    socket.on('my response', function(msg) {
+    socket.on('my response', function (msg) {
         log_message(msg);
 
         console.log('Received #' + msg.count + ': " + msg.data');
@@ -277,21 +276,21 @@ $(document).ready(function(){
     });
 
     // event handler for new connections
-    socket.on('connect', function() {
+    socket.on('connect', function () {
         socket.emit('my event', {data: 'I\'m connected!'});
     });
 
-    $('form#create').submit(function(event) {
+    $('form#create').submit(function (event) {
         console.log('ok');
         username = $('#username').val();
         if (username == undefined || username === "") {
             return false;
         }
-        socket.emit('create', {data: username,draft_type_id: $('#draft_type').val()});
+        socket.emit('create', {data: username, draft_type_id: $('#draft_type').val()});
         return false;
     });
 
-    $('form#join_draft').submit(function(event) {
+    $('form#join_draft').submit(function (event) {
         console.log('attempting to join room');
         username = $('#join_username').val();
         if (username == undefined || username === "") {
@@ -301,22 +300,24 @@ $(document).ready(function(){
         return false;
     });
 
-    $('form#flip_form').submit(function(event) {
+    $('form#flip_form').submit(function (event) {
         console.log('flipping coin...');
         var f = $('input:radio[name=ht]').filter(":checked").val();
         if (f == undefined)
             return false;
         var flip_data =
-        {username: username,
+        {
+            username: username,
             room_id: draft_id,
-            choice: f};
+            choice: f
+        };
         console.log(flip_data);
         $("#coin_flip").css("display", "none");
         socket.emit('coin_flip', flip_data);
         return false;
     });
 
-    $('form#first_option_form').submit(function(event) {
+    $('form#first_option_form').submit(function (event) {
         console.log('putting choice up');
         var choice = $('input:radio[name=choice]').filter(":checked").val();
         if (choice == undefined)
@@ -332,7 +333,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $('form#second_option_pick_form').submit(function(event) {
+    $('form#second_option_pick_form').submit(function (event) {
         var choice = $('input:radio[name=pick_choice]').filter(":checked").val();
         if (choice == undefined)
             return false;
@@ -349,7 +350,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $('form#second_option_spy_form').submit(function(event) {
+    $('form#second_option_spy_form').submit(function (event) {
         var choice = $('input:radio[name=spy_choice]').filter(":checked").val();
         if (choice == undefined)
             return false;
@@ -366,7 +367,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $('form#draft_form').submit(function(event) {
+    $('form#draft_form').submit(function (event) {
         var choice = $('input:radio[name=map_choice]').filter(":checked").val();
         if (choice == undefined)
             return false;
@@ -383,7 +384,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $('form#spectate_draft').submit(function(event) {
+    $('form#spectate_draft').submit(function (event) {
         var room_id = $('#spectate_room_id').val();
         if (room_id == undefined || room_id === "")
             return false;
@@ -394,7 +395,7 @@ $(document).ready(function(){
         return false;
     });
 
-    $('form#chat_form_form').submit(function(event) {
+    $('form#chat_form_form').submit(function (event) {
         var textEl = $('#chat_form_text');
         var text = textEl.val();
         if (text === "")

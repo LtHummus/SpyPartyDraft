@@ -26,5 +26,3 @@ class Map:
             data = json.load(f)
             tourney_json = data[tourney]
             return [Map(x['name'], x['slug'], x['family']) for x in tourney_json]
-
-
