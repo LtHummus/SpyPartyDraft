@@ -24,6 +24,7 @@ Best way to get a hold of me is on Twitter [@LtHummus](https://twitter.com/LtHum
 * [aforgottentune](https://twitter.com/aforgottentune) -- For help with testing and fixing my typos
 * [checker](https://twitter.com/checker) -- For making the awesome game SpyParty
 * [KrazyCaley](https://twitter.com/krazycaley) -- For creating the SpyParty Competitive League
+* MathMan7 -- for contributing some code cleanup of my terrible code
 * [WarningTrack](http://spypartyfans.com) -- For the awesome CSS
 * sgnurf -- For the contribution to support multiple draft types
 * Everyone in the SpyParty community -- For being awesome (and the Canada of online communities)

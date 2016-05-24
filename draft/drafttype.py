@@ -4,12 +4,20 @@ from map import Map
 
 
 class DraftType:
-    def __init__(self, name, nr_bans, nr_picks, map_pool_key, multi_phase):
+    # TODO: refactor this to not destructure?
+    def __init__(self, name, nr_bans, nr_picks, map_pool_key, multi_phase,
+                 nr_first_rd_bans, nr_first_rd_picks, nr_second_rd_bans,
+                 nr_second_rd_picks, nr_double_picks):
         self.name = name
         self.nr_bans = nr_bans
         self.nr_picks = nr_picks
         self.is_default_draft = 0
         self.multi_phase = multi_phase
+        self.nr_first_rd_bans = nr_first_rd_bans
+        self.nr_first_rd_picks = nr_first_rd_picks
+        self.nr_second_rd_bans = nr_second_rd_bans
+        self.nr_second_rd_picks = nr_second_rd_picks
+        self.nr_double_picks = nr_double_picks
         self.map_pool = Map.generate_map_pool('config/map_pools.json', map_pool_key)
 
     @staticmethod
@@ -19,6 +27,10 @@ class DraftType:
             data = json.load(f)
             for dt in data["draft_types"]:
                 draft_types[dt['id']] = DraftType(dt['name'], dt['nr_bans'], dt['nr_picks'], dt['map_pool'],
-                                                  dt['multi_phase'])
+                                                  dt['multi_phase'], dt['nr_first_rd_bans'],
+                                                  dt['nr_first_rd_picks'],
+                                                  dt['nr_second_rd_bans'],
+                                                  dt['nr_second_rd_picks'],
+                                                  dt['nr_double_picks'])
             draft_types[data["default_draft"]].is_default_draft = 1
         return draft_types
