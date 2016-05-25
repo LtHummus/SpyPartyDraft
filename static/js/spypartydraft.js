@@ -199,7 +199,7 @@ $(document).ready(function () {
                 $('#draft_form_options').append(radioButton);
             });
 
-            if (message['state'].startsWith('BAN')) {
+            if (message['state'].endsWith('BANNING')) {
                 var noBan = $('<input type="radio" name="map_choice" value="nothing" id="map_choice_nothing" /><label for="map_choice_nothing">Refuse to ban</label><br />');
                 $('#draft_form_options').append(noBan);
             }
