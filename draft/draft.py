@@ -97,9 +97,13 @@ class Draft:
             map_name = map_.map_mode_name()
             if self.is_double_pick():
                 map_name = "*DOUBLED* " + map_name
+
+            self.map_pool.remove(map_)
+            if not self.is_double_pick() or not self.draft_type.double_pick_hack:
+                for x in [x for x in self.map_pool if x.family == map_.family]:
+                    self.map_pool.remove(x)
+
             self.picked_maps.append(map_name)
-            for x in [x for x in self.map_pool if x.family == map_.family]:
-                self.map_pool.remove(x)
         if self.draft_type.multi_phase:
             self._multi_phase_advance_state()
         else:

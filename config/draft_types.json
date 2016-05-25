@@ -11,6 +11,7 @@
               "nr_second_rd_bans": 2,
               "nr_second_rd_picks": 2,
               "nr_double_picks": 1,
+              "double_pick_hack": false,
               "map_pool": "scl_season_2",
               "multi_phase": false
             },
@@ -24,6 +25,7 @@
               "nr_second_rd_bans": 2,
               "nr_second_rd_picks": 2,
               "nr_double_picks": 1,
+              "double_pick_hack": false,
               "map_pool": "scl_season_2",
               "multi_phase": true
             },
@@ -37,6 +39,7 @@
               "nr_second_rd_bans": 2,
               "nr_second_rd_picks": 3,
               "nr_double_picks": 2,
+              "double_pick_hack": true,
               "map_pool": "scl_season_2",
               "multi_phase": true
             }
