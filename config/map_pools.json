@@ -2,47 +2,47 @@
   "scl_season_2":
           [
             {
-              "name": "ANY Balcony 2/3",
+              "name": "Balcony ANY 2/3",
               "slug": "balcony23",
               "family": "balcony"
             },
             {
-              "name": "PICK Balcony 2/3",
+              "name": "Balcony PICK 2/3",
               "slug": "balconyp23",
               "family": "balcony"
             },
             {
-              "name": "ANY New Art Ballroom 4/8",
+              "name": "New Art Ballroom ANY 4/8",
               "slug": "nab48",
               "family": "new art ballroom"
             },
             {
-              "name": "ANY New Art Ballroom 4/7",
+              "name": "New Art Ballroom ANY 4/7",
               "slug": "nab47",
               "family": "new art ballroom"
             },
             {
-              "name": "ANY Courtyard 4/6",
+              "name": "Courtyard ANY 4/6",
               "slug": "cy146",
               "family": "courtyard"
             },
             {
-              "name": "ANY Courtyard 4/7",
+              "name": "Courtyard ANY 4/7",
               "slug": "cy147",
               "family": "courtyard"
             },
             {
-              "name": "ANY Courtyard 2 4/6",
+              "name": "Courtyard 2 ANY 4/6",
               "slug": "cy246",
               "family": "courtyard2"
             },
             {
-              "name": "ANY Courtyard 2 4/7",
+              "name": "Courtyard 2 ANY 4/7",
               "slug": "cy247",
               "family": "courtyard2"
             },
             {
-              "name": "ANY Double Modern 3/5",
+              "name": "Double Modern ANY 3/5",
               "slug": "2xm35",
               "family": "double modern"
             },
@@ -52,62 +52,62 @@
               "family": "double modern"
             },
             {
-              "name": "ANY Gallery 4/7",
+              "name": "Gallery ANY 4/7",
               "slug": "gallery47",
               "family": "gallery"
             },
             {
-              "name": "ANY Gallery 4/8",
+              "name": "Gallery ANY 4/8",
               "slug": "gallery48",
               "family": "gallery"
             },
             {
-              "name": "ANY High-rise 3/5",
+              "name": "High-rise ANY 3/5",
               "slug": "highrise35",
               "family": "highrise"
             },
             {
-              "name": "ANY High-rise 4/7",
+              "name": "High-rise ANY 4/7",
               "slug": "highrise47",
               "family": "highrise"
             },
             {
-              "name": "ANY Modern 2/3",
+              "name": "Modern ANY 2/3",
               "slug": "modern23",
               "family": "modern"
             },
             {
-              "name": "PICK Modern 2/3",
+              "name": "Modern PICK 2/3",
               "slug": "modernp23",
               "family": "modern"
             },
             {
-              "name": "ANY Panopticon 5/7",
+              "name": "Panopticon ANY 5/7",
               "slug": "panop57",
               "family": "panopticon"
             },
             {
-              "name": "ANY Panopticon 5/8",
+              "name": "Panopticon ANY 5/8",
               "slug": "panop58",
               "family": "panopticon"
             },
             {
-              "name": "ANY Pub 3/5",
+              "name": "Pub ANY 3/5",
               "slug": "pub35",
               "family": "pub"
             },
             {
-              "name": "ANY Crowded Pub 4/7",
+              "name": "Crowded Pub ANY 4/7",
               "slug": "cpub47",
               "family": "pub"
             },
             {
-              "name": "ANY Veranda 5/7",
+              "name": "Veranda ANY 5/7",
               "slug": "veranda57",
               "family": "veranda"
             },
             {
-              "name": "ANY Veranda 5/8",
+              "name": "Veranda ANY 5/8",
               "slug": "veranda58",
               "family": "veranda"
             }
