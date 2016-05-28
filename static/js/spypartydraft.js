@@ -252,7 +252,7 @@ $(document).ready(function () {
         spectateListEl.html('');
 
         message['events'].forEach(function (item, key, list) {
-            spectateListEl.append('<li>' + item + '</li>');
+            spectateListEl.append('<li>' + item['msg'] + '</li>');
         });
     });
 

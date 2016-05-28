@@ -135,7 +135,11 @@ def create(message):
     id_ = generate_room_id()
     create_room(id_, message['draft_type_id'])
     room_map[id_].player_list.append(username)
-    room_map[id_].post_event("{} has joined the room!".format(username))
+    room_map[id_].post_event({
+        'type': "join_room",
+        'player': username,
+        'msg': "{} has joined the room!".format(username)
+    })
     join_room(id_)
     emit('create_success',
          {
@@ -176,7 +180,11 @@ def join_draft(message):
     join_room(room.id)
     username = message['username'][:32]
     room.player_list.append(username)
-    room.post_event("{} has joined the room!".format(username))
+    room.post_event({
+        'type': "join",
+        'player': username,
+        'msg': "{} has joined the room!".format(username)
+    })
     emit('join_success',
          {
              'room_id': room.id,
@@ -229,7 +237,11 @@ def coin_flip(message):
     else:
         winner = room.draft.player_one
 
-    room.post_event("{} has won the coin flip".format(winner))
+    room.post_event({
+        'type': "coin_flip_winner",
+        'player': winner,
+        'msg': "{} has won the coin flip".format(winner)
+    })
     room.draft.coin_flip_winner = winner
 
     emit('flip_winner', {
@@ -298,10 +310,18 @@ def second_option_pick(message):
     room = room_map[message['room_id']]
     choice = message['choice']
     if choice == 'pickfirst':
-        room.post_event("{} has opted to pick first".format(room.draft.coin_flip_loser()))
+        room.post_event({
+            'type': "pick_first",
+            'player': room.draft.coin_flip_loser(),
+            'msg': "{} has opted to pick first".format(room.draft.coin_flip_loser())
+        })
         room.draft.start_player = room.draft.coin_flip_loser()
     else:
-        room.post_event("{} has opted to pick second".format(room.draft.coin_flip_loser()))
+        room.post_event({
+            'type': "pick_second",
+            'player': room.draft.coin_flip_loser(),
+            'msg': "{} has opted to pick second".format(room.draft.coin_flip_loser())
+        })
         room.draft.start_player = room.draft.coin_flip_winner
     room.draft.start_draft()
     dump_draft(room)
@@ -312,10 +332,18 @@ def second_option_spy(message):
     room = room_map[message['room_id']]
     choice = message['choice']
     if choice == 'spyfirst':
-        room.post_event("{} has opted to spy first".format(room.draft.coin_flip_loser()))
+        room.post_event({
+            'type': "spy_first",
+            'player': room.draft.coin_flip_loser(),
+            'msg': "{} has opted to spy first".format(room.draft.coin_flip_loser())
+        })
         room.draft.first_spy = room.draft.coin_flip_loser()
     else:
-        room.post_event("{} has opted to spy second".format(room.draft.coin_flip_loser()))
+        room.post_event({
+            'type': "spy_second",
+            'player': room.draft.coin_flip_loser(),
+            'msg': "{} has opted to spy_second".format(room.draft.coin_flip_loser())
+        })
         room.draft.first_spy = room.draft.coin_flip_winner
     room.draft.start_draft()
     dump_draft(room)
@@ -329,19 +357,35 @@ def first_option_form(message):
     print "got choice {}".format(choice)
     if choice == "pickfirst":
         room.draft.start_player = room.draft.coin_flip_winner
-        room.post_event("{} has opted to pick first".format(room.draft.coin_flip_winner))
+        room.post_event({
+            'type': "pick_first",
+            'player': room.draft.coin_flip_winner,
+            'msg': "{} has opted to pick first".format(room.draft.coin_flip_winner)
+        })
         ask_spy_order(room, "You opponent has opted to pick first")
     elif choice == "picksecond":
         room.draft.start_player = room.draft.coin_flip_loser()
-        room.post_event("{} has opted to pick second".format(room.draft.coin_flip_winner))
+        room.post_event({
+            'type': "pick_second",
+            'player': room.draft.coin_flip_winner,
+            'msg': "{} has opted to pick second".format(room.draft.coin_flip_winner)
+        })
         ask_spy_order(room, "Your opponent has opted to pick second")
     elif choice == "spyfirst":
         room.draft.first_spy = room.draft.coin_flip_winner
-        room.post_event("{} has opted to spy first".format(room.draft.coin_flip_winner))
+        room.post_event({
+            'type': "spy_first",
+            'player': room.draft.coin_flip_winner,
+            'msg': "{} has opted to spy first".format(room.draft.coin_flip_winner)
+        })
         ask_pick_order(room, "Your opponent has opted to spy first")
     elif choice == "spysecond":
         room.draft.first_spy = room.draft.coin_flip_loser()
-        room.post_event("{} has opted to spy second".format(room.draft.coin_flip_winner))
+        room.post_event({
+            'type': "spy_second",
+            'player': room.draft.coin_flip_winner,
+            'msg': "{} has opted to spy second".format(room.draft.coin_flip_winner)
+        })
         ask_pick_order(room, "Your opponent has opted to spy second")
     elif choice == "defer":
         # we're going to pretend the other player won the flip, but
@@ -373,9 +417,20 @@ def draft_map(message):
             chosen_map_name = chosen_map.map_mode_name()
 
     if room.draft.state.endswith('BANNING'):
-        room.post_event("{} has banned {}".format(room.draft.current_player, chosen_map_name))
+        room.post_event({
+            'type': "map_banned",
+            'map': chosen_map.as_map() if chosen_map else None,
+            'player': room.draft.current_player,
+            'msg': "{} has banned {}".format(room.draft.current_player, chosen_map_name)
+        })
     else:
-        room.post_event("{} has picked {} {}".format(room.draft.current_player, chosen_map_name, " (Doubled) " if room.draft.is_double_pick() else ""))
+        room.post_event({
+            'type': "map_picked",
+            'map': chosen_map.as_map(),
+            'player': room.draft.current_player,
+            'is_doubled': room.draft.is_double_pick(),
+            'msg': "{} has picked {} {}".format(room.draft.current_player, chosen_map_name, " (Doubled) " if room.draft.is_double_pick() else "")
+        })
     room.draft.mark_map(chosen_map)
     dump_draft(room)
 
