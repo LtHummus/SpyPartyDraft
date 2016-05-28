@@ -43,7 +43,7 @@
             },
             {
               "name": "ANY Double Modern 3/5",
-              "slug": "2xp23",
+              "slug": "2xm35",
               "family": "double modern"
             },
             {
@@ -77,8 +77,8 @@
               "family": "modern"
             },
             {
-              "name": "ANY Modern 3/5",
-              "slug": "modern35",
+              "name": "PICK Modern 2/3",
+              "slug": "modernp23",
               "family": "modern"
             },
             {
