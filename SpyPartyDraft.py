@@ -428,6 +428,7 @@ def draft_map(message):
             'type': "map_picked",
             'map': chosen_map.as_map(),
             'player': room.draft.current_player,
+            'is_doubled': room.draft.is_double_pick(),
             'msg': "{} has picked {} {}".format(room.draft.current_player, chosen_map_name, " (Doubled) " if room.draft.is_double_pick() else "")
         })
     room.draft.mark_map(chosen_map)
