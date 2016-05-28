@@ -2,6 +2,7 @@ import datetime
 import random
 import time
 import uuid
+import boto3
 from threading import Thread
 
 from flask import Flask, render_template, session, request
@@ -50,15 +51,15 @@ elif async_mode == 'gevent':
 
     monkey.patch_all()
 
+dynamo_db_table_name = "spypartydraft_test"
 # dynamodb = boto3.resource('dynamodb')
-# table = dynamodb.Table('spypartydraft_test')
+# table = dynamodb.Table(dynamo_db_table_name)
 table = None
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
-dynamo_db_table_name = "spypartydraft_test"
 
 ROOM_LENGTH = 5
 
