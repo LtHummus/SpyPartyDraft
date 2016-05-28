@@ -419,7 +419,7 @@ def draft_map(message):
     if room.draft.state.endswith('BANNING'):
         room.post_event({
             'type': "map_banned",
-            'map': chosen_map.as_map(),
+            'map': chosen_map.as_map() if chosen_map else None,
             'player': room.draft.current_player,
             'msg': "{} has banned {}".format(room.draft.current_player, chosen_map_name)
         })
