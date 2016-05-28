@@ -419,14 +419,14 @@ def draft_map(message):
     if room.draft.state.endswith('BANNING'):
         room.post_event({
             'type': "map_banned",
-            'map': chosen_map,
+            'map': chosen_map.as_map(),
             'player': room.draft.current_player,
             'msg': "{} has banned {}".format(room.draft.current_player, chosen_map_name)
         })
     else:
         room.post_event({
             'type': "map_picked",
-            'map': chosen_map,
+            'map': chosen_map.as_map(),
             'player': room.draft.current_player,
             'msg': "{} has picked {} {}".format(room.draft.current_player, chosen_map_name, " (Doubled) " if room.draft.is_double_pick() else "")
         })
