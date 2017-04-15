@@ -1,5 +1,5 @@
 {
-  "scl_season_2":
+  "scl_season_3":
           [
             {
               "name": "Balcony ANY 2/3",
@@ -67,8 +67,8 @@
               "family": "highrise"
             },
             {
-              "name": "High-rise ANY 4/7",
-              "slug": "highrise47",
+              "name": "High-rise ANY 4/8 (12 Guests, 3 min)",
+              "slug": "highrise48",
               "family": "highrise"
             },
             {
@@ -92,22 +92,22 @@
               "family": "panopticon"
             },
             {
-              "name": "Pub ANY 3/5",
+              "name": "Pub ANY 3/5 (3:15)",
               "slug": "pub35",
               "family": "pub"
             },
             {
-              "name": "Crowded Pub ANY 4/7",
+              "name": "Pub ANY 3/4 (16 guests)",
               "slug": "cpub47",
               "family": "pub"
             },
             {
-              "name": "Veranda ANY 5/7",
+              "name": "New Art Veranda ANY 5/7",
               "slug": "veranda57",
               "family": "veranda"
             },
             {
-              "name": "Veranda ANY 5/8",
+              "name": "New Art Veranda ANY 5/8",
               "slug": "veranda58",
               "family": "veranda"
             }
