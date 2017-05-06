@@ -11,6 +11,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, \
 
 from draft.drafttype import DraftType
 from room import Room
+from draft.upload_draft_to_manager import Uploader
 
 # !/usr/bin/env python
 
@@ -65,6 +66,7 @@ ROOM_LENGTH = 5
 
 room_map = {}
 draft_types = DraftType.get_draft_type('config/draft_types.json')
+uploader = Uploader()
 
 
 def generate_room_id():
@@ -277,21 +279,9 @@ def ask_pick_order(room, msg):
 
 
 def persist_draft(room):
-    data = {
-        'picks': room.draft.picked_maps,
-        'bans': room.draft.banned_maps,
-        'player1': room.draft.player_one,
-        'player2': room.draft.player_two,
-        'time': int(time.mktime(datetime.datetime.now().timetuple())),
-        'first_pick': room.draft.start_player,
-        'first_spy': room.draft.first_spy,
-        'uuid': str(uuid.uuid4()),
-        'room_id': room.id
-    }
-
-    if table is not None:
-        table.put_item(Item=data)
-        print "persisted item for room: {}".format(room.id)
+    print "Uploading..."
+    uploader.upload_room(room)
+    print "Maybe uploaded?"
 
 
 def dump_draft(room):

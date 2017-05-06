@@ -1,3 +1,4 @@
+
 STATE_NOT_STARTED = "NOT_STARTED"
 STATE_COIN_FLIPPED = "COIN_FLIPPED"
 STATE_DRAFT_COMPLETE = "COMPLETE"
@@ -173,61 +174,3 @@ class Draft:
     @staticmethod
     def ordinal(n):
         return "%d%s" % (n, "tsnrhtdd"[(n / 10 % 10 != 1) * (n % 10 < 4) * n % 10:: 4])
-
-
-def get_map_by_name(name, pool):
-    return [x for x in pool if x.slug == name][0]
-
-if __name__ == '__main__':
-    from map import Map
-    from drafttype import DraftType
-
-    # (self, room_id, player_one, player_two, map_pool, draft_type):
-    map_pool = Map.generate_map_pool('config/map_pools.json', "scl_season_2")
-    draft_types = DraftType.get_draft_type('config/draft_types.json')
-    print draft_types
-
-    draft = Draft("foo", "LtHummus", "whammer100_", map_pool, draft_types['DIVISION_CHAMP'])
-
-    print draft.flip_coin("LtHummus")
-    print draft.state
-    draft.start_player = "LtHummus"
-    draft.first_spy = "LtHummus"
-    print draft.state
-    draft.start_draft()
-    print draft.state
-    print draft.user_readable_state()
-
-    draft.mark_map(get_map_by_name('balcony23', map_pool))
-    draft.mark_map(get_map_by_name('nab48', map_pool))
-    draft.mark_map(get_map_by_name('cy146', map_pool))
-    draft.mark_map(get_map_by_name('cy147', map_pool))
-
-    print draft.user_readable_state()
-    # at this point, we pick the "doubles"
-
-    draft.mark_map(get_map_by_name('cy247', map_pool))
-    draft.mark_map(get_map_by_name('2xp23', map_pool))
-    print draft.user_readable_state()
-
-    # now we ban 4 more maps
-    draft.mark_map(get_map_by_name('balconyp23', map_pool))
-    draft.mark_map(get_map_by_name('nab47', map_pool))
-    draft.mark_map(get_map_by_name('gallery47', map_pool))
-    draft.mark_map(get_map_by_name('gallery48', map_pool))
-    print draft.user_readable_state()
-
-    # 4 more picks
-
-    draft.mark_map(get_map_by_name('highrise35', map_pool))
-    draft.mark_map(get_map_by_name('modern23', map_pool))
-    draft.mark_map(get_map_by_name('panop58', map_pool))
-    draft.mark_map(get_map_by_name('pub35', map_pool))
-    print draft.user_readable_state()
-
-    print draft.state
-    print draft.banned_maps
-    print draft.picked_maps
-    print draft.draft_complete()
-    print draft.user_readable_state()
-
