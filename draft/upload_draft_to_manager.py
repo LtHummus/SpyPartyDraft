@@ -14,8 +14,8 @@ class Uploader:
     def upload_room(self, room):
         payload = {
             'room_code': room.id,
-            'player_1': room.player_list[0],
-            'player_2': room.player_list[1],
+            'player_1': room.player_list[0].lower(),
+            'player_2': room.player_list[1].lower(),
             'payload': room.serialize()
         }
 
