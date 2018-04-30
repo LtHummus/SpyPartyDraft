@@ -1,116 +1,55 @@
 {
-  "scl_season_3":
+  "scl_season_4":
           [
             {
-              "name": "Balcony ANY 2/3",
+              "name": "Balcony Any 2/3",
               "slug": "balcony23",
               "family": "balcony"
             },
             {
-              "name": "Balcony PICK 2/3",
-              "slug": "balconyp23",
-              "family": "balcony"
+              "name": "Ballroom Any 4/8",
+              "slug": "ballroom48",
+              "family": "ballroom"
             },
             {
-              "name": "New Art Ballroom ANY 4/8",
-              "slug": "nab48",
-              "family": "new art ballroom"
-            },
-            {
-              "name": "New Art Ballroom ANY 4/7",
-              "slug": "nab47",
-              "family": "new art ballroom"
-            },
-            {
-              "name": "Courtyard ANY 4/6",
-              "slug": "cy146",
+              "name": "Courtyard Any 4/7",
+              "slug": "courtyard47",
               "family": "courtyard"
             },
             {
-              "name": "Courtyard ANY 4/7",
-              "slug": "cy147",
-              "family": "courtyard"
-            },
-            {
-              "name": "Courtyard 2 ANY 4/6",
-              "slug": "cy246",
-              "family": "courtyard2"
-            },
-            {
-              "name": "Courtyard 2 ANY 4/7",
-              "slug": "cy247",
-              "family": "courtyard2"
-            },
-            {
-              "name": "Double Modern ANY 3/5",
-              "slug": "2xm35",
-              "family": "double modern"
-            },
-            {
-              "name": "Double Modern Known 2",
-              "slug": "2xmk2",
-              "family": "double modern"
-            },
-            {
-              "name": "Gallery ANY 4/7",
-              "slug": "gallery47",
-              "family": "gallery"
-            },
-            {
-              "name": "Gallery ANY 4/8",
+              "name": "Gallery Any 4/8",
               "slug": "gallery48",
               "family": "gallery"
             },
             {
-              "name": "High-rise ANY 3/5",
+              "name": "High-Rise Any 3/5",
               "slug": "highrise35",
               "family": "highrise"
             },
             {
-              "name": "High-rise ANY 4/8 (12 Guests, 3 min)",
-              "slug": "highrise48",
-              "family": "highrise"
+              "name": "Library Any 5/8",
+              "slug": "library58",
+              "family": "library"
             },
             {
-              "name": "Modern ANY 2/3",
-              "slug": "modern23",
-              "family": "modern"
+              "name": "Moderne Any 5/8",
+              "slug": "moderne58",
+              "family": "moderne"
             },
             {
-              "name": "Modern PICK 2/3",
-              "slug": "modernp23",
-              "family": "modern"
-            },
-            {
-              "name": "Panopticon ANY 5/7",
-              "slug": "panop57",
-              "family": "panopticon"
-            },
-            {
-              "name": "Panopticon ANY 5/8",
-              "slug": "panop58",
-              "family": "panopticon"
-            },
-            {
-              "name": "Pub ANY 3/5 (3:15)",
-              "slug": "pub35",
+              "name": "Pub Any 4/7",
+              "slug": "pub47",
               "family": "pub"
             },
             {
-              "name": "Pub ANY 4/7 (16 guests)",
-              "slug": "cpub47",
-              "family": "pub"
+              "name": "Terrace Any 3/5",
+              "slug": "terrace35",
+              "family": "terrace"
             },
             {
-              "name": "New Art Veranda ANY 5/7",
-              "slug": "veranda57",
-              "family": "veranda"
-            },
-            {
-              "name": "New Art Veranda ANY 5/8",
+              "name": "Veranda Any 5/8",
               "slug": "veranda58",
               "family": "veranda"
             }
-
           ]
 }
