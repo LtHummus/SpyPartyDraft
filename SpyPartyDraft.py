@@ -390,7 +390,7 @@ def first_option_form(message):
 
 
 @socketio.on('disconnect_request', namespace='/test')
-def disconnect_request():
+def disconnect_request(req):
     print 'disconnecting'
     disconnect()
 
