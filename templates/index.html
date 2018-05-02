@@ -23,7 +23,7 @@
                 <h3>Create a new Draft Room</h3>
                 <form id="create" method="POST" action='#' class="form-inline">
                     <input type="text" name="username" maxlength="32" id="username" placeholder="Username" class="form-control"/>
-                    <input type="submit" id="create_button" value="Create new Draft Room" class="btn btn-primary"/>
+                    <button type="submit" id="create_button" class="btn-spyparty">CREATE DRAFT</button>
                     <select name="draft_type" id="draft_type" class="form-control" style="width: 390px; "></select>
                     <div id="create_error"></div>
                 </form>
@@ -33,7 +33,7 @@
                 <form id="join_draft" method="POST" action='#' class="form-inline">
                     <input type="text" name="username" id="join_username" maxlength="32" placeholder="Username" class="form-control"/>
                     <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" class="form-control"/>
-                    <input type="submit" id="join_button" value="Join a Room" class="btn btn-primary" />
+                    <button type="submit" id="join_button" class="btn-spyparty">JOIN DRAFT</button>
                     <div id="join_error" style="color:red; font-weight: bold"></div>
                 </form>
             </div>
@@ -41,7 +41,7 @@
                 <h3>Spectate a Draft</h3>
                 <form id="spectate_draft" method="POST" action="#" class="form-inline">
                     <input type="text" name="room_id" maxlength="32" id="spectate_room_id" placeholder="Room Code" class="form-control">
-                    <input type="submit" id="spectate_button" value="Spectate a Draft" class="btn btn-primary" />
+                    <button type="submit" id="spectate_button" class="btn-spyparty">SPECTATE DRAFT</button>
                     <div id="spectate_error"></div>
                 </form>
             </div>
@@ -65,7 +65,7 @@
             <form id="draft_form" method="POST" action="#" style="display: none;">
                 <div id="draft_form_message"></div>
                 <div id="draft_form_options"></div>
-                <input type="submit" value="Submit" />
+                <button type="submit" class="btn-spyparty">SUBMIT</button>
             </form>
 
         </div>
@@ -85,7 +85,7 @@
                     <form id="flip_form" method="POST" action="#">
                         <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
                         <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br />
-                        <input type="submit" name="flip_button" value="Flip" />
+                        <button type="submit" name="flip_button" class="btn-spyparty">FLIP</button>
                     </form>
                 </div>
                 <div id="first_option_msg"></div>
@@ -98,7 +98,7 @@
                             <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Spy First</label><br />
                             <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Spy Second</label><br />
                             <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer Option to Other Player</label></div><br />
-                            <input type="submit" name="first_option_form" value="This is my choice" /><br />
+                            <button type="submit" name="first_option_form" class="btn-spyparty">SUBMIT</button><br />
                         </form>
                 </div>
                 <div id="second_option_pick_order" style="display: none">
@@ -106,7 +106,7 @@
                     <form id="second_option_pick_form" method="POST" action="#">
                         <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick First</label><br />
                         <input type="radio" name="pick_choice" value="picksecond" id="second_picksecond" /><label for="second_picksecond">Pick Second</label><br />
-                        <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+                        <button type="submit" name="first_option_form" class="btn-spyparty">SUBMIT</button><br />
                     </form>
                 </div>
                 <div id="second_option_spy_order" style="display: none">
@@ -114,7 +114,7 @@
                     <form id="second_option_spy_form" method="POST" action="#">
                         <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Spy First</label><br />
                         <input type="radio" name="spy_choice" value="spysecond" id="second_spysecond" /><label for="second_spysecond">Spy Second</label><br />
-                        <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+                        <button type="submit" name="first_option_form" class="btn-spyparty">SUBMIT</button><br />
                     </form>
                 </div>
                 <h2>Drafting</h2>
@@ -235,7 +235,7 @@
         <div id="chat_form">
             <form action="#" method="POST" id="chat_form_form">
                 <input type="text" placeholder="chat here" id="chat_form_text" maxlength="128" autocomplete="off" />
-                <input type="submit" value="Talk talk talk" />
+                <button type="submit" class="btn-primary">Speak</button>
             </form>
         </div>
     </div>

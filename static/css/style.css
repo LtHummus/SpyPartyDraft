@@ -113,7 +113,7 @@ hr {
   background-color: #444;
 }
 
-input[type=text], input[type=number], input[type=date], input[type=submit], input[type=email], input[type=url], select, option, .button, .button:visited {
+input[type=text], input[type=number], input[type=date], .btn-primary, input[type=email], input[type=url], select, option, .button, .button:visited {
   font-family: 'agencyfb', sans-serif;
   height: 55px;
   padding: 10px;
@@ -127,7 +127,7 @@ input[type=text], input[type=number], input[type=date], input[type=submit], inpu
   text-decoration: none;
 }
 
-select, option, input[type="submit"], .button, .button:visited {
+select, option, .button, .button:visited {
   height: 50px;
 }
 
@@ -138,22 +138,9 @@ input[type="text"], input[type="email"], input[type="url"] {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
-input[type="submit"], .button, .button:visited {
-  padding: 15px 0;
-  border: 0;
-  background-color: #A8DFF4;
-  color: #4e6e92;
-  font-size: 18px;
-  height: 50px;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  text-transform: uppercase;
-}
 
-input[type="submit"]:hover, .button:hover, .button:visited:hover {
-  cursor: pointer;
-  background-color: #c8ecf8;
-}
+
+
 
 textarea {
   font-size: 16px;
@@ -193,10 +180,61 @@ off{
   width: 60%;
 }
 
-input[type="submit"] {
+.btn-primary {
   width: 30%;
   margin-left: 8%;
 }
+
+.btn-primary {
+  padding: 15px 0;
+  border: 0;
+  background-color: #A8DFF4;
+  color: #4e6e92;
+  font-size: 18px;
+  height: 50px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  cursor: pointer;
+  background-color: #c8ecf8;
+}
+
+
+
+
+.btn-spyparty{
+  min-width: 225px;
+  height: 60px;
+  font-size:24px;
+  line-height: 24px;
+  color: #3e8afd;
+  /* Permalink - use to edit and share this gradient: 
+      http://colorzilla.com/gradient-editor/#082463+0,0e3da3+50,082463+100 
+  */
+  background: rgb(8,36,99); /* Old browsers #082463 */
+  background: -moz-linear-gradient(left, rgba(8,36,99,1) 0%, rgba(14,61,163,1) 50%, rgba(8,36,99,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, rgba(8,36,99,1) 0%,rgba(14,61,163,1) 50%,rgba(8,36,99,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, rgba(8,36,99,1) 0%,rgba(14,61,163,1) 50%,rgba(8,36,99,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  border:3px solid #3e8afd;
+  cursor:pointer;
+  filter: brightness(75%);
+}
+
+.btn-spyparty:hover{
+  filter: brightness(100%);
+}
+
+.btn-spyparty:active{
+  transform: translate(0px, 2px);
+}
+
+.btn-spyparty:hover:active{
+  box-shadow: 0px 5px 50px 0px #3e8afd;
+}
+
 
 #join_draft input[type="text"] {
   width: 29%;
@@ -257,6 +295,7 @@ input[type="submit"] {
 }
 
 .nohighlight {
+  user-select:none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
 }
