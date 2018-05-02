@@ -87,9 +87,12 @@ $(document).ready(function () {
         coin_flip_el.css("display", "inline");
 
         $('#map_pool').append($('<h3>Map Pool</h3>'));
-        msg['map_pool'].forEach(function (value, key, list) {
+        msg['map_pool'].forEach((value, key, list) => {
+            console.log(value);
+            let family = value['family'];
+            let name = value['name'];
             //console.log(value['name'] + " -> " + value['slug']);
-            var mapElement = $('<div>' + value['name'] + '<br /></div>');
+            var mapElement = $(`<div class='map col-xs-3'><img class="map-thumbnail" src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></div>`);
             $('#map_pool').append(mapElement);
         });
     });
@@ -192,10 +195,16 @@ $(document).ready(function () {
 
         $('#draft_form_options').html('');
 
+        //<label for="map_choice_' + value['slug'] + '">' + value['name'] + '</label><br />
+
         if (message['current_player'] == username) {
-            message['map_pool'].forEach(function (value, key, list) {
+            message['map_pool'].forEach((value, key, list) => {
                 //console.log(value['name'] + " -> " + value['slug']);
-                var radioButton = $('<input type="radio" name="map_choice" value="' + value['slug'] + '" id="map_choice_' + value['slug'] + '" /><label for="map_choice_' + value['slug'] + '">' + value['name'] + '</label><br />');
+                let slug = value['slug'];
+                let family = value['family'];
+                let name = value['name'];
+
+                let radioButton = $(`<label class="map-label col-xs-3"><input type="radio" name="map_choice" value="${slug}" id="map_choice_${slug}" class="map-radio"/><img src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></label>`);
                 $('#draft_form_options').append(radioButton);
             });
 
