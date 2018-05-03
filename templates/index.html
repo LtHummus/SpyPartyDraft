@@ -167,12 +167,14 @@
                         $('#changelog').append($changeSetTemplate);
                     });   
                     $('#showAllChangeSetsBtn').click(() => {
-                        $('.collapse').show();
+                        $('.collapse').collapse('show');
                     });
 
                     $('#hideAllChangeSetsBtn').click(() => {
-                        $('.collapse').hide();
+                        $('.collapse').collapse('hide');
                     });
+
+
                  });
 
                  
