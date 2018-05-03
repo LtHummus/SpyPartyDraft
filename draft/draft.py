@@ -51,6 +51,8 @@ class Draft:
     def flip_coin(self, winner):
         self.coin_flip_winner = winner
         self.state = STATE_COIN_FLIPPED
+        return winner
+
 
     def coin_flip_loser(self):
         if self.coin_flip_winner == self.player_one:

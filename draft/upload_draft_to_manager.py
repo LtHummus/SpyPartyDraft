@@ -19,9 +19,16 @@ class Uploader:
             'payload': room.serialize()
         }
 
-        request = requests.post(self.url, json=payload, headers={"Authentication": self.psk})
+        try:
+            request = requests.post(self.url, json=payload, headers={"Authentication": self.psk})
+            print request.status_code
+            # if(request.status_code != OK) then handle it or log it ?
+        except:
+            file = open("log/payload.log", "a")
+            file.write(json.dumps(payload))
+            print 'Upload Failed. Appending payload to log file.'
 
-        print request.status_code
+        
 
 
 
