@@ -167,6 +167,7 @@ textarea {
 }
 .map-label > .map-radio:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
   border:2px solid #f00;
+  filter: brightness(150%);
 }
 
 
