@@ -69,3 +69,6 @@ jrebel.lic
 # paulp script
 /.lib/
 
+
+# vscode
+.vscode
