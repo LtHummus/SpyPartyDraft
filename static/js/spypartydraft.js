@@ -242,7 +242,8 @@ $(document).ready(function () {
 
     var log_message = function (msg) {
         $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
-        console.log('Received: ' + msg);
+        console.log('Received: ');
+        console.log(msg);
     };
 
     socket.on('spectate_join_success', function (message) {
@@ -278,7 +279,7 @@ $(document).ready(function () {
     socket.on('my response', function (msg) {
         log_message(msg);
 
-        console.log('Received #' + msg.count + ': " + msg.data');
+        console.log('Received #' + msg.count + ': '  + msg.data);
         $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
 
 
