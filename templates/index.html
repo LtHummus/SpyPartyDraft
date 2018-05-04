@@ -5,13 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SpyParty Tournament Drafting</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link href="static/css/style.css" rel="stylesheet">
-
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <!--jQuery-->
+    <script 
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" >
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <!--SocketIO-->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <!--SpyPartyDraft-->
+    <link href="static/css/style.css" rel="stylesheet">
     <script type="text/javascript" src="/static/js/spypartydraft.js"></script>
+    <script type="text/javascript" src="/static/js/changelog.js"></script>
 </head>
 <body>
 <a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
@@ -140,92 +147,10 @@
                 to make this work (it has to support web sockets).</p>
 
             <h2>What's New</h2>
-            <p>Version 0.0.13</p>
-            <ul>
-                <li>Changed Map Pool/Drafting Configuration to Season 4 Rules</li>
-            </ul>
-            <p>Version 0.0.12</p>
-            <ul>
-                <li>Change map pool to Season 3</li>
-                <li>Integrate with SCL Manager</li>
-            </ul>
-            <p>Version 0.0.11</p>
-            <ul>
-                <li>Reword map choices from ANY Map 3/5 to Map ANY 3/5</li>
-                <li>Finished implementing playoff draft types</li>
-                <li>Changed spectator message protocol for easier parsing by 3rd party tools</li>
-            </ul>
-            <p>Version 0.0.10</p>
-            <ul>
-                <li>Changed things around for SCL Season 2</li>
-                <li>Things are not 100% with playoff/league championship drafting</li>
-            </ul>
-            <p>Version 0.0.9</p>
-            <ul>
-                <li>Fixed bugs with non-regular match being default</li>
-            </ul>
-            <p>Version 0.0.8c</p>
-            <ul>
-                <li>Refactor JavaScript code in to its own file</li>
-                <li>Fixed font loading</li>
-            </ul>
-            <p>Version 0.0.8b</p>
-            <ul>
-                <li>Limited usernames to 32 chars</li>
-                <li>Limited chat messages to 128 chars</li>
-            </ul>
-            <p>Version 0.0.8</p>
-            <ul>
-                <li>Added some style (thanks WarningTrack!)</li>
-                <li>Switched to pull bootstrap from a CDN</li>
-                <li>Fixed phrasing for when you select spy order instead of pick order</li>
-            </ul>
-            <p>Version 0.0.7</p>
-            <ul>
-                <li>Added draft mode for Hazard/Championship Matches (thanks sgnurf)</li>
-                <li>Made room creation/joining form uglier</li>
-                <li>Give error when user attempts to join room with two players already</li>
-                <li>Behind the scenes cleanup to make adding tourneys easier in the future</li>
-            </ul>
-            <p>Version 0.0.6</p>
-            <ul>
-                <li>Added ability to chat with opponent (spectators can not see chat)</li>
-                <li>Prevented HTML/JS injection attacks</li>
-                <li>Now the draft tool saves drafts to a database so we can do some ~data analysis~ after the tournament</li>
-            </ul>
-            <p>Version 0.0.5b</p>
-            <ul>
-                <li>Fixed bug with PICK and ANY with Crowded Pub and New Art Ballroom</li>
-            </ul>
-            <p>Version 0.0.5</p>
-            <ul>
-                <li>Added ability to distinguish PICK and ANY for maps.</li>
-            </ul>
-            <p>Version 0.0.4</p>
-            <ul>
-                <li>Added draft spectation.  Once a room has been created, others can watch the draft take place in real time!</li>
-            </ul>
-            <p>Version 0.0.3</p>
-            <ul>
-                <li>Fixed not removing map variations when a map was picked (i.e. can't pick Courtyard more than once)</li>
-                <li>Fixed being able to submit a form with a choice not selected</li>
-                <li>Fixed being able to have an empty username</li>
-                <li>Added ability to refuse to ban a map (you're welcome, canadianbac0nz)</li>
-                <li>Added this news item :)</li>
-            </ul>
-            <p>Version 0.0.2b</p>
-            <ul>
-                <li>Fixed panop configuration (4/8 -> 5/8)</li>
-            </ul>
-            <p>Version 0.0.2</p>
-            <ul>
-                <li>Added some more text to home page.</li>
-                <li>Changed some wording around</li>
-            </ul>
-            <p>Version 0.0.1</p>
-            <ul>
-                <li>Initial release!</li>
-            </ul>
+
+            <button id="showAllChangeSetsBtn" class="btn">Show All</button> 
+            <button id="hideAllChangeSetsBtn" class="btn">Hide All</button>
+            <div id="changelog" class="accordion"></div>
 
         </div>
     </div>
@@ -240,6 +165,6 @@
         </div>
     </div>
 </div>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
 </body>
 </html>
