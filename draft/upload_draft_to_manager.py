@@ -1,5 +1,6 @@
 import json
 import requests
+import datetime
 
 
 class Uploader:
@@ -19,9 +20,15 @@ class Uploader:
             'payload': room.serialize()
         }
 
-        request = requests.post(self.url, json=payload, headers={"Authentication": self.psk})
-
-        print request.status_code
+        try:
+            request = requests.post(self.url, json=payload, headers={"Authentication": self.psk})
+            print request.status_code
+        except: 
+            logFile = open("log/payload.log", "a")
+            logFile.write(datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y\n"))
+            logFile.write(json.dumps(payload))
+            logFile.write('\n***********************\n')
+            print "Upload Failed. Appending payload to log."
 
 
 
