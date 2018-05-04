@@ -9,6 +9,7 @@ $(document).ready(() => {
             let $itemsTemplate = $(`<div id="collapse${index}" class="collapse"><div class="card-body"></div></div>`);
             if(index == 0){
                 $itemsTemplate.addClass('show');
+                $('.version-number').text(version);
             }
             $(changeSet).find('item').each( (index, element)  => {
                 let item = $(element).attr('text');
