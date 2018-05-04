@@ -41,18 +41,17 @@ $(document).ready(function () {
         log_message(msg);
         console.log('got join success message');
         var room_id = msg['room_id'];
-        $('#room_wrapper').css('display', 'none');
-        //$('#create_button').attr('disabled', 'disabled');
-        //$('#username').attr('disabled', 'disabled');
-        $('#room').html('You are in room <b>' + room_id + '</b>.  Give this room code to your opponent.<br />The draft type is: ' + msg['draft_type'] + '.<br />');
+        DOM.goToRoom();
+
+
+        $('#room').html(`You are in room <b>${room_id}</b>.  Give this room code to your opponent.<br />The draft type is:${msg['draft_type']}.<br />`);
     });
 
     socket.on('join_success', function (msg) {
         log_message(msg);
         console.log('joined room');
         var room_id = msg['room_id'];
-        $('#room_wrapper').css('display', 'none');
-        $('#join_error').html('');
+        DOM.goToRoom();
         $('#room').html('You are in room <b>' + room_id + '</b><br />The draft type is: ' + msg['draft_type'] + '.<br />');
     });
 
@@ -76,37 +75,49 @@ $(document).ready(function () {
 
         draft_id = msg['room_id'];
 
-        $('#chat_wrapper').css('visibility', 'visible');
+       
+        $('#draft_container').css('display', 'block');
 
-        var coin_flip_el = $('#coin_flip');
+        var $coin_flip_el = $('#coin_flip');
 
         if (username === msg['player_one']) {
-            coin_flip_el.html("Waiting for coin flip...");
+            $coin_flip_el.html("Waiting for coin flip...");
         }
 
-        coin_flip_el.css("display", "inline");
+        $coin_flip_el.show();
 
         $('#map_pool').append($('<h3>Map Pool</h3>'));
+        $('#map_pool').append($('<div class="row"></div>'))
         msg['map_pool'].forEach((value, key, list) => {
-            console.log(value);
             let family = value['family'];
             let name = value['name'];
-            //console.log(value['name'] + " -> " + value['slug']);
-            var mapElement = $(`<div class='map col-xs-3'><img class="map-thumbnail" src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></div>`);
-            $('#map_pool').append(mapElement);
+            var mapElement = $(`<div class='map col-3'><img class="map-thumbnail" src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></div>`);
+            $('#map_pool .row').append(mapElement);
         });
     });
 
 
-    socket.on('flip_winner', function (message) {
+    socket.on('coin_chosen', (message) => {
         log_message(message);
 
-        if (username != message['winner']) {
-            $('#first_option_msg').html("You have lost the coin flip.  Waiting on opponent");
-        } else {
-            $('#first_option').css("display", "inline");
-        }
+        var $coin_flip_el = $('#coin_flip');
 
+        if (username === message['player_one']) {
+            $coin_flip_el.html(`Waiting for coin flip... ${message['message']}`);
+        }
+    });
+
+    socket.on('flip_winner', function (message) {
+        log_message(message);
+        
+        DOM.flipCoin(message['flip_result']).then(done => {
+            if (username != message['winner']) {
+                $('#first_option_msg').html("You have lost the coin flip.  Waiting on opponent");
+            } else {
+                $('#first_option').show();
+                $('#coin_flip').hide();
+            }
+        });
     });
 
 
@@ -114,7 +125,7 @@ $(document).ready(function () {
         log_message(message);
         var first_option_el = $('#first_option');
 
-        $('#first_option_msg').css('display', 'inline');
+        $('#first_option_msg').show();
 
         if (username != message['picker']) {
             first_option_el.html("You have deferred your pick.  Waiting on opponent...");
@@ -123,7 +134,7 @@ $(document).ready(function () {
             $('#first_defer_radio').remove();
         }
 
-        first_option_el.css('display', 'inline');
+        first_option_el.show();
 
     });
 
@@ -137,8 +148,9 @@ $(document).ready(function () {
         } else {
             el.html("Waiting on opponent to pick spy order...");
         }
+        $('#coin_flip').hide();
 
-        el.css('display', 'inline');
+        el.show();
     });
 
     socket.on('select_pick_order', function (message) {
@@ -175,13 +187,13 @@ $(document).ready(function () {
         log_message(message);
 
         //hide stuff we don't care about any more
-        $('#create_form_wrapper').css('display', 'none');
-        $('#join_form_wrapper').css('display', 'none');
-        $('#room_info').css('display', 'none');
-        $('#coin_flip').css('display', 'none');
-        $('#second_option_pick_order').css('display', 'none');
-        $('#second_option_spy_order').css('display', 'none');
-        $('#first_option_msg').css('display', 'none');
+        $('#create_form_wrapper').hide();
+        $('#join_form_wrapper').hide();
+        $('#room_info').hide();
+        $('#coin_flip').hide();
+        $('#second_option_pick_order').hide();
+        $('#second_option_spy_order').hide();
+        $('#first_option_msg').hide();
 
         $('#draft_info_draft_type').html("Draft type: " + escapeHtml(message['draft_type']) + "<br />");
         $('#draft_info_current_player').html("Current player: " + escapeHtml(message['current_player']) + "<br />");
@@ -204,32 +216,43 @@ $(document).ready(function () {
                 let family = value['family'];
                 let name = value['name'];
 
-                let radioButton = $(`<label class="map-label col-xs-3"><input type="radio" name="map_choice" value="${slug}" id="map_choice_${slug}" class="map-radio"/><img src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></label>`);
+                let radioButton = $(`<label class="map-label col-3"><input type="radio" name="map_choice" value="${slug}" id="map_choice_${slug}" class="map-radio"/><img src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></label>`);
                 $('#draft_form_options').append(radioButton);
             });
 
+
+            $('#draft_form_options').removeClass('banning');
+            $('#draft_form_options').removeClass('picking');
             if (message['state'].endsWith('BANNING')) {
                 var noBan = $('<input type="radio" name="map_choice" value="nothing" id="map_choice_nothing" /><label for="map_choice_nothing">Refuse to ban</label><br />');
                 $('#draft_form_options').append(noBan);
+                $('#draft_form_options').addClass('banning');
+            }else if (message['state'].endsWith('PICKING')){
+                $('#draft_form_options').addClass('picking');
             }
             userMessage = "<h2>" + message['user_readable_state'] + "</h2>";
-            $('#draft_form').css('display', 'inline');
+            $('#draft_form').show();
+            $('#draft_container').hide();
+
         } else {
             userMessage = "<h2> Waiting for " + message['user_readable_state'] + "</h2>";
-            $('#draft_form').css('display', 'none');
+            $('#draft_form').hide();
+            $('#draft_container').show();
         }
 
         $('#draft_form_message').html(userMessage);
 
-        $('#draft_info').css('display', 'inline');
+        $('#draft_info').show();
     });
 
     socket.on('draft_over', function (message) {
         log_message(message);
 
         redraw_picks_bans(message);
-        $('#draft_form').css('display', 'none');
-        $('#chat_form').css('display', 'none');
+        $('#draft_form').hide();
+        $('#chat_form').hide();
+        $('#draft_container').hide();
+        $('#draft_info_state').text('Complete!');
         $('#draft_info_status').text('Drafting over !');
         socket.emit('disconnect_request', {room_id: draft_id});
     });
@@ -247,8 +270,8 @@ $(document).ready(function () {
     };
 
     socket.on('spectate_join_success', function (message) {
-        $('#room_wrapper').css('display', 'none');
-        $('#drafting').css('display', 'none');
+        $('#lobby').hide();
+        $('#drafting').hide();
 
         $('#spectate_list_wrapper').css('display', 'inline');
 
@@ -277,10 +300,10 @@ $(document).ready(function () {
     // event handler for server sent data
     // the data is displayed in the "Received" section of the page
     socket.on('my response', function (msg) {
-        log_message(msg);
+        log_message(msg); // ????
 
-        console.log('Received #' + msg.count + ': '  + msg.data);
-        $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg));
+        console.log('Server Response #' + msg.count + ': '  + msg.data);
+        $('#log').append('<br>Received #' + msg.count + ': ' + JSON.stringify(msg)); //?????
 
 
     });
@@ -338,7 +361,7 @@ $(document).ready(function () {
             choice: choice
         };
         socket.emit('first_option_form', data);
-        $('#first_option').css('display', 'none');
+        $('#first_option').hide();
 
         return false;
     });
@@ -347,7 +370,7 @@ $(document).ready(function () {
         var choice = $('input:radio[name=pick_choice]').filter(":checked").val();
         if (choice == undefined)
             return false;
-        $('#second_option_pick_order').css('display', 'none');
+        $('#second_option_pick_order').hide();
 
         var data = {
             username: username,
@@ -364,7 +387,7 @@ $(document).ready(function () {
         var choice = $('input:radio[name=spy_choice]').filter(":checked").val();
         if (choice == undefined)
             return false;
-        $('#second_option_spy_order').css('display', 'none');
+        $('#second_option_spy_order').hide();
 
         var data = {
             username: username,
