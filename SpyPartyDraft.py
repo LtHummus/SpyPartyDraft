@@ -234,21 +234,40 @@ def coin_flip(message):
     room = room_map[message['room_id']]
     room.touch()
     user_flip = message['choice']
+
+    # room.post_event({
+    #     'type': 'coin_flip_choice',
+    #     'message': '{} has chosen {}'.format(message['username'], message['choice']),
+    #     'choice': message['choice']
+    # })
+
+    emit('coin_chosen', {
+        'player_one': room.draft.player_one,
+        'message': '{} has chosen {}'.format(message['username'], message['choice']),
+        'choice': message['choice']
+    }, room=room.id)
+
     our_flip = random.choice(['heads', 'tails'])
     if user_flip == our_flip:
         winner = room.draft.player_two
     else:
         winner = room.draft.player_one
 
+    # appended to event payload
     room.post_event({
         'type': "coin_flip_winner",
+        #'flip_coice': user_flip, #might want to add to payload. 
+        #'flip+result': our_flip, #don't want to mess with the payload just in case
         'player': winner,
         'msg': "{} has won the coin flip".format(winner)
     })
     room.draft.coin_flip_winner = winner
 
+    # emitted to socket
     emit('flip_winner', {
         'message': '{} has won the coin toss'.format(winner),
+        'flip_choice': user_flip,
+        'flip_result': our_flip,
         'winner': winner
     }, room=room.id)
 
@@ -304,14 +323,14 @@ def second_option_pick(message):
         room.post_event({
             'type': "pick_first",
             'player': room.draft.coin_flip_loser(),
-            'msg': "{} has opted to pick first".format(room.draft.coin_flip_loser())
+            'msg': "{} has opted to pick map first".format(room.draft.coin_flip_loser())
         })
         room.draft.start_player = room.draft.coin_flip_loser()
     else:
         room.post_event({
             'type': "pick_second",
             'player': room.draft.coin_flip_loser(),
-            'msg': "{} has opted to pick second".format(room.draft.coin_flip_loser())
+            'msg': "{} has opted to pick map second".format(room.draft.coin_flip_loser())
         })
         room.draft.start_player = room.draft.coin_flip_winner
     room.draft.start_draft()
@@ -326,14 +345,14 @@ def second_option_spy(message):
         room.post_event({
             'type': "spy_first",
             'player': room.draft.coin_flip_loser(),
-            'msg': "{} has opted to spy first".format(room.draft.coin_flip_loser())
+            'msg': "{} has opted to play spy first".format(room.draft.coin_flip_loser())
         })
         room.draft.first_spy = room.draft.coin_flip_loser()
     else:
         room.post_event({
             'type': "spy_second",
             'player': room.draft.coin_flip_loser(),
-            'msg': "{} has opted to spy_second".format(room.draft.coin_flip_loser())
+            'msg': "{} has opted to play spy_second".format(room.draft.coin_flip_loser())
         })
         room.draft.first_spy = room.draft.coin_flip_winner
     room.draft.start_draft()
@@ -351,9 +370,9 @@ def first_option_form(message):
         room.post_event({
             'type': "pick_first",
             'player': room.draft.coin_flip_winner,
-            'msg': "{} has opted to pick first".format(room.draft.coin_flip_winner)
+            'msg': "{} has opted to pick map first".format(room.draft.coin_flip_winner)
         })
-        ask_spy_order(room, "You opponent has opted to pick first")
+        ask_spy_order(room, "You opponent has opted to pick map first")
     elif choice == "picksecond":
         room.draft.start_player = room.draft.coin_flip_loser()
         room.post_event({
@@ -361,7 +380,7 @@ def first_option_form(message):
             'player': room.draft.coin_flip_winner,
             'msg': "{} has opted to pick second".format(room.draft.coin_flip_winner)
         })
-        ask_spy_order(room, "Your opponent has opted to pick second")
+        ask_spy_order(room, "Your opponent has opted to pick map second")
     elif choice == "spyfirst":
         room.draft.first_spy = room.draft.coin_flip_winner
         room.post_event({
@@ -369,7 +388,7 @@ def first_option_form(message):
             'player': room.draft.coin_flip_winner,
             'msg': "{} has opted to spy first".format(room.draft.coin_flip_winner)
         })
-        ask_pick_order(room, "Your opponent has opted to spy first")
+        ask_pick_order(room, "Your opponent has opted to play spy first")
     elif choice == "spysecond":
         room.draft.first_spy = room.draft.coin_flip_loser()
         room.post_event({
@@ -377,7 +396,7 @@ def first_option_form(message):
             'player': room.draft.coin_flip_winner,
             'msg': "{} has opted to spy second".format(room.draft.coin_flip_winner)
         })
-        ask_pick_order(room, "Your opponent has opted to spy second")
+        ask_pick_order(room, "Your opponent has opted to play spy second")
     elif choice == "defer":
         # we're going to pretend the other player won the flip, but
         # don't let them defer

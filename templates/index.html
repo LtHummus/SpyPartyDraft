@@ -5,241 +5,244 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SpyParty Tournament Drafting</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link href="static/css/style.css" rel="stylesheet">
-
-    <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+    <!--jQuery-->
+    <script 
+    src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <!--SocketIO-->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    
+    <!--Bootstrap-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <!--SpyPartyDraft-->
+    <link href="static/css/style.css" rel="stylesheet">
+    <link href="static/css/coin.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/js/spypartyDOM.js"></script>
     <script type="text/javascript" src="/static/js/spypartydraft.js"></script>
+    <script type="text/javascript" src="/static/js/changelog.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Iceland|Share+Tech+Mono" rel="stylesheet" type="text/css">
 </head>
 <body>
-<a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
-<div class="container">
-    <div class="col-md-8">
-        <h1>SpyParty Draft Tool <small>BETA version 0.0.13</small></h1>
-        <div id="room_wrapper">
-            <div id="create_form_wrapper">
-                <h3>Create a new Draft Room</h3>
-                <form id="create" method="POST" action='#' class="form-inline">
-                    <input type="text" name="username" maxlength="32" id="username" placeholder="Username" class="form-control"/>
-                    <input type="submit" id="create_button" value="Create new Draft Room" class="btn btn-primary"/>
-                    <select name="draft_type" id="draft_type" class="form-control" style="width: 390px; "></select>
-                    <div id="create_error"></div>
-                </form>
-            </div>
-            <div id="join_form_wrapper">
-                <h3>Join a Draft Room</h3>
-                <form id="join_draft" method="POST" action='#' class="form-inline">
-                    <input type="text" name="username" id="join_username" maxlength="32" placeholder="Username" class="form-control"/>
-                    <input type="text" name="room_id" id="join_room_id" placeholder="Room ID" class="form-control"/>
-                    <input type="submit" id="join_button" value="Join a Room" class="btn btn-primary" />
-                    <div id="join_error" style="color:red; font-weight: bold"></div>
-                </form>
-            </div>
-            <div id="join_as_spectate_wrapper">
-                <h3>Spectate a Draft</h3>
-                <form id="spectate_draft" method="POST" action="#" class="form-inline">
-                    <input type="text" name="room_id" maxlength="32" id="spectate_room_id" placeholder="Room Code" class="form-control">
-                    <input type="submit" id="spectate_button" value="Spectate a Draft" class="btn btn-primary" />
-                    <div id="spectate_error"></div>
-                </form>
-            </div>
-        </div>
-
-        <div id="draft_info" style="display: none;">
-            <h1 id="draft_info_status">Currently Drafting!</h1>
-            <div id="draft_info_draft_type"></div>
-            <div id="draft_info_current_player"></div>
-            <div id="draft_info_start_player"></div>
-            <div id="draft_info_first_spy"></div>
-            <div id="draft_info_state"></div>
-            <ul>
-                <h3>Bans</h3>
-                <div id="draft_bans"></div>
-            </ul>
-            <ul>
-                <h3>Selections</h3>
-                <div id="draft_picks"></div>
-            </ul>
-            <form id="draft_form" method="POST" action="#" style="display: none;">
-                <div id="draft_form_message"></div>
-                <div id="draft_form_options"></div>
-                <input type="submit" value="Submit" />
+    <a href="https://github.com/LtHummus/SpyPartyDraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+    <div class="container">
+    <h1 id="main-heading">SpyParty Draft Tool <small>BETA version <span class="version-number"></span></small></h1>
+    <div id="scl-alert" class="alert alert-warning" role="alert">
+        <strong>Attention SCL Competitors:</strong> Enter your name exactly as it is on the SCL website or else Hummus will be angry at you
+    </div>
+    <section id="lobby" class="container">
+        <div id="create_form_wrapper" class="row">
+            <h3 class="col-12">Create a new Draft Room</h3>
+            <form id="create" class="col-12 form-inline" method="POST" action='#'>
+                <div class="col-12 col-lg-8">
+                    <input class="form-control" type="text" name="username" maxlength="32" id="username" placeholder="Username" />
+                    <select class="form-control" name="draft_type" id="draft_type" ></select>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <button class="btn-spyparty col" type="submit" id="create_button" >CREATE DRAFT</button>
+                </div>
+                <div id="create_error" class="col-12"></div>
             </form>
-
         </div>
+        <div id="join_form_wrapper" class="row">
+            <h3 class="col-12">Join a Draft Room</h3>
+            <form id="join_draft" method="POST" action='#' class="col-12 form-inline">
+                <div class="col-12 col-lg-8">
+                    <input type="text" name="username" id="join_username" maxlength="32" placeholder="Username" class="form-control"/>
+                    <input type="text" name="room_id" id="join_room_id" placeholder="Room Code" class="form-control"/>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <button class="btn-spyparty col" type="submit" id="join_button">JOIN DRAFT</button>
+                </div>
+                <div id="join_error" class="col-12 error"></div>
+            </form>
+        </div>
+        <div id="join_as_spectate_wrapper" class="row">
+            <h3 class="col-12">Spectate a Draft</h3>
+            <form id="spectate_draft" method="POST" action="#" class="col-12 form-inline">
+                <div class="col-12 col-lg-8">
+                    <input type="text" name="room_id" maxlength="32" id="spectate_room_id" placeholder="Room Code" class="form-control">
+                </div>
+                <div class="col-12 col-lg-4">
+                    <button class="btn-spyparty col" type="submit" id="spectate_button">SPECTATE DRAFT</button>
+                </div>
+                <div id="spectate_error class="col-12 error></div>
+            </form>
+        </div>
+    </section>
 
-        <div id="room_info">
-            <h2>Room Info:</h2>
-            <div id="room">Not in a room</div>
-            <div id="spectate_list_wrapper" style="display: none">
-                <ul>
-                    <div id="spectate_list">
-
-                    </div>
-                </ul>
+    <section id="draft_info" style="display: none;" class="container">
+        <h1 id="draft_info_status">Currently Drafting!</h1>
+        <div id="draft_info_draft_type"></div>
+        <div id="draft_info_current_player"></div>
+        <div id="draft_info_start_player"></div>
+        <div id="draft_info_first_spy"></div>
+        <div id="draft_info_state"></div>
+        <div class="row">
+        <ul class="col-6">
+                <h3 class="text-center">Bans</h3>
+                <div id="draft_bans" class="text-center"></div>
+            </ul>
+            <ul class="col-6">
+                <h3 class="text-center">Selections</h3>
+                <div id="draft_picks" class="text-center"></div>
+            </ul>
+        </div>
+        <form id="draft_form" method="POST" action="#" style="display: none;">
+            <div id="draft_form_options" class="container"></div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn-spyparty">SUBMIT</button>
             </div>
-            <div id="drafting">
-                <div id="coin_flip" style="display: none">
-                    <form id="flip_form" method="POST" action="#">
-                        <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
-                        <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br />
-                        <input type="submit" name="flip_button" value="Flip" />
-                    </form>
+        </form>
+
+    </section>
+
+    <section id="room_info">
+        <div id="room_header" class="row" style="display:none;">
+            <div class="col">
+                <h2>Room Info:</h2>
+                <div id="room"></div>
+            </div>
+            <div class="col">
+                <div id="coin_container" style="display:none;">
+                    <div id="coin">
+                        <div class="side-a"></div>
+                        <div class="side-b"></div>
+                    </div>                    
                 </div>
-                <div id="first_option_msg"></div>
-                <div id="first_option" style="display: none">
-                    <h3 id="first_option_header">You've won the coin flip!</h3>
-                        <form id="first_option_form" method="POST" action="#">
-                            <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick First</label><br />
-                            <input type="radio" name="choice" value="picksecond" id="first_picksecond"/><label
-                                class="control-label" for="first_picksecond">Pick Second</label><br/>
-                            <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Spy First</label><br />
-                            <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Spy Second</label><br />
-                            <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer Option to Other Player</label></div><br />
-                            <input type="submit" name="first_option_form" value="This is my choice" /><br />
+            </div>
+            <div class="col">
+                <div id="chat_wrapper" >
+                    <h2>Chat</h2>
+                    <div id="chat_log"></div>
+                    <div id="chat_form" class="row">
+                        <form action="#" method="POST" id="chat_form_form">
+                            <input class="col-8" type="text" placeholder="chat here" id="chat_form_text" maxlength="128" autocomplete="off" />
+                            <button class="col-3 btn btn-primary" type="submit">Speak</button>
                         </form>
+                    </div>
                 </div>
-                <div id="second_option_pick_order" style="display: none">
-                    <div id="pick_order_message"></div>
-                    <form id="second_option_pick_form" method="POST" action="#">
-                        <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick First</label><br />
-                        <input type="radio" name="pick_choice" value="picksecond" id="second_picksecond" /><label for="second_picksecond">Pick Second</label><br />
-                        <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+            </div>
+        </section>
+
+        
+
+        <div id="spectate_list_wrapper" style="display: none">
+            <ul>
+                <div id="spectate_list">
+
+                </div>
+            </ul>
+        </div>
+        <section id="drafting" class="container">
+            <div id="coin_flip" class="col-12 text-center" style="display: none">
+                <form id="flip_form" class="row" method="POST" action="#">
+                    <style>
+                        .coin-label > .coin-radio{ /* HIDE RADIO */
+                            visibility: hidden; /* Makes input not-clickable */
+                            position: absolute; /* Remove input from document flow */
+                        }
+                        .coin-label > .coin-radio + img{ /* IMAGE STYLES */
+                            cursor:pointer;
+                            border:2px solid transparent;
+                            border-radius:50%;
+                        }
+                        .coin-label > .coin-radio:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
+                            border:2px solid #f00;
+                            filter: brightness(110%);
+                        }
+
+                        .coin-label > .coin-radio:hover + img{ /* (RADIO HOVERED) IMAGE STYLES */
+                            filter: brightness(110%);
+                        }
+                    </style>
+                    <label class="coin-label offset-4 col-2">
+                        <input type="radio" name="ht" value="heads" id="heads" class="coin-radio"/>
+                        <img src="static/img/coin/head.png"/><h5 class="text-center">Heads</h5>
+                    </label>
+                    <label class="coin-label col-2">
+                        <input type="radio" name="ht" value="tails" id="tails" class="coin-radio"/>
+                        <img src="static/img/coin/tail.png"/><h5 class="text-center">Tails</h5>
+                    </label>
+                    <!-- <input type="radio" name="ht" value="heads" id="heads" /><label for="heads">Heads</label><br />
+                    <input type="radio" name="ht" value="tails" id="tails" /><label for="tails">Tails</label><br /> -->
+                    <div class="col-12">
+                        <button id="flip-btn" type="submit" name="flip_button" class="btn-spyparty">FLIP</button>
+                    </div>
+                </form>
+            </div>
+            <div id="first_option_msg" class="col-12 text-center"></div>
+            <div id="first_option" class="row" style="display: none">
+                <h3 id="first_option_header" class="col-12 text-center">You've won the coin flip!</h3>
+                <div class="col-12">
+                    <form id="first_option_form" class="radio-list" method="POST" action="#">
+                        <input type="radio" name="choice" value="pickfirst" id="first_pickfirst" /><label class="control-label" for="first_pickfirst">Pick Map First</label><br />
+                        <input type="radio" name="choice" value="picksecond" id="first_picksecond"/><label
+                            class="control-label" for="first_picksecond">Pick Map Second</label><br/>
+                        <input type="radio" name="choice" value="spyfirst" id="first_spyfirst" /><label class="control-label" for="first_spyfirst">Play Spy First</label><br />
+                        <input type="radio" name="choice" value="spysecond" id="first_spysecond" /><label class="control-label" for="first_spysecond">Play Spy Second</label><br />
+                        <div id="first_defer_radio"><input type="radio" name="choice" value="defer" id="first_defer" /><label class="control-label" for="first_defer">Defer this option to opponent</label></div><br />
+                        <button type="submit" name="first_option_form" class="btn-spyparty">SUBMIT</button><br />
                     </form>
                 </div>
-                <div id="second_option_spy_order" style="display: none">
-                    <div id="spy_order_message"></div>
-                    <form id="second_option_spy_form" method="POST" action="#">
-                        <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Spy First</label><br />
-                        <input type="radio" name="spy_choice" value="spysecond" id="second_spysecond" /><label for="second_spysecond">Spy Second</label><br />
-                        <input type="submit" name="second_option_pick_form_button" value="This is my choice" /><br />
+            </div>
+            <div id="second_option_pick_order" class="col-12 text-center" style="display: none">
+                <div id="pick_order_message" class="col-12 text-center"></div>
+                <div class="col-12">
+                    <form id="second_option_pick_form" class="radio-list" method="POST" action="#">
+                        <input type="radio" name="pick_choice" value="pickfirst" id="second_pickfirst" /><label for="second_pickfirst">Pick Map First</label><br />
+                        <input type="radio" name="pick_choice" value="picksecond" id="second_picksecond" /><label for="second_picksecond">Pick Map Second</label><br />
+                        <button type="submit" name="first_option_form" class="btn-spyparty">SUBMIT</button><br />
                     </form>
                 </div>
+            </div>
+            <div id="second_option_spy_order"class="col-12 text-center" style="display: none">
+                <div id="spy_order_message" class="col-12 text-center"></div>
+                <div class="col">
+                    <form id="second_option_spy_form" class="radio-list" method="POST" action="#">
+                        <input type="radio" name="spy_choice" value="spyfirst" id="second_spyfirst" /><label for="second_spyfirst">Play Spy First</label><br />
+                        <input type="radio" name="spy_choice" value="spysecond" id="second_spysecond" /><label for="second_spysecond">Play Spy Second</label><br />
+                        <button type="submit" name="first_option_form" class="btn-spyparty">SUBMIT</button><br />
+                    </form>
+                </div>
+            </div>
+            <div id="draft_container" class="container" style="display:none">
+                <div id="draft_form_message" class="container text-center"></div>
                 <h2>Drafting</h2>
                 <div id="draft_state"></div>
-                <div id="map_pool">
+                <div id="map_pool" class="container">
 
                 </div>
                 <div id="buttons">
 
                 </div>
             </div>
-        </div>
-        <div id="debugging" style="display: none;">
-            <h2>Receive:</h2>
-            <div id="log"></div>
-        </div>
-        <div id="infos">
+        </section>
+    </section>
+    <div id="debugging" class="row" style="display: none;">
+        <h2>Receive:</h2>
+        <div id="log"></div>
+    </div>
+    <section id="infos" class="row">
+        <section id="help" class="col-xs-12 col-md-6">
             <h2>Help</h2>
             <p>If you're having issues, try refreshing/restarting the draft.  I have a lot of things on the todo list but
                 it's mostly functional for now.  You can also hit me up on Twitter
                 <a href="https://twitter.com/LtHummus">@LtHummus</a> or fix it yourself on
                 <a href="https://github.com/LtHummus/SpyPartyDraft">GitHub</a>.  You'll definitely need a modern browser
                 to make this work (it has to support web sockets).</p>
-
+        </section>
+        <section id="patch-notes" class="col-xs-12 col-md-6">
             <h2>What's New</h2>
-            <p>Version 0.0.13</p>
-            <ul>
-                <li>Changed Map Pool/Drafting Configuration to Season 4 Rules</li>
-            </ul>
-            <p>Version 0.0.12</p>
-            <ul>
-                <li>Change map pool to Season 3</li>
-                <li>Integrate with SCL Manager</li>
-            </ul>
-            <p>Version 0.0.11</p>
-            <ul>
-                <li>Reword map choices from ANY Map 3/5 to Map ANY 3/5</li>
-                <li>Finished implementing playoff draft types</li>
-                <li>Changed spectator message protocol for easier parsing by 3rd party tools</li>
-            </ul>
-            <p>Version 0.0.10</p>
-            <ul>
-                <li>Changed things around for SCL Season 2</li>
-                <li>Things are not 100% with playoff/league championship drafting</li>
-            </ul>
-            <p>Version 0.0.9</p>
-            <ul>
-                <li>Fixed bugs with non-regular match being default</li>
-            </ul>
-            <p>Version 0.0.8c</p>
-            <ul>
-                <li>Refactor JavaScript code in to its own file</li>
-                <li>Fixed font loading</li>
-            </ul>
-            <p>Version 0.0.8b</p>
-            <ul>
-                <li>Limited usernames to 32 chars</li>
-                <li>Limited chat messages to 128 chars</li>
-            </ul>
-            <p>Version 0.0.8</p>
-            <ul>
-                <li>Added some style (thanks WarningTrack!)</li>
-                <li>Switched to pull bootstrap from a CDN</li>
-                <li>Fixed phrasing for when you select spy order instead of pick order</li>
-            </ul>
-            <p>Version 0.0.7</p>
-            <ul>
-                <li>Added draft mode for Hazard/Championship Matches (thanks sgnurf)</li>
-                <li>Made room creation/joining form uglier</li>
-                <li>Give error when user attempts to join room with two players already</li>
-                <li>Behind the scenes cleanup to make adding tourneys easier in the future</li>
-            </ul>
-            <p>Version 0.0.6</p>
-            <ul>
-                <li>Added ability to chat with opponent (spectators can not see chat)</li>
-                <li>Prevented HTML/JS injection attacks</li>
-                <li>Now the draft tool saves drafts to a database so we can do some ~data analysis~ after the tournament</li>
-            </ul>
-            <p>Version 0.0.5b</p>
-            <ul>
-                <li>Fixed bug with PICK and ANY with Crowded Pub and New Art Ballroom</li>
-            </ul>
-            <p>Version 0.0.5</p>
-            <ul>
-                <li>Added ability to distinguish PICK and ANY for maps.</li>
-            </ul>
-            <p>Version 0.0.4</p>
-            <ul>
-                <li>Added draft spectation.  Once a room has been created, others can watch the draft take place in real time!</li>
-            </ul>
-            <p>Version 0.0.3</p>
-            <ul>
-                <li>Fixed not removing map variations when a map was picked (i.e. can't pick Courtyard more than once)</li>
-                <li>Fixed being able to submit a form with a choice not selected</li>
-                <li>Fixed being able to have an empty username</li>
-                <li>Added ability to refuse to ban a map (you're welcome, canadianbac0nz)</li>
-                <li>Added this news item :)</li>
-            </ul>
-            <p>Version 0.0.2b</p>
-            <ul>
-                <li>Fixed panop configuration (4/8 -> 5/8)</li>
-            </ul>
-            <p>Version 0.0.2</p>
-            <ul>
-                <li>Added some more text to home page.</li>
-                <li>Changed some wording around</li>
-            </ul>
-            <p>Version 0.0.1</p>
-            <ul>
-                <li>Initial release!</li>
-            </ul>
-
-        </div>
-    </div>
-    <div class="col-md-4" id="chat_wrapper" style="visibility: hidden">
-        <h2>Chat</h2>
-        <div id="chat_log"></div>
-        <div id="chat_form">
-            <form action="#" method="POST" id="chat_form_form">
-                <input type="text" placeholder="chat here" id="chat_form_text" maxlength="128" autocomplete="off" />
-                <input type="submit" value="Talk talk talk" />
-            </form>
-        </div>
-    </div>
+            <button id="showAllChangeSetsBtn" class="btn">Show All</button> 
+            <button id="hideAllChangeSetsBtn" class="btn">Hide All</button>
+            <div id="changelog" class="accordion"></div>
+        </section>
+    </section>
+    
 </div>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
 </body>
 </html>

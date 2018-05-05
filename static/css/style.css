@@ -40,7 +40,11 @@ body {
   font-family: 'Roboto', Arial, san-serif;
   font-size: 14px;
   height: 100%;
-  background: #E9E9E9;
+  background: #3E5151;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom right, #E9E9E9, #3E5151);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom right, #E9E9E9, #3E5151); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+
 
   -webkit-font-smoothing: antialiased;
 }
@@ -113,8 +117,8 @@ hr {
   background-color: #444;
 }
 
-input[type=text], input[type=number], input[type=date], input[type=submit], input[type=email], input[type=url], select, option, .button, .button:visited {
-  font-family: 'agencyfb', sans-serif;
+input[type=text], input[type=number], input[type=date], .btn-primary, input[type=email], input[type=url]{
+  font-family:  'Share Tech Mono', monospace;
   height: 55px;
   padding: 10px;
   font-size: 24px;
@@ -127,8 +131,15 @@ input[type=text], input[type=number], input[type=date], input[type=submit], inpu
   text-decoration: none;
 }
 
-select, option, input[type="submit"], .button, .button:visited {
+select#draft_type {
   height: 50px;
+  font-size:16px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+option{
+  font-family: 'Share Tech Mono', monospace;
+  font-size:16px;
 }
 
 input[type="text"], input[type="email"], input[type="url"] {
@@ -138,22 +149,14 @@ input[type="text"], input[type="email"], input[type="url"] {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
-input[type="submit"], .button, .button:visited {
-  padding: 15px 0;
-  border: 0;
-  background-color: #A8DFF4;
-  color: #4e6e92;
-  font-size: 18px;
-  height: 50px;
-  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  text-transform: uppercase;
+
+.radio-list {
+  margin: 0 auto;
+  width: fit-content;
+  text-align:left;
 }
 
-input[type="submit"]:hover, .button:hover, .button:visited:hover {
-  cursor: pointer;
-  background-color: #c8ecf8;
-}
+
 
 textarea {
   font-size: 16px;
@@ -169,13 +172,48 @@ textarea {
   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,.5);
 }
 
+/*** RADIO BUTTONS ***/
+.map-label > .map-radio{ /* HIDE RADIO */
+  visibility: hidden; /* Makes input not-clickable */
+  position: absolute; /* Remove input from document flow */
+}
+.map-label > .map-radio + img{ /* IMAGE STYLES */
+  cursor:pointer;
+  border:2px solid transparent;
+}
+.map-label > .map-radio:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
+  border:2px solid #f00;
+  filter: brightness(150%);
+}
+
+.map-label > .map-radio:hover + img{ /* (RADIO HOVERED) IMAGE STYLES */
+  filter: brightness(150%);
+}
+
+.banning .map-label > .map-radio:hover + img{
+  cursor: not-allowed;
+}
+.picking .map-label > .map-radio:hover + img{
+  cursor: crosshair
+}
+
+#chat_log{
+  overflow-y: scroll;
+  height: 150px;
+}
 
 
+#draft_bans li, #draft_picks li{
+  width: fit-content;
+  margin: 0 auto;
+}
 
-#room_wrapper {
+
+#lobby {
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
   background: #FFF;
   padding: 15px 40px 50px;
+  margin-bottom:10px;
 }
 
 off{
@@ -184,22 +222,109 @@ off{
   -webkit-border-radius: 10px;
 }
 
+img{
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#lobby input[type=text]{
+  height: 60px;
+  margin-right: 5px;
+  color:black;
+
+}
+
+
+input[type=text]::placeholder{
+  color:rgb(180, 180, 180);
+}
+
+input[type=text]#join_username {
+  margin-right: 0px;
+}
 
 #create, #join_draft, #spectate_draft {
   margin-bottom: 15px;
 }
 
 #create input[type="text"], #spectate_draft input[type="text"] {
-  width: 60%;
+  /* width: 60%; */
 }
 
-input[type="submit"] {
-  width: 30%;
-  margin-left: 8%;
+.error{
+  color:red; font-weight: bold; font-family:consolas;
 }
+
+.btn-primary {
+  padding: 15px 0;
+  border: 0;
+  background-color: #A8DFF4;
+  color: #4e6e92;
+  font-size: 18px;
+  height: 50px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+  text-transform: uppercase;
+}
+
+.btn-primary:hover {
+  cursor: pointer;
+  background-color: #c8ecf8;
+}
+
+
+/*
+  xs (for phones - screens less than 768px wide)
+  sm (for tablets - screens equal to or greater than 768px wide)
+  md (for small laptops - screens equal to or greater than 992px wide)
+  lg (for laptops and desktops - screens equal to or greater than 1200px wide)
+*/
+@media (max-width: 991px) {
+  #lobby .btn-spyparty{
+    margin-top:10px;
+  }
+
+  #lobby select{
+    margin-top:10px;
+  }
+  
+}
+
+
+.btn-spyparty{
+  font-family: monospace;
+  min-width: 225px;
+  height: 60px;
+  font-size:24px;
+  line-height: 24px;
+  color: #3e8afd;
+  /* Permalink - use to edit and share this gradient: 
+      http://colorzilla.com/gradient-editor/#082463+0,0e3da3+50,082463+100 
+  */
+  background: rgb(8,36,99); /* Old browsers #082463 */
+  background: -moz-linear-gradient(left, rgba(8,36,99,1) 0%, rgba(14,61,163,1) 50%, rgba(8,36,99,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, rgba(8,36,99,1) 0%,rgba(14,61,163,1) 50%,rgba(8,36,99,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, rgba(8,36,99,1) 0%,rgba(14,61,163,1) 50%,rgba(8,36,99,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  border:3px solid #3e8afd;
+  cursor:pointer;
+  filter: brightness(75%);
+}
+
+.btn-spyparty:hover{
+  filter: brightness(100%);
+}
+
+.btn-spyparty:active{
+  transform: translate(0px, 2px);
+}
+
+.btn-spyparty:hover:active{
+  box-shadow: 0px 5px 50px 0px #3e8afd;
+}
+
 
 #join_draft input[type="text"] {
-  width: 29%;
+  /* width: 30%; */
 }
 
 #join_username {
@@ -257,6 +382,7 @@ input[type="submit"] {
 }
 
 .nohighlight {
+  user-select:none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
 }
