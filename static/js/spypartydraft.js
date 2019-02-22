@@ -216,7 +216,7 @@ $(document).ready(function () {
                 let family = value['family'];
                 let name = value['name'];
 
-                let radioButton = $(`<label class="map-label col-3"><input type="radio" name="map_choice" value="${slug}" id="map_choice_${slug}" class="map-radio"/><img src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></label>`);
+                let radioButton = $(`<label class="map-label col-3"><input type="radio" name="map_choice" value="${slug}" id="map_choice_${slug}" class="map-radio"/><img src="static/img/${family}.jpg"/><h5 class="text-center">${name}</h5></label>`);
                 $('#draft_form_options').append(radioButton);
             });
 
