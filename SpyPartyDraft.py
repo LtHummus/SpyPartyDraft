@@ -53,7 +53,7 @@ elif async_mode == 'gevent':
 
     monkey.patch_all()
 
-dynamo_db_table_name = "spypartydraft_test"
+dynamo_db_table_name = os.environ['DYNAMO_DB_TABLE']
 # dynamodb = boto3.resource('dynamodb')
 # table = dynamodb.Table(dynamo_db_table_name)
 table = None
