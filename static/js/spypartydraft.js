@@ -91,7 +91,7 @@ $(document).ready(function () {
         msg['map_pool'].forEach((value, key, list) => {
             let family = value['family'];
             let name = value['name'];
-            var mapElement = $(`<div class='map col-3'><img class="map-thumbnail" src="static/img/${family}.png"/><h5 class="text-center">${name}</h5></div>`);
+            var mapElement = $(`<div class='map col-3'><img class="map-thumbnail" src="static/img/${family}.jpg"/><h5 class="text-center">${name}</h5></div>`);
             $('#map_pool .row').append(mapElement);
         });
     });
