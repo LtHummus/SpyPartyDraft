@@ -18,7 +18,7 @@ $(document).ready(function () {
 
     // the socket.io documentation recommends sending an explicit package upon connection
     // this is specially important when using the global namespace
-    var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
     socket.emit('get_draft_types');
 
