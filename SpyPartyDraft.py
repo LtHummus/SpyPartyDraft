@@ -4,6 +4,7 @@ import time
 import uuid
 import boto3
 from threading import Thread
+import os
 
 from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
@@ -58,7 +59,7 @@ dynamo_db_table_name = "spypartydraft_test"
 table = None
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 socketio = SocketIO(app, async_mode=async_mode)
 thread = None
 
