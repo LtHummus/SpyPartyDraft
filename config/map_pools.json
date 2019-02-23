@@ -1,55 +1,60 @@
 {
   "scl_season_4":
-          [
-            {
-              "name": "Balcony Any 2/3",
-              "slug": "balcony23",
-              "family": "balcony"
-            },
-            {
-              "name": "Ballroom Any 4/8",
-              "slug": "ballroom48",
-              "family": "ballroom"
-            },
-            {
-              "name": "Courtyard Any 4/7",
-              "slug": "courtyard47",
-              "family": "courtyard"
-            },
-            {
-              "name": "Gallery Any 4/8",
-              "slug": "gallery48",
-              "family": "gallery"
-            },
-            {
-              "name": "High-Rise Any 3/5",
-              "slug": "highrise35",
-              "family": "highrise"
-            },
-            {
-              "name": "Library Any 5/8",
-              "slug": "library58",
-              "family": "library"
-            },
-            {
-              "name": "Moderne Any 5/8",
-              "slug": "moderne58",
-              "family": "moderne"
-            },
-            {
-              "name": "Pub Any 4/7",
-              "slug": "pub47",
-              "family": "pub"
-            },
-            {
-              "name": "Terrace Any 3/5",
-              "slug": "terrace35",
-              "family": "terrace"
-            },
-            {
-              "name": "Veranda Any 5/8",
-              "slug": "veranda58",
-              "family": "veranda"
-            }
-          ]
+  [
+    {
+      "name": "Balcony Any 2/3",
+      "slug": "balcony23",
+      "family": "balcony"
+    },
+    {
+      "name": "Ballroom Any 4/8",
+      "slug": "ballroom48",
+      "family": "ballroom"
+    },
+    {
+      "name": "Courtyard Any 4/7",
+      "slug": "courtyard47",
+      "family": "courtyard"
+    },
+    {
+      "name": "Gallery Any 4/8",
+      "slug": "gallery48",
+      "family": "gallery"
+    },
+    {
+      "name": "High-Rise Any 3/5",
+      "slug": "highrise35",
+      "family": "highrise"
+    },
+    {
+      "name": "Library Any 5/8",
+      "slug": "library58",
+      "family": "library"
+    },
+    {
+      "name": "Moderne Any 5/8",
+      "slug": "moderne58",
+      "family": "moderne"
+    },
+    {
+      "name": "Pub Any 4/7",
+      "slug": "pub47",
+      "family": "pub"
+    },
+    {
+      "name": "Teien Any 4/8",
+      "slug": "teien48",
+      "family": "teien"
+    },
+    {
+      "name": "Terrace Any 3/5",
+      "slug": "terrace35",
+      "family": "terrace"
+    },
+    {
+      "name": "Veranda Any 5/8",
+      "slug": "veranda58",
+      "family": "veranda"
+    }
+  ]
 }
