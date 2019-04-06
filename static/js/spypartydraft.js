@@ -86,7 +86,7 @@ $(document).ready(function () {
 
         $coin_flip_el.show();
 
-        $('#map_pool').append($('<h3>Map Pool</h3>'));
+        $('#map_pool').append($('<h3>Venue Pool</h3>'));
         $('#map_pool').append($('<div class="row"></div>'))
         msg['map_pool'].forEach((value, key, list) => {
             let family = value['family'];

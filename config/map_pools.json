@@ -2,6 +2,11 @@
   "scl_season_4":
   [
     {
+      "name": "Aquarium Any 4/8",
+      "slug": "aquarium48",
+      "family": "aquarium",
+    },
+    {
       "name": "Balcony Any 2/3",
       "slug": "balcony23",
       "family": "balcony"
