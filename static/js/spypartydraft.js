@@ -253,6 +253,7 @@ $(document).ready(function () {
         }
 
         $('#draft_form_message').html(userMessage);
+        $('#draft_container_message').html(userMessage);
 
         $('#draft_info').show();
     });

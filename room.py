@@ -93,5 +93,6 @@ class Room:
             'user_readable_state': self.draft.user_readable_state(),
             'draft_type': self.draft_type.name,
             'restricted_map_pool': self.serializable_restrictions_pool(),
-            'restricted_maps': self.draft.serializable_restrictions()
+            'restricted_maps': self.draft.serializable_restrictions(),
+            'double_pick': self.draft.is_double_pick()
         }
