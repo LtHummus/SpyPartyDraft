@@ -218,11 +218,9 @@ $(document).ready(function () {
 
         if (message['current_player'] === username) {
             var realMapPool = message['map_pool'];
-            if (message['show_restricted']) {
-                realMapPool = realMapPool.concat(message['restricted_map_pool']);
-                realMapPool.sort(function (a, b) {
-                    a['slug'].localeCompare(b['slug']);
-                });
+            if (!message['show_restricted']) {
+                var restrictedMaps = message['restricted_map_pool'].map(function(x) { return x['slug']} );
+                realMapPool = realMapPool.filter(function(x) { return !restrictedMaps.includes(x['slug'])} );
             }
             realMapPool.forEach((value, key, list) => {
                 //console.log(value['name'] + " -> " + value['slug']);

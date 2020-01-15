@@ -123,7 +123,6 @@ class Draft:
         elif self.is_restricting():
             self.restricted_map_pool.append(map_)
             self.restricted_maps.append(map_.name)
-            self.map_pool.remove(map_)
         else:
             map_name = map_.map_mode_name()
             if self.is_double_pick():
