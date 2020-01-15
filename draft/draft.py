@@ -14,6 +14,7 @@ USER_READABLE_STATE_MAP = {
     STATE_NOT_STARTED: "Not started",
     STATE_BANNING: "{} Ban",
     STATE_PICKING: "{} Pick",
+    STATE_RESTRICTING: "{} Restriction",
     STATE_DRAFT_COMPLETE: "Draft complete",
     STATE_FIRST_ROUND_BANNING: "{} First Round Ban",
     STATE_FIRST_ROUND_PICKING: "{} First Round Pick",
@@ -22,7 +23,8 @@ USER_READABLE_STATE_MAP = {
 }
 
 NEXT_STATE = {
-    STATE_BANNING: STATE_PICKING,
+    STATE_BANNING: STATE_RESTRICTING,
+    STATE_RESTRICTING: STATE_PICKING,
     STATE_PICKING: STATE_DRAFT_COMPLETE
 }
 
@@ -38,6 +40,7 @@ class Draft:
     def __init__(self, room_id, player_one, player_two, map_pool, draft_type):
         self.room_id = room_id
         self.banned_maps = []
+        self.restricted_map_pool = []
         self.restricted_maps = []
         self.picked_maps = []
         self.player_one = player_one
@@ -66,11 +69,23 @@ class Draft:
         else:
             self.start_player = self.player_two
 
+    def is_banning(self):
+        return self.state.endswith("BANNING")
+
+    def is_picking(self):
+        return self.state.endswith("PICKING")
+
+    def is_restricting(self):
+        return self.state.endswith("RESTRICTING")
+
     def _swap_player(self):
         if self.current_player == self.player_one:
             self.current_player = self.player_two
         else:
             self.current_player = self.player_one
+
+    def _restricting_complete(self):
+        return len(self.restricted_map_pool) < self.draft_type.nr_restrictions * 2
 
     def _banning_complete(self):
         return len(self.banned_maps) < self.draft_type.nr_bans * 2
@@ -87,15 +102,27 @@ class Draft:
             self.state = MULTI_PHASE_NEXT_STATE[self.state]
 
     def _advance_state(self):
+        # check to see if we're done with our current state by looking at the number of maps in each
+        # of the result lists, if we are done, then advance state
         if not (self.state == STATE_BANNING and self._banning_complete() or
+                self.state == STATE_RESTRICTING and self._restricting_complete() or
                 self.state == STATE_PICKING and self._picking_complete()):
             self.state = NEXT_STATE[self.state]
 
     def mark_map(self, map_):
         if map_ is None:
-            self.banned_maps.append("Nothing")
-        elif self.state.endswith("BANNING"):
+            if self.is_banning():
+                self.banned_maps.append("Nothing")
+            elif self.is_restricting():
+                self.restricted_map_pool.append("Nothing")
+            else:
+                assert False
+        elif self.is_banning():
             self.banned_maps.append(map_.name)
+            self.map_pool.remove(map_)
+        elif self.is_restricting():
+            self.restricted_map_pool.append(map_)
+            self.restricted_maps.append(map_.name)
             self.map_pool.remove(map_)
         else:
             map_name = map_.map_mode_name()
@@ -127,40 +154,36 @@ class Draft:
     def user_readable_state(self):
         true_num_picked = len(self.picked_maps) + 1
         true_num_banned = len(self.banned_maps) + 1
+        true_num_restricted = len(self.restricted_map_pool) + 1
         if "SECOND" in self.state:
             true_num_banned -= self.draft_type.nr_first_rd_bans * 2
             true_num_picked -= self.draft_type.nr_first_rd_picks * 2
-        if self.state.endswith("BANNING"):
+        if self.is_banning():
             return USER_READABLE_STATE_MAP[self.state].format(self.ordinal(true_num_banned))
-        elif self.state.endswith("PICKING"):
+        elif self.is_picking():
             plain_state = USER_READABLE_STATE_MAP[self.state].format(self.ordinal(true_num_picked))
             if self.is_double_pick():
                 return plain_state + " (Picking Doubles)"
             return plain_state
-
+        elif self.is_restricting():
+            return USER_READABLE_STATE_MAP[self.state].format(self.ordinal(true_num_restricted))
         else:
             return USER_READABLE_STATE_MAP[self.state]
 
     def serializable_bans(self):
-        bans = []
-        curr = self.start_player
-        for x in self.banned_maps:
-            bans.append({
-                'picker': curr,
-                'map': x
-            })
-            if curr == self.player_one:
-                curr = self.player_two
-            else:
-                curr = self.player_one
-
-        return bans
+        return self._build_serializable_list(self.banned_maps)
 
     def serializable_picks(self):
-        picks = []
+        return self._build_serializable_list(self.picked_maps)
+
+    def serializable_restrictions(self):
+        return self._build_serializable_list(self.restricted_maps)
+
+    def _build_serializable_list(self, map_list):
+        res = []
         curr = self.start_player
-        for x in self.picked_maps:
-            picks.append({
+        for x in map_list:
+            res.append({
                 'picker': curr,
                 'map': x
             })
@@ -169,7 +192,7 @@ class Draft:
             else:
                 curr = self.player_one
 
-        return picks
+        return res
 
     def draft_complete(self):
         return self.state == STATE_DRAFT_COMPLETE

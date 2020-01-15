@@ -181,6 +181,13 @@ $(document).ready(function () {
             var el = $('<li>' + escapeHtml(value['picker']) + ' has selected ' + value['map'] + '</li>');
             $('#draft_picks').append(el);
         });
+
+        $('#draft_restrictions').html('');
+
+        message['restricted_maps'].forEach(function (value, key, list) {
+            var el = $('<li>' + escapeHtml(value['picker']) + ' has restricted ' + value['map'] + '</li>');
+            $('#draft_restrictions').append(el);
+        });
     };
 
     socket.on('draft_info', function (message) {
@@ -209,7 +216,7 @@ $(document).ready(function () {
 
         //<label for="map_choice_' + value['slug'] + '">' + value['name'] + '</label><br />
 
-        if (message['current_player'] == username) {
+        if (message['current_player'] === username) {
             message['map_pool'].forEach((value, key, list) => {
                 //console.log(value['name'] + " -> " + value['slug']);
                 let slug = value['slug'];
@@ -223,11 +230,16 @@ $(document).ready(function () {
 
             $('#draft_form_options').removeClass('banning');
             $('#draft_form_options').removeClass('picking');
+            $('#draft_form_options').removeClass('restricting');
             if (message['state'].endsWith('BANNING')) {
                 var noBan = $('<input type="radio" name="map_choice" value="nothing" id="map_choice_nothing" /><label for="map_choice_nothing">Refuse to ban</label><br />');
                 $('#draft_form_options').append(noBan);
                 $('#draft_form_options').addClass('banning');
-            }else if (message['state'].endsWith('PICKING')){
+            } else if (message['state'].endsWith("RESTRICTING")) {
+                var noRestrict = $('<input type="radio" name="map_choice" value="nothing" id="map_choice_nothing" /><label for="map_choice_nothing">Refuse to restrict</label><br />');
+                $('#draft_form_options').append(noRestrict);
+                $('#draft_form_options').addClass('restricting');
+            } else if (message['state'].endsWith('PICKING')){
                 $('#draft_form_options').addClass('picking');
             }
             userMessage = "<h2>" + message['user_readable_state'] + "</h2>";
