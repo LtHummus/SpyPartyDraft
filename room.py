@@ -74,9 +74,6 @@ class Room:
         return self.draft.draft_complete()
 
     def serialize(self):
-        print self.serializable_map_pool()
-        print self.draft.serializable_restrictions()
-        print self.draft.serializable_bans()
         return {
             'room_id': self.id,
             'banned_maps': self.draft.serializable_bans(),

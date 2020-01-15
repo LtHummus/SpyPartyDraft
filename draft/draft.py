@@ -85,7 +85,7 @@ class Draft:
             self.current_player = self.player_one
 
     def _restricting_complete(self):
-        return len(self.restricted_map_pool) < self.draft_type.nr_restrictions * 2
+        return len(self.restricted_maps) < self.draft_type.nr_restrictions * 2
 
     def _banning_complete(self):
         return len(self.banned_maps) < self.draft_type.nr_bans * 2
@@ -114,7 +114,7 @@ class Draft:
             if self.is_banning():
                 self.banned_maps.append("Nothing")
             elif self.is_restricting():
-                self.restricted_map_pool.append("Nothing")
+                self.restricted_maps.append("Nothing")
             else:
                 assert False
         elif self.is_banning():
