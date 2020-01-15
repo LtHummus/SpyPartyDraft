@@ -427,12 +427,19 @@ def draft_map(message):
         if room.draft.state.startswith('PICK') and not chosen_map.slug.endswith('k2'):
             chosen_map_name = chosen_map.map_mode_name()
 
-    if room.draft.state.endswith('BANNING'):
+    if room.draft.is_banning():
         room.post_event({
             'type': "map_banned",
             'map': chosen_map.as_map() if chosen_map else None,
             'player': room.draft.current_player,
             'msg': "{} has banned {}".format(room.draft.current_player, chosen_map_name)
+        })
+    elif room.draft.is_restricting():
+        room.post_event({
+            'type': "map_restricted",
+            'map': chosen_map.as_map() if chosen_map else None,
+            'player': room.draft.current_player,
+            'msg': "{} has restricted {}".format(room.draft.current_player, chosen_map_name)
         })
     else:
         room.post_event({
