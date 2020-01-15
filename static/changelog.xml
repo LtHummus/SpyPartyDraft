@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <changeLog>
+    <changeSet version="0.0.15">
+        <item text="SCL Season 6 Changes (Restrictions)" />
+    </changeSet>
     <changeSet version="0.0.14">
         <item text="Map thumbnails and expressive cursor icons on hover during draft"/>
         <item text="Added a coin flip animation!"/>

@@ -94,5 +94,5 @@ class Room:
             'draft_type': self.draft_type.name,
             'restricted_map_pool': self.serializable_restrictions_pool(),
             'restricted_maps': self.draft.serializable_restrictions(),
-            'double_pick': self.draft.is_double_pick()
+            'show_restricted': self.draft.is_picking() and not self.draft.is_double_pick()
         }
