@@ -47,6 +47,10 @@ class Room:
         self.touch()
         return [x.as_map() for x in self.map_pool]
 
+    def serializable_restrictions_pool(self):
+        self.touch() # the divynals would be proud
+        return [x.as_map() for x in self.draft.restricted_map_pool]
+
     def start_draft(self):
         print "starting draft"
         print self.map_pool
@@ -70,6 +74,9 @@ class Room:
         return self.draft.draft_complete()
 
     def serialize(self):
+        print self.serializable_map_pool()
+        print self.draft.serializable_restrictions()
+        print self.draft.serializable_bans()
         return {
             'room_id': self.id,
             'banned_maps': self.draft.serializable_bans(),
@@ -84,5 +91,7 @@ class Room:
             'first_spy': self.draft.first_spy,
             'state': self.draft.state,
             'user_readable_state': self.draft.user_readable_state(),
-            'draft_type': self.draft_type.name
+            'draft_type': self.draft_type.name,
+            'restricted_map_pool': self.serializable_restrictions_pool(),
+            'restricted_maps': self.draft.serializable_restrictions()
         }
