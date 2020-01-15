@@ -4,6 +4,7 @@ STATE_COIN_FLIPPED = "COIN_FLIPPED"
 STATE_DRAFT_COMPLETE = "COMPLETE"
 STATE_BANNING = "BANNING"
 STATE_PICKING = "PICKING"
+STATE_RESTRICTING = "RESTRICTING"
 STATE_FIRST_ROUND_BANNING = "FIRST_ROUND_BANNING"
 STATE_FIRST_ROUND_PICKING = "FIRST_ROUND_PICKING"
 STATE_SECOND_ROUND_BANNING = "SECOND_ROUND_BANNING"
@@ -37,6 +38,7 @@ class Draft:
     def __init__(self, room_id, player_one, player_two, map_pool, draft_type):
         self.room_id = room_id
         self.banned_maps = []
+        self.restricted_maps = []
         self.picked_maps = []
         self.player_one = player_one
         self.player_two = player_two
@@ -120,7 +122,7 @@ class Draft:
             self.state = STATE_BANNING
 
     def is_double_pick(self):
-        return self.draft_type.multi_phase and len(self.picked_maps) < self.draft_type.nr_double_picks * 2
+        return len(self.picked_maps) < self.draft_type.nr_double_picks * 2
 
     def user_readable_state(self):
         true_num_picked = len(self.picked_maps) + 1
