@@ -1,9 +1,8 @@
 {
-  "scl_season_4":
-  [
+  "scl_season_4": [
     {
       "name": "Aquarium Any 4/8",
-      "slug": "aquarium48",
+      "slug": "aquariuma48",
       "family": "aquarium"
     },
     {
@@ -42,9 +41,14 @@
       "family": "moderne"
     },
     {
-      "name": "Pub Any 4/7",
-      "slug": "pub47",
+      "name": "Pub Any 3/5",
+      "slug": "pub35",
       "family": "pub"
+    },
+    {
+      "name": "Redwoods Any 4/8",
+      "slug": "redwoods48",
+      "family": "redwoods"
     },
     {
       "name": "Teien Any 4/8",

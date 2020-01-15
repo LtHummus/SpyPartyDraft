@@ -9,10 +9,15 @@ class Uploader:
             data = json.load(f)
             self.psk = data['psk']
             self.url = data['url']
+            self.enabled = data['enabled']
 
     # case class DraftInput(roomCode: String, player1: String, player2: String, payload: DraftPayload)
 
     def upload_room(self, room):
+        if not self.enabled:
+            print "Uploading disabled, but would upload here"
+            return
+
         payload = {
             'room_code': room.id,
             'player_1': room.player_list[0].lower(),
