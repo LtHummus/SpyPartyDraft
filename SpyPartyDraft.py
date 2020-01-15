@@ -257,8 +257,8 @@ def coin_flip(message):
     # appended to event payload
     room.post_event({
         'type': "coin_flip_winner",
-        #'flip_coice': user_flip, #might want to add to payload. 
-        #'flip+result': our_flip, #don't want to mess with the payload just in case
+        # 'flip_coice': user_flip, #might want to add to payload.
+        # 'flip+result': our_flip, #don't want to mess with the payload just in case
         'player': winner,
         'msg': "{} has won the coin flip".format(winner)
     })
